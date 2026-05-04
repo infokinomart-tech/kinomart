@@ -95,10 +95,10 @@ function DeliveryAndReturnPolicy() {
           <p className='text-gray-600 text-sm md:text-base'>
             Have questions? Reach out to us at{' '}
             <a
-              href='mailto:info@kinomart.store'
+              href='mailto:info@kinomart.com'
               className='text-blue-600 hover:underline'
             >
-              info@kinomart.store
+              info@kinomart.com
             </a>{' '}
             or call{' '}
             <a

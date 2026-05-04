@@ -18,13 +18,13 @@ function about_us() {
         />
         <meta name='robots' content='index, follow' />
         <meta name='author' content='Kino Mart' />
-        <link rel='canonical' href='https://www.kinomart.store/about-us' />
+        <link rel='canonical' href='https://www.kinomart.com/about-us' />
         <meta property='og:title' content='About Us | Kino Mart' />
         <meta
           property='og:description'
           content="Kino Mart is Bangladesh's go-to destination for premium gadgets, tech accessories, and imported branded products."
         />
-        <meta property='og:url' content='https://www.kinomart.store/about-us' />
+        <meta property='og:url' content='https://www.kinomart.com/about-us' />
         <meta property='og:type' content='website' />
         <meta property='og:site_name' content='Kino Mart' />
       </Head>

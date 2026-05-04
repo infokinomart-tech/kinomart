@@ -214,7 +214,7 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:url'
-          content={`https://www.kinomart.store/product/${product.slug}`}
+          content={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:image' content={product.images[0]} />

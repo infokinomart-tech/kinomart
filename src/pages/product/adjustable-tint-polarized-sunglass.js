@@ -195,7 +195,7 @@ const ProductDetails = ({ initialProduct }) => {
         <meta name='author' content='Sheii Shop' />
         <link
           rel='canonical'
-          href={`https://www.kinomart.store/product/${product.slug}`}
+          href={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:title' content={`${product.title} | Sheii Shop`} />
@@ -204,12 +204,12 @@ const ProductDetails = ({ initialProduct }) => {
           property='og:image'
           content={
             product.images?.[0] ||
-            'https://www.kinomart.store/assets/footer-logo.jpeg'
+            'https://www.kinomart.com/assets/footer-logo.jpeg'
           }
         />
         <meta
           property='og:url'
-          content={`https://www.kinomart.store/product/${product.slug}`}
+          content={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:site_name' content='Sheii Shop' />
         <meta name='twitter:card' content='summary_large_image' />
@@ -219,7 +219,7 @@ const ProductDetails = ({ initialProduct }) => {
           name='twitter:image'
           content={
             product.images?.[0] ||
-            'https://www.kinomart.store/assets/footer-logo.jpeg'
+            'https://www.kinomart.com/assets/footer-logo.jpeg'
           }
         />
         <script
@@ -235,7 +235,7 @@ const ProductDetails = ({ initialProduct }) => {
               brand: { '@type': 'Brand', name: 'Sheii Shop' },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.kinomart.store/product/${product.slug}`,
+                url: `https://www.kinomart.com/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock

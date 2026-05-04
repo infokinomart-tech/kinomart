@@ -42,9 +42,9 @@ function index() {
         />
         <meta
           property='og:image'
-          content='https://www.kinomart.store/assets/footer-logo.jpeg'
+          content='https://www.kinomart.com/assets/footer-logo.jpeg'
         />
-        <meta property='og:url' content='https://www.kinomart.store' />
+        <meta property='og:url' content='https://www.kinomart.com' />
         <meta property='og:type' content='website' />
         <meta property='og:site_name' content='Kino Mart' />
 
@@ -60,7 +60,7 @@ function index() {
         />
         <meta
           name='twitter:image'
-          content='https://www.kinomart.store/assets/footer-logo.jpeg'
+          content='https://www.kinomart.com/assets/footer-logo.jpeg'
         />
         <script
           type='application/ld+json'
@@ -68,12 +68,12 @@ function index() {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              url: 'https://www.kinomart.store/',
+              url: 'https://www.kinomart.com/',
               name: 'Kino Mart',
               potentialAction: {
                 '@type': 'SearchAction',
                 target:
-                  'https://www.kinomart.store/search?q={search_term_string}',
+                  'https://www.kinomart.com/search?q={search_term_string}',
                 'query-input': 'required name=search_term_string',
               },
             }),

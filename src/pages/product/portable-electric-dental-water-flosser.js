@@ -27,7 +27,7 @@ import Head from 'next/head';
 
 // Find the specific product for this page
 const productData = products.find(
-  (p) => p.slug === 'portable-electric-dental-water-flosser'
+  (p) => p.slug === 'portable-electric-dental-water-flosser',
 );
 
 const ProductDetails = ({ initialProduct }) => {
@@ -127,7 +127,7 @@ const ProductDetails = ({ initialProduct }) => {
         selectedColor,
         quantity,
         image: activeImage,
-      })
+      }),
     );
 
     // Redirect to order page
@@ -249,7 +249,7 @@ const ProductDetails = ({ initialProduct }) => {
         <meta name='author' content='Kino Mart' />
         <link
           rel='canonical'
-          href={`https://www.kinomart.store/product/${product.slug}`}
+          href={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta
@@ -263,7 +263,7 @@ const ProductDetails = ({ initialProduct }) => {
         <meta property='og:image' content={product.images[0]} />
         <meta
           property='og:url'
-          content={`https://www.kinomart.store/product/${product.slug}`}
+          content={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:site_name' content='Kino Mart' />
         <meta name='twitter:card' content='summary_large_image' />
@@ -293,7 +293,7 @@ const ProductDetails = ({ initialProduct }) => {
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.kinomart.store/product/${product.slug}`,
+                url: `https://www.kinomart.com/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock
@@ -309,13 +309,17 @@ const ProductDetails = ({ initialProduct }) => {
       <div className='py-6 sm:py-8 container mx-auto px-4 sm:px-6 lg:px-8'>
         <style jsx>{`
           .image-transition {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition:
+              opacity 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
           }
           .image-transition:hover {
             transform: scale(1.02);
           }
           .small-image {
-            transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            transition:
+              opacity 0.2s ease-in-out,
+              border-color 0.2s ease-in-out;
             border-width: 2px;
           }
           .small-image-active {

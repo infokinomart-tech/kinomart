@@ -249,7 +249,7 @@ function Products() {
         <meta name='author' content='Kino Mart' />
 
         {/* Canonical */}
-        <link rel='canonical' href='https://www.kinomart.store/products' />
+        <link rel='canonical' href='https://www.kinomart.com/products' />
 
         {/* Open Graph */}
         <meta property='og:title' content='All Products | Kino Mart' />
@@ -259,9 +259,9 @@ function Products() {
         />
         <meta
           property='og:image'
-          content='https://www.kinomart.store/assets/footer-logo.jpeg'
+          content='https://www.kinomart.com/assets/footer-logo.jpeg'
         />
-        <meta property='og:url' content='https://www.kinomart.store/products' />
+        <meta property='og:url' content='https://www.kinomart.com/products' />
         <meta property='og:type' content='website' />
         <meta property='og:site_name' content='Kino Mart' />
 
@@ -274,7 +274,7 @@ function Products() {
         />
         <meta
           name='twitter:image'
-          content='https://www.kinomart.store/assets/footer-logo.jpeg'
+          content='https://www.kinomart.com/assets/footer-logo.jpeg'
         />
 
         {/* Schema.org Structured Data for Product Collection Page */}
@@ -287,7 +287,7 @@ function Products() {
               name: 'All Products - Kino Mart',
               description:
                 'Browse Kino Mart’s  full catalog of gadgets, smart wearables, accessories, and imported branded products in Bangladesh.',
-              url: 'https://www.kinomart.store/products',
+              url: 'https://www.kinomart.com/products',
             }),
           }}
         />

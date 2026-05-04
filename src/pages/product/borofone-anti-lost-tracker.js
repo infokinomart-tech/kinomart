@@ -23,7 +23,7 @@ import Head from 'next/head';
 
 // Find the specific product for this page
 const productData = products.find(
-  (p) => p.slug === 'borofone-anti-lost-tracker'
+  (p) => p.slug === 'borofone-anti-lost-tracker',
 );
 
 // Helper functions
@@ -56,7 +56,7 @@ const ProductDetails = ({ initialProduct }) => {
       const key = getVariantKey(initialProduct.variants);
       setVariantKey(key);
       setselectedColor(
-        initialProduct.variants[0] ? initialProduct.variants[0][key] : ''
+        initialProduct.variants[0] ? initialProduct.variants[0][key] : '',
       );
       setActiveImage(initialProduct.images[0] || '');
 
@@ -75,8 +75,8 @@ const ProductDetails = ({ initialProduct }) => {
                 item_category: initialProduct.title.includes('Smart Watch')
                   ? 'Wearables'
                   : key === 'type'
-                  ? 'Tracker'
-                  : 'Accessories',
+                    ? 'Tracker'
+                    : 'Accessories',
                 item_variant: initialProduct.variants
                   ? initialProduct.variants
                       .map((v) => getVariantValue(v))
@@ -141,7 +141,7 @@ const ProductDetails = ({ initialProduct }) => {
           quantity,
           image: activeImage,
           variantKey,
-        })
+        }),
       );
       openDialog();
     }
@@ -238,7 +238,7 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:url'
-          content={`https://www.kinomart.store/product/${product.slug}`}
+          content={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:image' content={product.images[0]} />
@@ -268,7 +268,7 @@ const ProductDetails = ({ initialProduct }) => {
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.kinomart.store/product/${product.slug}`,
+                url: `https://www.kinomart.com/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock
@@ -284,13 +284,17 @@ const ProductDetails = ({ initialProduct }) => {
       <div className='py-6 sm:py-8 container mx-auto px-4 sm:px-6 lg:px-8'>
         <style jsx>{`
           .image-transition {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition:
+              opacity 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
           }
           .image-transition:hover {
             transform: scale(1.02);
           }
           .small-image {
-            transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            transition:
+              opacity 0.2s ease-in-out,
+              border-color 0.2s ease-in-out;
             border-width: 2px;
           }
           .small-image-active {

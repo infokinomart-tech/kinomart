@@ -4,4 +4,4 @@ Disallow: /checkout/
 Disallow: /cart/
 Allow: /
 
-Sitemap: https://www.kinomart.store/sitemap.xml
+Sitemap: https://www.kinomart.com/sitemap.xml

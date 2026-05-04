@@ -164,10 +164,10 @@ function ContactUs() {
                   EMAIL
                 </h2>
                 <a
-                  href='mailto:info@kinomart.store'
+                  href='mailto:info@kinomart.com'
                   className='text-primary leading-relaxed'
                 >
-                  info@kinomart.store
+                  info@kinomart.com
                 </a>
                 <h2 className='title-font font-semibold text-gray-900 tracking-widest text-xs mt-4'>
                   PHONE

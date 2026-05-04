@@ -20,7 +20,7 @@ import { BsThunderbolt } from 'react-icons/bs';
 
 // Find the specific product for this page
 const productData = products.find(
-  (p) => p.slug === '20w-universal-travel-adapter'
+  (p) => p.slug === '20w-universal-travel-adapter',
 );
 
 // Helper functions
@@ -113,7 +113,7 @@ const ProductDetails = ({ initialProduct }) => {
       setselectedColor(initialVariant);
       const initialIndex = variantToIndex[initialVariant];
       setActiveImage(
-        initialProduct.images[initialIndex] || initialProduct.images[0] || ''
+        initialProduct.images[initialIndex] || initialProduct.images[0] || '',
       );
 
       // GTM Data Layer Push (only on client-side)
@@ -197,7 +197,7 @@ const ProductDetails = ({ initialProduct }) => {
           quantity,
           image: activeImage,
           variantKey,
-        })
+        }),
       );
       openDialog();
     }
@@ -290,7 +290,7 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:url'
-          content={`https://www.kinomart.store/product/${product.slug}`}
+          content={`https://www.kinomart.com/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:image' content={product.images[0]} />
@@ -320,7 +320,7 @@ const ProductDetails = ({ initialProduct }) => {
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.kinomart.store/product/${product.slug}`,
+                url: `https://www.kinomart.com/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: defaultSchemaPrice,
                 availability: product.inStock
@@ -336,13 +336,17 @@ const ProductDetails = ({ initialProduct }) => {
       <div className='py-6 sm:py-8 container mx-auto px-4 sm:px-6 lg:px-8'>
         <style jsx>{`
           .image-transition {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition:
+              opacity 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
           }
           .image-transition:hover {
             transform: scale(1.02);
           }
           .small-image {
-            transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            transition:
+              opacity 0.2s ease-in-out,
+              border-color 0.2s ease-in-out;
             border-width: 2px;
           }
           .small-image-active {

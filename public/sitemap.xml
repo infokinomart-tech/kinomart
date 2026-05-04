@@ -6,49 +6,49 @@
                       http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
-    <loc>https://www.kinomart.store/</loc>
+    <loc>https://www.kinomart.com/</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>1.00</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/products</loc>
+    <loc>https://www.kinomart.com/products</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.90</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/about-us</loc>
+    <loc>https://www.kinomart.com/about-us</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/contact-us</loc>
+    <loc>https://www.kinomart.com/contact-us</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/order</loc>
+    <loc>https://www.kinomart.com/order</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/product/portable-high-speed-cooling-fan</loc>
+    <loc>https://www.kinomart.com/product/portable-high-speed-cooling-fan</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/product/anti-lost-tracker</loc>
+    <loc>https://www.kinomart.com/product/anti-lost-tracker</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.kinomart.store/product/gt4-pro-smart-watch</loc>
+    <loc>https://www.kinomart.com/product/gt4-pro-smart-watch</loc>
     <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
