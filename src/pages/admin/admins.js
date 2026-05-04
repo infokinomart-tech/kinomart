@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+﻿import { useState, useEffect, Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -95,7 +95,7 @@ export default function AdminsManagement() {
   return (
     <div className='min-h-screen bg-slate-900 text-slate-100'>
       <Head>
-        <title>Team Management | GenZ Fashion Admin</title>
+        <title>Team Management | Kino Mart Admin</title>
         <meta name='robots' content='noindex,nofollow' />
       </Head>
 
@@ -106,7 +106,7 @@ export default function AdminsManagement() {
             <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg'>
               <FiShield className='text-white w-4 h-4' />
             </div>
-            <span className='font-black text-slate-100 tracking-tight hidden sm:block text-sm'>GenZ Admin</span>
+            <span className='font-black text-slate-100 tracking-tight hidden sm:block text-sm'>Kino Mart Admin</span>
           </div>
           <nav className='flex items-center gap-1 bg-slate-900/60 p-1 rounded-lg border border-slate-700'>
             <Link href='/admin/orders' className='flex items-center gap-2 text-[11px] font-black uppercase tracking-widest px-4 py-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-all'>

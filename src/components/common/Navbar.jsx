@@ -16,54 +16,86 @@ function Navbar() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
+  const navLink = (href, label) => (
+    <Link
+      href={href}
+      className={`transition-colors ${
+        router.pathname === href
+          ? 'text-primary font-semibold'
+          : 'text-gray-300 hover:text-primary'
+      }`}
+    >
+      {label}
+    </Link>
+  );
+
+  const mobileNavLink = (href, label) => (
+    <Link
+      href={href}
+      onClick={() => setIsMenuOpen(false)}
+      className={`py-2 border-b border-gray-700 transition-colors ${
+        router.pathname === href
+          ? 'text-primary font-semibold'
+          : 'text-gray-300 hover:text-primary'
+      }`}
+    >
+      {label}
+    </Link>
+  );
+
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className='hidden md:block bg-white shadow-md'>
-        <div className='container mx-auto py-4 flex items-center justify-between px-6'>
-          <div className='w-32' />
-          <Link href='/'>
-            <img className='h-20' src='/assets/logo.png' alt='Logo' />
-          </Link>
-          <div className='w-32 flex justify-end'>
-            <button
-              onClick={openDialog}
-              className='relative flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-orange-700 transition-colors shadow'
-              aria-label='Open cart'
-            >
-              <FiShoppingCart className='text-lg' />
-              <span>Cart</span>
-              {totalItems > 0 && (
-                <span className='absolute -top-1.5 -right-1.5 bg-white text-primary text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border border-primary'>
-                  {totalItems}
-                </span>
-              )}
-            </button>
-          </div>
+      <nav className='hidden md:flex items-center bg-gray-900 shadow-lg px-8 py-3'>
+        {/* Logo — left */}
+        <Link href='/' className='flex-shrink-0'>
+          <img
+            src='/assets/logo.jpeg'
+            alt='Kino Mart'
+            className='h-12 w-auto object-contain'
+          />
+        </Link>
+
+        {/* Nav links — center */}
+        <div className='flex-1 flex justify-center gap-10 text-sm font-medium'>
+          {navLink('/products', 'Products')}
+          {navLink('/about-us', 'About Us')}
+          {navLink('/contact-us', 'Contact Us')}
         </div>
-        <div className='bg-gray-700 py-3 px-6 flex justify-center space-x-8 text-gray-100 text-sm font-medium'>
-          <Link href='/products' className={`${router.pathname === '/products' ? 'text-blue-500 font-semibold' : 'hover:text-blue-400 transition-colors'}`}>
-            Products
-          </Link>
-          <Link href='/about-us' className={`${router.pathname === '/about-us' ? 'text-blue-500 font-semibold' : 'hover:text-blue-400 transition-colors'}`}>
-            About Us
-          </Link>
-          <Link href='/contact-us' className={`${router.pathname === '/contact-us' ? 'text-blue-500 font-semibold' : 'hover:text-blue-400 transition-colors'}`}>
-            Contact Us
-          </Link>
-        </div>
+
+        {/* Cart — right */}
+        <button
+          onClick={openDialog}
+          className='relative flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold hover:brightness-110 transition shadow flex-shrink-0'
+          aria-label='Open cart'
+        >
+          <FiShoppingCart className='text-lg' />
+          <span>Cart</span>
+          {totalItems > 0 && (
+            <span className='absolute -top-1.5 -right-1.5 bg-white text-primary text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border border-primary'>
+              {totalItems}
+            </span>
+          )}
+        </button>
       </nav>
 
       {/* Mobile Navbar */}
-      <nav className='block md:hidden bg-white shadow-md'>
-        <div className='px-6 py-3 flex items-center justify-between'>
+      <nav className='block md:hidden bg-gray-900 shadow-lg'>
+        <div className='px-4 py-3 flex items-center justify-between'>
+          {/* Logo — left */}
           <Link href='/'>
-            <img className='h-12' src='/assets/logo.png' alt='Logo' />
+            <img
+              src='/assets/logo.jpeg'
+              alt='Kino Mart'
+              className='h-9 w-auto object-contain'
+            />
           </Link>
+
           <div className='flex items-center gap-3'>
+            {/* Cart icon */}
             <button
               onClick={openDialog}
-              className='relative p-2 text-gray-600 hover:text-primary transition-colors'
+              className='relative p-2 text-gray-300 hover:text-primary transition-colors'
               aria-label='Open cart'
             >
               <FiShoppingCart className='text-2xl' />
@@ -73,26 +105,28 @@ function Navbar() {
                 </span>
               )}
             </button>
+
+            {/* Hamburger */}
             <button
               onClick={toggleMenu}
               aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-              className='text-2xl text-gray-600 hover:text-blue-500 transition-colors focus:outline-none'
+              className='text-2xl text-gray-300 hover:text-primary transition-colors focus:outline-none'
             >
               {isMenuOpen ? <FaTimes /> : <FaBars />}
             </button>
           </div>
         </div>
-        <div className={`${isMenuOpen ? 'max-h-64 opacity-100 px-6 py-4 bg-gray-50 shadow-inner' : 'max-h-0 opacity-0'} overflow-hidden transition-all duration-300 ease-in-out`}>
-          <div className='flex flex-col space-y-4 text-gray-700 text-base font-medium'>
-            <Link href='/products' onClick={() => setIsMenuOpen(false)} className={`${router.pathname === '/products' ? 'text-blue-500 font-semibold' : 'hover:text-blue-500 transition-colors'}`}>
-              Products
-            </Link>
-            <Link href='/about-us' onClick={() => setIsMenuOpen(false)} className={`${router.pathname === '/about-us' ? 'text-blue-500 font-semibold' : 'hover:text-blue-500 transition-colors'}`}>
-              About Us
-            </Link>
-            <Link href='/contact-us' onClick={() => setIsMenuOpen(false)} className={`${router.pathname === '/contact-us' ? 'text-blue-500 font-semibold' : 'hover:text-blue-500 transition-colors'}`}>
-              Contact Us
-            </Link>
+
+        {/* Collapsible menu */}
+        <div
+          className={`${
+            isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
+          } overflow-hidden transition-all duration-300 ease-in-out bg-gray-800`}
+        >
+          <div className='flex flex-col px-6 py-4 text-base font-medium'>
+            {mobileNavLink('/products', 'Products')}
+            {mobileNavLink('/about-us', 'About Us')}
+            {mobileNavLink('/contact-us', 'Contact Us')}
           </div>
         </div>
       </nav>

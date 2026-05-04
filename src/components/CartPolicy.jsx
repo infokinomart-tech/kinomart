@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { FaTruck, FaUndoAlt } from 'react-icons/fa';
 
 function DeliveryAndReturnPolicy() {
@@ -95,10 +95,10 @@ function DeliveryAndReturnPolicy() {
           <p className='text-gray-600 text-sm md:text-base'>
             Have questions? Reach out to us at{' '}
             <a
-              href='mailto:genzbd222@gmail.com'
+              href='mailto:info@kinomart.store'
               className='text-blue-600 hover:underline'
             >
-              genzbd222@gmail.com
+              info@kinomart.store
             </a>{' '}
             or call{' '}
             <a

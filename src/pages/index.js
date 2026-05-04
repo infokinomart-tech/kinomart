@@ -17,49 +17,50 @@ function index() {
     <>
       <Head>
         <title>
-          GenZ Shop | Trendy Fashion, Affordable Style & Daily Deals
+          Kino Mart | Gadgets, Accessories & Imported Branded Products in
+          Bangladesh
         </title>
         <meta
           name='description'
-          content='Discover stylish and affordable fashion at GenZ Shop. Shop the latest trends in clothing, accessories, and beauty with daily offers and exclusive deals.'
+          content='Kino Mart is Bangladeshi trusted online shop for premium gadgets, tech accessories, smart devices, and imported branded products. Fast delivery across Bangladesh.'
         />
         <meta
           name='keywords'
-          content="GenZ Shop, trendy fashion, affordable clothing, women's fashion, online boutique, fashion accessories, beauty deals, fashion store"
+          content='Kino Mart, gadgets Bangladesh, accessories online, imported branded products, smart watches, tech shop Bangladesh, online electronics Bangladesh, buy gadgets online'
         />
-        <meta name='author' content='GenZ Shop' />
+        <meta name='author' content='Kino Mart' />
         <meta name='robots' content='index, follow' />
 
         {/* Open Graph Tags */}
         <meta
           property='og:title'
-          content='GenZ Shop | Trendy Fashion & Exclusive Deals'
+          content='Kino Mart | Premium Gadgets & Accessories in Bangladesh'
         />
         <meta
           property='og:description'
-          content="Shop the latest women's fashion, accessories, and beauty products at GenZ Shop. Enjoy exclusive offers and trending styles."
+          content='Shop the latest gadgets, tech accessories, and imported branded products at Kino Mart. Best prices and fast delivery across Bangladesh.'
         />
         <meta
           property='og:image'
-          content='https://www.genzshop.store/assets/footer-logo.png'
+          content='https://www.kinomart.store/assets/footer-logo.jpeg'
         />
-        <meta property='og:url' content='https://www.genzshop.store' />
+        <meta property='og:url' content='https://www.kinomart.store' />
         <meta property='og:type' content='website' />
-        <meta property='og:site_name' content='GenZ Shop' />
+        <meta property='og:site_name' content='Kino Mart' />
 
         {/* Optional: Twitter Cards */}
         <meta name='twitter:card' content='summary_large_image' />
         <meta
           name='twitter:title'
-          content='GenZ Shop | Trendy Fashion & Exclusive Deals'
+          content='Kino Mart | Premium Gadgets & Accessories in Bangladesh'
         />
         <meta
           name='twitter:description'
-          content="Shop trendy and affordable fashion at GenZ Shop. Get exclusive offers on women's clothing, accessories, and more."
+          content='Discover gadgets, smart devices, and imported branded accessories at Kino Mart. Bangladesh’s go-to tech e-commerce shop.'
         />
         <meta
           name='twitter:image'
-          content='https://www.genzshop.store/assets/footer-logo.png'
+          content='https://www.kinomart.store/assets/footer-logo.jpeg'
         />
         <script
           type='application/ld+json'
@@ -67,12 +68,12 @@ function index() {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              url: 'https://www.genzshop.store/',
-              name: 'GenZ Shop',
+              url: 'https://www.kinomart.store/',
+              name: 'Kino Mart',
               potentialAction: {
                 '@type': 'SearchAction',
                 target:
-                  'https://www.genzshop.store/search?q={search_term_string}',
+                  'https://www.kinomart.store/search?q={search_term_string}',
                 'query-input': 'required name=search_term_string',
               },
             }),

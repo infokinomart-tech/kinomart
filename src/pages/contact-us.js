@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import Navbar from '@/components/common/Navbar';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
@@ -156,7 +156,7 @@ function ContactUs() {
                   ADDRESS
                 </h2>
                 <p className='mt-1'>
-                  Road 12A, Uttora Sector 10, Dhaka, Bangladesh
+                  Uttara Sector 09, Road 09, House-12, Dhaka, Bangladesh
                 </p>
               </div>
               <div className='lg:w-1/2 px-6 mt-4 lg:mt-0'>
@@ -164,20 +164,20 @@ function ContactUs() {
                   EMAIL
                 </h2>
                 <a
-                  href='mailto:helloseiishop@gmail.com'
-                  className='text-red-500 leading-relaxed'
+                  href='mailto:info@kinomart.store'
+                  className='text-primary leading-relaxed'
                 >
-                  helloseiishop@gmail.com
+                  info@kinomart.store
                 </a>
                 <h2 className='title-font font-semibold text-gray-900 tracking-widest text-xs mt-4'>
                   PHONE
                 </h2>
                 <a
-                  href='tel:+8801794855675'
-                  className='text-red-500 leading-relaxed'
+                  href='tel:+8801991007849'
+                  className='text-primary leading-relaxed'
                 >
                   {' '}
-                  <p className='leading-relaxed'>+8801794855675</p>
+                  <p className='leading-relaxed'>+8801991007849</p>
                 </a>
               </div>
             </div>
@@ -186,10 +186,11 @@ function ContactUs() {
           {/* Contact Form */}
           <div className='lg:w-1/3 md:w-1/2 p-5 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0'>
             <h2 className='text-gray-900 text-lg mb-1 font-medium title-font'>
-              Feedback
+              Get in Touch
             </h2>
             <p className='leading-relaxed mb-5 text-gray-600'>
-              Please fill out the form below to get in touch with us.
+              Have a question about a product or your order? Fill out the form
+              below and our team will get back to you as soon as possible.
             </p>
             <form onSubmit={handleSubmit}>
               <div className='relative mb-4'>
@@ -205,7 +206,7 @@ function ContactUs() {
                   name='name'
                   value={formData.name}
                   onChange={handleInputChange}
-                  className='w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
+                  className='w-full bg-white rounded border border-gray-300 focus:border-primary focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
                 />
                 {errors.name && (
                   <p className='text-red-500 text-xs mt-1'>{errors.name}</p>
@@ -224,7 +225,7 @@ function ContactUs() {
                   value={formData.phone}
                   onChange={handlePhoneChange}
                   placeholder='Enter Phone Number'
-                  className='w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
+                  className='w-full bg-white rounded border border-gray-300 focus:border-primary focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out'
                 />
                 {errors.phone && (
                   <p className='text-red-500 text-xs mt-1'>{errors.phone}</p>
@@ -242,7 +243,7 @@ function ContactUs() {
                   name='message'
                   value={formData.message}
                   onChange={handleInputChange}
-                  className='w-full bg-white rounded border border-gray-300 focus:border-red-500 focus:ring-2 focus:ring-red-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out'
+                  className='w-full bg-white rounded border border-gray-300 focus:border-primary focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out'
                 ></textarea>
                 {errors.message && (
                   <p className='text-red-500 text-xs mt-1'>{errors.message}</p>
@@ -262,14 +263,14 @@ function ContactUs() {
               <button
                 type='submit'
                 disabled={isLoading || Object.keys(errors).length > 0}
-                className='text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors'
+                className='text-white bg-primary border-0 py-2 px-6 focus:outline-none hover:bg-blue-700 rounded text-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors'
               >
                 {isLoading ? 'Submitting...' : 'Submit'}
               </button>
             </form>
             <p className='text-xs text-gray-500 mt-3'>
-              Chicharrones blog helvetica normcore iceland tousled brook viral
-              artisan.
+              We usually respond within 24 hours on business days. For urgent
+              inquiries, contact us directly via WhatsApp.
             </p>
           </div>
         </div>

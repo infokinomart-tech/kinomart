@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset 
+<urlset
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
                       http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   <url>
-    <loc>https://www.genzshop.store/</loc>
-    <lastmod>2025-08-02T12:18:03+00:00</lastmod>
+    <loc>https://www.kinomart.store/</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>1.00</priority>
   </url>
 
   <url>
-    <loc>https://www.genzshop.store/products</loc>
-    <lastmod>2025-08-02T12:18:04+00:00</lastmod>
+    <loc>https://www.kinomart.store/products</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
+    <priority>0.90</priority>
+  </url>
+
+  <url>
+    <loc>https://www.kinomart.store/about-us</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.genzshop.store/about-us</loc>
-    <lastmod>2025-08-02T12:18:04+00:00</lastmod>
+    <loc>https://www.kinomart.store/contact-us</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.genzshop.store/contact-us</loc>
-    <lastmod>2025-08-02T12:18:04+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-
-  <url>
-    <loc>https://www.genzshop.store/order</loc>
-    <lastmod>2025-08-02T12:18:05+00:00</lastmod>
+    <loc>https://www.kinomart.store/order</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.genzshop.store/product/portable-high-speed-cooling-fan</loc>
-    <lastmod>2025-08-02T12:18:05+00:00</lastmod>
+    <loc>https://www.kinomart.store/product/portable-high-speed-cooling-fan</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.genzshop.store/product/anti-lost-tracker</loc>
-    <lastmod>2025-08-02T12:18:05+00:00</lastmod>
+    <loc>https://www.kinomart.store/product/anti-lost-tracker</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.genzshop.store/product/gt4-pro-smart-watch</loc>
-    <lastmod>2025-08-02T12:18:05+00:00</lastmod>
+    <loc>https://www.kinomart.store/product/gt4-pro-smart-watch</loc>
+    <lastmod>2026-05-04T00:00:00+00:00</lastmod>
     <priority>0.80</priority>
   </url>
 

@@ -56,7 +56,7 @@ function Products() {
     result = result.filter(
       (product) =>
         product.price >= filters.priceRange[0] &&
-        product.price <= filters.priceRange[1]
+        product.price <= filters.priceRange[1],
     );
 
     // Apply stock status filter
@@ -136,7 +136,7 @@ function Products() {
           selectedColor: product.variants[0].color, // Default to first variant
           quantity: 1,
           image: product.thumbnail,
-        })
+        }),
       );
       router.push('/order');
     };
@@ -234,45 +234,47 @@ function Products() {
   return (
     <div>
       <Head>
-        <title>All Products | GenZ Shop - Smart Watches, Rings & Gadgets</title>
+        <title>
+          All Products | Kino Mart - Gadgets, Accessories & Smart Devices
+        </title>
         <meta
           name='description'
-          content='Browse our full collection of smart watches, smart rings, and innovative gadgets. Affordable, stylish, and available now at GenZ Shop.'
+          content='Browse Kino Mart’s  full catalog of gadgets, smart watches, accessories, and imported branded products. Best prices in Bangladesh with fast delivery.'
         />
         <meta
           name='keywords'
-          content='smart watches, smart rings, wearable gadgets, GenZ Shop, fashion tech, affordable electronics'
+          content='gadgets Bangladesh, smart watches, smart rings, accessories online, Kino Mart products, imported electronics, tech gadgets Bangladesh'
         />
         <meta name='robots' content='index, follow' />
-        <meta name='author' content='GenZ Shop' />
+        <meta name='author' content='Kino Mart' />
 
         {/* Canonical */}
-        <link rel='canonical' href='https://www.genzshop.store/products' />
+        <link rel='canonical' href='https://www.kinomart.store/products' />
 
         {/* Open Graph */}
-        <meta property='og:title' content='All Products | GenZ Shop' />
+        <meta property='og:title' content='All Products | Kino Mart' />
         <meta
           property='og:description'
-          content='Explore our range of stylish smart watches, rings, and must-have gadgets. Shop online at GenZ Shop today.'
+          content='Explore Kino Mart’s  collection of smart gadgets, accessories, and imported branded products available in Bangladesh.'
         />
         <meta
           property='og:image'
-          content='https://www.genzshop.store/assets/footer-logo.png'
+          content='https://www.kinomart.store/assets/footer-logo.jpeg'
         />
-        <meta property='og:url' content='https://www.genzshop.store/products' />
+        <meta property='og:url' content='https://www.kinomart.store/products' />
         <meta property='og:type' content='website' />
-        <meta property='og:site_name' content='GenZ Shop' />
+        <meta property='og:site_name' content='Kino Mart' />
 
         {/* Twitter Card */}
         <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content='All Products | GenZ Shop' />
+        <meta name='twitter:title' content='All Products | Kino Mart' />
         <meta
           name='twitter:description'
-          content='Shop the latest fashion tech — smart watches, rings, and more at GenZ Shop.'
+          content='Shop gadgets, smart devices, and imported accessories at Kino Mart — Bangladesh′s top tech e-commerce store.'
         />
         <meta
           name='twitter:image'
-          content='https://www.genzshop.store/assets/footer-logo.png'
+          content='https://www.kinomart.store/assets/footer-logo.jpeg'
         />
 
         {/* Schema.org Structured Data for Product Collection Page */}
@@ -282,10 +284,10 @@ function Products() {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'CollectionPage',
-              name: 'All Products - GenZ Shop',
+              name: 'All Products - Kino Mart',
               description:
-                'Explore our full catalog of smart wearables and gadgets. Affordable, stylish tech made for modern living.',
-              url: 'https://www.genzshop.store/products',
+                'Browse Kino Mart’s  full catalog of gadgets, smart wearables, accessories, and imported branded products in Bangladesh.',
+              url: 'https://www.kinomart.store/products',
             }),
           }}
         />

@@ -8,7 +8,7 @@ import Link from 'next/link';
 function Products() {
   return (
     <CustomSection>
-      <div className='md:bg-[#FAFAFA] px-6 md:px-10 md:py-6 rounded-2xl pb-32 md:pb-0'>
+      <div className='md:bg-[#e2f9cf] px-6 md:px-10 md:py-6 rounded-2xl pb-32 md:pb-0'>
         <div className='flex items-center justify-between py-3 md:py-8'>
           <div className='flex items-center justify-start gap-4'>
             <h2 className='text-md md:text-2xl font-semibold md:text-[#637381]'>

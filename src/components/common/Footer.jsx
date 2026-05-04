@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import React from 'react';
 import { BiPhone } from 'react-icons/bi';
 import { CiLocationOn, CiMail } from 'react-icons/ci';
@@ -12,16 +12,15 @@ function Footer() {
           <div className='space-y-6'>
             <div>
               <img
-                src='/assets/logo.png'
-                alt='GenZ Shop Logo'
+                src='/assets/logo.jpeg'
+                alt='Kino Mart Logo'
                 className='w-40 transition-transform duration-300 hover:scale-105'
               />
             </div>
             <p className='max-w-xs text-sm leading-relaxed opacity-80'>
-              GenZ Shop, founded in 2025, is a vibrant retailer specializing in
-              imported accessories, cutting-edge devices, home commodities, and
-              trendy products. We deliver high-quality, stylish, and innovative
-              goods to enhance everyday living.
+              Kino Mart is Bangladesh&apos;s trusted destination for premium
+              gadgets, tech accessories, smart devices, and imported branded
+              products. We bring the world's best tech right to your doorstep.
             </p>
             <div className='flex gap-4'>
               <a
@@ -38,7 +37,7 @@ function Footer() {
                 />
               </a>
               <a
-                href='http://wa.me/+8801794855675'
+                href='http://wa.me/+8801991007849'
                 rel='noreferrer'
                 target='_blank'
                 className='group rounded-full p-2 transition-all duration-300 hover:bg-teal-500/20'
@@ -65,16 +64,16 @@ function Footer() {
                   className='flex items-start gap-3 transition-all duration-300 hover:text-primary'
                 >
                   <CiLocationOn className='text-2xl flex-shrink-0' />
-                  <span>Road 12A, Uttora Sector 10 , Dhaka, Bangladesh</span>
+                  <span>Uttara Sector 09, Road 09, House-12, Dhaka, Bangladesh</span>
                 </Link>
               </li>
               <li>
                 <a
-                  href='tel:8801794855675'
+                  href='tel:8801991007849'
                   className='flex items-center gap-3 transition-all duration-300 hover:text-primary'
                 >
                   <BiPhone className='text-xl flex-shrink-0' />
-                  <span>+8801794855675</span>
+                  <span>+8801991007849</span>
                 </a>
               </li>
               {/* <li>
@@ -135,7 +134,7 @@ function Footer() {
         <hr className='my-8 border-gray-700' />
         <div className='flex flex-col items-center justify-center gap-4 text-sm sm:flex-row'>
           <p className='opacity-80'>
-            &copy; {new Date().getFullYear()} GenZ Shop. All Rights Reserved.
+            &copy; {new Date().getFullYear()} Kino Mart. All Rights Reserved.
           </p>
           {/* <div className='flex gap-4'>
             <Link

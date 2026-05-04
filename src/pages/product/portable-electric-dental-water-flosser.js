@@ -235,7 +235,7 @@ const ProductDetails = ({ initialProduct }) => {
     <>
       <Head>
         <title>
-          Portable Dental Water Flosser | 3 Modes, USB Rechargeable | Genz Shop
+          Portable Dental Water Flosser | 3 Modes, USB Rechargeable | Kino Mart
         </title>
         <meta
           name='description'
@@ -246,15 +246,15 @@ const ProductDetails = ({ initialProduct }) => {
           content='ডেন্টাল ওয়াটার ফ্লসার, oral irrigator, water flosser price in bangladesh, portable dental cleaner, electric tooth cleaner, প্লাক রিমুভার'
         />
         <meta name='robots' content='index, follow' />
-        <meta name='author' content='Genz Shop' />
+        <meta name='author' content='Kino Mart' />
         <link
           rel='canonical'
-          href={`https://www.genzshop.store/product/${product.slug}`}
+          href={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta
           property='og:title'
-          content='Portable Dental Water Flosser | Genz Shop'
+          content='Portable Dental Water Flosser | Kino Mart'
         />
         <meta
           property='og:description'
@@ -263,13 +263,13 @@ const ProductDetails = ({ initialProduct }) => {
         <meta property='og:image' content={product.images[0]} />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
-        <meta property='og:site_name' content='Genz Shop' />
+        <meta property='og:site_name' content='Kino Mart' />
         <meta name='twitter:card' content='summary_large_image' />
         <meta
           name='twitter:title'
-          content='Portable Dental Water Flosser | Genz Shop'
+          content='Portable Dental Water Flosser | Kino Mart'
         />
         <meta
           name='twitter:description'
@@ -289,11 +289,11 @@ const ProductDetails = ({ initialProduct }) => {
               sku: product.id,
               brand: {
                 '@type': 'Brand',
-                name: 'Genz Shop',
+                name: 'Kino Mart',
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.genzshop.store/product/${product.slug}`,
+                url: `https://www.kinomart.store/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock

@@ -244,14 +244,14 @@ const ProductDetails = ({ initialProduct }) => {
   return (
     <>
       <Head>
-        <title>20W-65W Universal Travel Adapter | GenZ Shop</title>
+        <title>20W-65W Universal Travel Adapter | Kino Mart</title>
         <meta
           name='description'
-          content='Discover the 20W-65W Universal Travel Adapter at GenZ Shop. Compatible worldwide plugs, fast charging PD/QC, compact design for travel.'
+          content='Discover the 20W-65W Universal Travel Adapter at Kino Mart. Compatible worldwide plugs, fast charging PD/QC, compact design for travel.'
         />
         <meta
           property='og:title'
-          content='20W-65W Universal Travel Adapter | GenZ Shop'
+          content='20W-65W Universal Travel Adapter | Kino Mart'
         />
         <meta
           property='og:description'
@@ -259,14 +259,14 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:image' content={product.images[0]} />
         <meta name='twitter:card' content='summary_large_image' />
         <meta
           name='twitter:title'
-          content='20W-65W Universal Travel Adapter | GenZ Shop'
+          content='20W-65W Universal Travel Adapter | Kino Mart'
         />
         <meta
           name='twitter:description'
@@ -281,7 +281,7 @@ const ProductDetails = ({ initialProduct }) => {
               '@type': 'Product',
               name: product.title,
               image: product.images,
-              description: '20W-65W Universal Travel Adapter | GenZ Shop',
+              description: '20W-65W Universal Travel Adapter | Kino Mart',
               sku: product.id,
               brand: {
                 '@type': 'Brand',
@@ -289,7 +289,7 @@ const ProductDetails = ({ initialProduct }) => {
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.genzshop.store/product/${product.slug}`,
+                url: `https://www.kinomart.store/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: defaultSchemaPrice,
                 availability: product.inStock

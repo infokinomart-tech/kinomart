@@ -13,7 +13,7 @@ import Head from 'next/head';
 
 // Find the specific product for this page
 const productData = products.find(
-  (p) => p.slug === 'portable-baby-feeding-bottle-warmer'
+  (p) => p.slug === 'portable-baby-feeding-bottle-warmer',
 );
 
 const ProductDetails = ({ initialProduct }) => {
@@ -109,7 +109,7 @@ const ProductDetails = ({ initialProduct }) => {
         selectedColor,
         quantity,
         image: activeImage,
-      })
+      }),
     );
 
     // Redirect to order page
@@ -146,7 +146,7 @@ const ProductDetails = ({ initialProduct }) => {
           property='og:image'
           content={
             product.images?.[0] ||
-            'https://www.sheiishop.com/assets/footer-logo.png'
+            'https://www.sheiishop.com/assets/footer-logo.jpeg'
           }
         />
         <meta
@@ -161,7 +161,7 @@ const ProductDetails = ({ initialProduct }) => {
           name='twitter:image'
           content={
             product.images?.[0] ||
-            'https://www.sheiishop.com/assets/footer-logo.png'
+            'https://www.sheiishop.com/assets/footer-logo.jpeg'
           }
         />
         <script
@@ -197,13 +197,17 @@ const ProductDetails = ({ initialProduct }) => {
       <div>
         <style jsx>{`
           .image-transition {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition:
+              opacity 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
           }
           .image-transition:hover {
             transform: scale(1.02);
           }
           .small-image {
-            transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            transition:
+              opacity 0.2s ease-in-out,
+              border-color 0.2s ease-in-out;
             border-width: 2px;
           }
           .small-image-active {

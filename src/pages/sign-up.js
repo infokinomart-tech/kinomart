@@ -25,7 +25,7 @@ function sign_up() {
         <div class='mt-8 sm:mx-auto sm:w-full sm:max-w-lg'>
           <div class='bg-white md:py-8  md:shadow md:rounded-lg md:px-10'>
             <div class='hidden md:block mb-4 text-left'>
-              <img src='/assets/logo.png' />
+              <img src='/assets/logo.jpeg' />
               <h2 class='mt-6 text-left text-2xl font-bold text-gray-900'>
                 Create your account{' '}
               </h2>

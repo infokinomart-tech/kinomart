@@ -107,7 +107,7 @@ const ProductDetails = ({ initialProduct }) => {
         selectedColor,
         quantity,
         image: activeImage,
-      })
+      }),
     );
 
     // Redirect to order page
@@ -122,7 +122,7 @@ const ProductDetails = ({ initialProduct }) => {
   return (
     <>
       <Head>
-        <title>{product.title} | Buy Online in Bangladesh | GenZ Shop</title>
+        <title>{product.title} | Buy Online in Bangladesh | Kino Mart</title>
         <meta
           name='description'
           content={`Buy ${
@@ -136,34 +136,34 @@ const ProductDetails = ({ initialProduct }) => {
           content={`GT4 PRO Smart Watch, smart watch Bangladesh, smartwatch price BD, Bluetooth calling watch, fitness tracker, men's smartwatch`}
         />
         <meta name='robots' content='index, follow' />
-        <meta name='author' content='GenZ Shop' />
+        <meta name='author' content='Kino Mart' />
         <link
           rel='canonical'
-          href={`https://www.genzshop.store/product/${product.slug}`}
+          href={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
-        <meta property='og:title' content={`${product.title} | GenZ Shop`} />
+        <meta property='og:title' content={`${product.title} | Kino Mart`} />
         <meta property='og:description' content={product.description} />
         <meta
           property='og:image'
           content={
             product.images?.[0] ||
-            'https://www.genzshop.store/assets/footer-logo.png'
+            'https://www.kinomart.store/assets/footer-logo.jpeg'
           }
         />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
-        <meta property='og:site_name' content='GenZ Shop' />
+        <meta property='og:site_name' content='Kino Mart' />
         <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content={`${product.title} | GenZ Shop`} />
+        <meta name='twitter:title' content={`${product.title} | Kino Mart`} />
         <meta name='twitter:description' content={product.description} />
         <meta
           name='twitter:image'
           content={
             product.images?.[0] ||
-            'https://www.genzshop.store/assets/footer-logo.png'
+            'https://www.kinomart.store/assets/footer-logo.jpeg'
           }
         />
         <script
@@ -178,11 +178,11 @@ const ProductDetails = ({ initialProduct }) => {
               sku: product.id,
               brand: {
                 '@type': 'Brand',
-                name: 'GenZ Shop',
+                name: 'Kino Mart',
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.genzshop.store/product/${product.slug}`,
+                url: `https://www.kinomart.store/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock
@@ -199,13 +199,17 @@ const ProductDetails = ({ initialProduct }) => {
       <div>
         <style jsx>{`
           .image-transition {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition:
+              opacity 0.3s ease-in-out,
+              transform 0.3s ease-in-out;
           }
           .image-transition:hover {
             transform: scale(1.02);
           }
           .small-image {
-            transition: opacity 0.2s ease-in-out, border-color 0.2s ease-in-out;
+            transition:
+              opacity 0.2s ease-in-out,
+              border-color 0.2s ease-in-out;
             border-width: 2px;
           }
           .small-image-active {

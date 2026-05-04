@@ -9,8 +9,8 @@ export async function ensureDefaultAdmin() {
   try {
     const count = await Admin.estimatedDocumentCount();
     if (count === 0) {
-      const email = process.env.ADMIN_EMAIL || 'admin@genzfashion.com';
-      const password = process.env.ADMIN_PASSWORD || 'genzadmin2026';
+      const email = process.env.ADMIN_EMAIL || 'admin@kinomart.store';
+      const password = process.env.ADMIN_PASSWORD || 'kinomartadmin2026';
       const hash = await bcrypt.hash(password, 12);
       await Admin.create({ email, password: hash });
       console.log(`[Init] Default admin created: ${email}`);

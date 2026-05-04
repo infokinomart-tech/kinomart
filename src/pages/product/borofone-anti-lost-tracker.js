@@ -223,14 +223,14 @@ const ProductDetails = ({ initialProduct }) => {
   return (
     <>
       <Head>
-        <title>Hoco/Borofone Anti-Lost Tracker | GenZ Shop</title>
+        <title>Hoco/Borofone Anti-Lost Tracker | Kino Mart</title>
         <meta
           name='description'
-          content='Discover the Hoco/Borofone  Anti-Lost Tracker at GenZ Shop. Compatible with Apple Find My and Google Find Hub, IP65 water-resistant, with up to 12 months battery life.'
+          content='Discover the Hoco/Borofone  Anti-Lost Tracker at Kino Mart. Compatible with Apple Find My and Google Find Hub, IP65 water-resistant, with up to 12 months battery life.'
         />
         <meta
           property='og:title'
-          content='Hoco/Borofone  Anti-Lost Tracker | GenZ Shop'
+          content='Hoco/Borofone  Anti-Lost Tracker | Kino Mart'
         />
         <meta
           property='og:description'
@@ -238,14 +238,14 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:image' content={product.images[0]} />
         <meta name='twitter:card' content='summary_large_image' />
         <meta
           name='twitter:title'
-          content='Hoco/Borofone  Anti-Lost Tracker | GenZ Shop'
+          content='Hoco/Borofone  Anti-Lost Tracker | Kino Mart'
         />
         <meta
           name='twitter:description'
@@ -260,7 +260,7 @@ const ProductDetails = ({ initialProduct }) => {
               '@type': 'Product',
               name: product.title,
               image: product.images,
-              description: 'Hoco/Borofone  Anti-Lost Tracker | GenZ Shop',
+              description: 'Hoco/Borofone  Anti-Lost Tracker | Kino Mart',
               sku: product.id,
               brand: {
                 '@type': 'Brand',
@@ -268,7 +268,7 @@ const ProductDetails = ({ initialProduct }) => {
               },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.genzshop.store/product/${product.slug}`,
+                url: `https://www.kinomart.store/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock

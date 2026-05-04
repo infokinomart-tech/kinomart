@@ -1,4 +1,4 @@
-export const products = [
+﻿export const products = [
   {
     id: 13,
     title:
@@ -45,7 +45,7 @@ export const products = [
   },
   {
     id: 11,
-    title: '3D Human Body Torso Model for Kids | Learn Anatomy  | Genz Shop',
+    title: '3D Human Body Torso Model for Kids | Learn Anatomy  | Kino Mart',
     slug: '3d-human-body-torso-model-for-kids',
     model: 'Standard',
     price: 850.0,
@@ -72,7 +72,7 @@ export const products = [
   },
   {
     id: 11,
-    title: 'Energy Booster Essential Oil Nasal Inhaler | Genz Shop',
+    title: 'Energy Booster Essential Oil Nasal Inhaler | Kino Mart',
     slug: 'energy-booster-essential-oil-nasal-inhaler',
     model: 'Standard',
     price: 490.0,

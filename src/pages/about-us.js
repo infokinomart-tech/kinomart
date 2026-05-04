@@ -1,40 +1,71 @@
-import Navbar from '@/components/common/Navbar';
-import React from 'react';
+import Navbar from ‘@/components/common/Navbar’;
+import Footer from ‘@/components/common/Footer’;
+import Head from ‘next/head’;
+import React from ‘react’;
 
 function about_us() {
   return (
     <div>
+      <Head>
+        <title>About Us | Kino Mart - Bangladesh’s Tech & Gadgets Shop</title>
+        <meta
+          name=’description’
+          content=’Learn about Kino Mart — Bangladesh’s trusted online shop for premium gadgets, accessories, and imported branded products. Our mission, values, and story.’
+        />
+        <meta
+          name=’keywords’
+          content=’about Kino Mart, gadgets Bangladesh, accessories shop, imported products Bangladesh, tech store Bangladesh’
+        />
+        <meta name=’robots’ content=’index, follow’ />
+        <meta name=’author’ content=’Kino Mart’ />
+        <link rel=’canonical’ href=’https://www.kinomart.store/about-us’ />
+        <meta property=’og:title’ content=’About Us | Kino Mart’ />
+        <meta
+          property=’og:description’
+          content=’Kino Mart is Bangladesh’s go-to destination for premium gadgets, tech accessories, and imported branded products.’
+        />
+        <meta property=’og:url’ content=’https://www.kinomart.store/about-us’ />
+        <meta property=’og:type’ content=’website’ />
+        <meta property=’og:site_name’ content=’Kino Mart’ />
+      </Head>
       <Navbar />
-      <div class='sm:flex items-center max-w-screen-xl'>
-        <div class='sm:w-1/2 p-10'>
-          <div class='image object-center text-center'>
-            <img src='https://i.imgur.com/WbQnbas.png' />
+      <div className=’sm:flex items-center max-w-screen-xl mx-auto py-10’>
+        <div className=’sm:w-1/2 p-10’>
+          <div className=’image object-center text-center’>
+            <img src=’https://i.imgur.com/WbQnbas.png’ alt=’Kino Mart - Gadgets & Accessories’ />
           </div>
         </div>
-        <div class='sm:w-1/2 p-5'>
-          <div class='text'>
-            <span class='text-gray-500 border-b-2 border-indigo-600 uppercase'>
+        <div className=’sm:w-1/2 p-5’>
+          <div className=’text’>
+            <span className=’text-gray-500 border-b-2 border-primary uppercase’>
               About us
             </span>
-            <h2 class='my-4 font-bold text-3xl  sm:text-4xl '>
-              About <span class='text-primary'>GenZ Shop</span>
+            <h2 className=’my-4 font-bold text-3xl sm:text-4xl’>
+              About <span className=’text-primary’>Kino Mart</span>
             </h2>
-            <p class='text-gray-700'>
-              Founded in 2025, GenZ Shop is your go-to destination for stylish,
-              high-quality, and innovative products that elevate everyday
-              living. Specializing in imported accessories, cutting-edge
-              devices, home essentials, and trendy must-haves, we curate a
-              collection that blends functionality with flair. <br /> <br /> Our
-              mission is simple: to delight our customers with reliable,
-              fashionable, and forward-thinking goods that inspire and enhance
-              their lifestyle. At GenZ Shop, we’re committed to exceptional
-              quality, seamless shopping experiences, and bringing global trends
-              right to your doorstep. <br /> Join us on this journey to redefine
-              everyday elegance—shop with GenZ, where style meets innovation.
+            <p className=’text-gray-700’>
+              Founded in Bangladesh, Kino Mart is your premier destination for
+              cutting-edge gadgets, tech accessories, and imported branded
+              products. We source top-quality smart devices, wearables, home
+              tech, and lifestyle accessories from around the world—bringing
+              global innovation directly to Bangladeshi consumers.
+              <br />
+              <br />
+              Our mission is to make premium technology accessible and
+              affordable for everyone in Bangladesh. At Kino Mart, we are
+              committed to authentic products, transparent pricing, and a
+              seamless shopping experience—from browsing to delivery at your
+              doorstep.
+              <br />
+              <br />
+              Whether you’re looking for the latest smart watches, imported
+              accessories, or unique branded gadgets, Kino Mart is your trusted
+              one-stop tech shop in Bangladesh.
             </p>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

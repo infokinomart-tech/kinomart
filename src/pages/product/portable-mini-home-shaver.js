@@ -130,7 +130,7 @@ const ProductDetails = ({ initialProduct }) => {
         <meta name='author' content='Sheii Shop' />
         <link
           rel='canonical'
-          href={`https://www.genzshop.store/product/${product.slug}`}
+          href={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:title' content={`${product.title} | Sheii Shop`} />
@@ -139,12 +139,12 @@ const ProductDetails = ({ initialProduct }) => {
           property='og:image'
           content={
             product.images?.[0] ||
-            'https://www.genzshop.store/assets/footer-logo.png'
+            'https://www.kinomart.store/assets/footer-logo.jpeg'
           }
         />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:site_name' content='Sheii Shop' />
         <meta name='twitter:card' content='summary_large_image' />
@@ -154,7 +154,7 @@ const ProductDetails = ({ initialProduct }) => {
           name='twitter:image'
           content={
             product.images?.[0] ||
-            'https://www.genzshop.store/assets/footer-logo.png'
+            'https://www.kinomart.store/assets/footer-logo.jpeg'
           }
         />
         <script
@@ -170,7 +170,7 @@ const ProductDetails = ({ initialProduct }) => {
               brand: { '@type': 'Brand', name: 'Sheii Shop' },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.genzshop.store/product/${product.slug}`,
+                url: `https://www.kinomart.store/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock
@@ -569,7 +569,10 @@ const ProductDetails = ({ initialProduct }) => {
                 { l: 'কার্যকর সময়', v: '180 মিনিট' },
                 { l: 'চার্জিং সময়', v: '1–3 ঘণ্টা' },
                 { l: 'পাওয়ার', v: '15 ওয়াট' },
-                { l: 'পাওয়ার সোর্স', v: 'USB / Type-C / Rechargeable Battery' },
+                {
+                  l: 'পাওয়ার সোর্স',
+                  v: 'USB / Type-C / Rechargeable Battery',
+                },
                 { l: 'ব্যবহারের স্থান', v: 'মুখ, শরীর, আন্ডারআর্ম' },
                 { l: 'বডি ম্যাটেরিয়াল', v: 'প্লাস্টিক' },
                 { l: 'ধোয়া যায়', v: 'হ্যাঁ' },

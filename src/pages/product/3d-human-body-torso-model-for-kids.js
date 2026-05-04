@@ -143,7 +143,7 @@ const ProductDetails = ({ initialProduct }) => {
     <>
       <Head>
         <title>
-          3ডি হিউম্যান বডি টর্সো মডেল – কিডস অ্যানাটমি লার্নিং টয় | GenZ Shop
+          3ডি হিউম্যান বডি টর্সো মডেল – কিডস অ্যানাটমি লার্নিং টয় | Kino Mart
         </title>
         <meta
           name='description'
@@ -151,7 +151,7 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:title'
-          content='3ডি হিউম্যান বডি টর্সো মডেল – কিডস অ্যানাটমি লার্নিং টয় | GenZ Shop'
+          content='3ডি হিউম্যান বডি টর্সো মডেল – কিডস অ্যানাটমি লার্নিং টয় | Kino Mart'
         />
         <meta
           property='og:description'
@@ -159,7 +159,7 @@ const ProductDetails = ({ initialProduct }) => {
         />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
         <meta property='og:type' content='product' />
         <meta property='og:image' content={product.images[0]} />

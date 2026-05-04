@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { FiMail, FiLock, FiLogIn, FiAlertCircle } from 'react-icons/fi';
@@ -38,7 +38,7 @@ export default function AdminLogin() {
   return (
     <>
       <Head>
-        <title>Admin Login | GenZ Fashion</title>
+        <title>Admin Login | Kino Mart</title>
         <meta name='robots' content='noindex,nofollow' />
       </Head>
 
@@ -47,9 +47,9 @@ export default function AdminLogin() {
           {/* Logo */}
           <div className='text-center mb-8'>
             <div className='inline-flex items-center justify-center w-14 h-14 bg-blue-600 rounded-2xl mb-4 shadow-lg shadow-blue-600/30'>
-              <span className='text-white font-black text-2xl'>G</span>
+              <span className='text-white font-black text-2xl'>K</span>
             </div>
-            <h1 className='text-2xl font-black text-slate-100 tracking-tight'>GenZ <span className='text-blue-400'>Admin</span></h1>
+            <h1 className='text-2xl font-black text-slate-100 tracking-tight'>Kino Mart <span className='text-blue-400'>Admin</span></h1>
             <p className='text-sm text-slate-500 mt-1 font-medium'>Sign in to manage orders</p>
           </div>
 

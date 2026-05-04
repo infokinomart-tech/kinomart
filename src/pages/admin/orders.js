@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
+﻿import { useState, useEffect, useCallback, useRef, Fragment } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
@@ -236,7 +236,7 @@ export default function AdminOrders() {
   return (
     <>
       <Head>
-        <title>Order Management | GenZ Fashion Admin</title>
+        <title>Order Management | Kino Mart Admin</title>
         <meta name='robots' content='noindex,nofollow' />
       </Head>
 
@@ -261,7 +261,7 @@ export default function AdminOrders() {
           <div className='flex items-center gap-5'>
             <div className='flex items-center gap-2.5'>
               <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm'>G</div>
-              <span className='font-black text-slate-100 tracking-tight hidden sm:block text-sm'>GenZ Admin</span>
+              <span className='font-black text-slate-100 tracking-tight hidden sm:block text-sm'>Kino Mart Admin</span>
             </div>
             <nav className='flex items-center gap-1 bg-slate-900/60 p-1 rounded-lg border border-slate-700'>
               <Link href='/admin/orders' className='text-[11px] px-4 py-1.5 rounded-md bg-blue-600 text-white font-black uppercase tracking-wider'>Orders</Link>

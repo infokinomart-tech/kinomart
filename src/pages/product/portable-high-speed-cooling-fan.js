@@ -384,44 +384,44 @@ const ProductDetails = ({ initialProduct }) => {
   return (
     <>
       <Head>
-        <title>{product.title} | GenZ Shop</title>
+        <title>{product.title} | Kino Mart</title>
         <meta
           name='description'
-          content={`Buy the ${product.title} at GenZ Shop. ${product.description}`}
+          content={`Buy the ${product.title} at Kino Mart. ${product.description}`}
         />
         <meta
           name='keywords'
           content={`portable fan, cooling gadget, ${product.title}, mini fan, ${product.variants.map((v) => v.color).join(', ')}, USB fan`}
         />
-        <meta name='author' content='GenZ Shop' />
+        <meta name='author' content='Kino Mart' />
         <meta name='robots' content='index, follow' />
         <link
           rel='canonical'
-          href={`https://www.genzshop.store/product/${product.slug}`}
+          href={`https://www.kinomart.store/product/${product.slug}`}
         />
-        <meta property='og:title' content={`${product.title} | GenZ Shop`} />
+        <meta property='og:title' content={`${product.title} | Kino Mart`} />
         <meta property='og:description' content={product.description} />
         <meta property='og:type' content='product' />
         <meta
           property='og:image'
           content={
             product.images[0] ||
-            'https://www.genzshop.store/assets/footer-logo.png'
+            'https://www.kinomart.store/assets/footer-logo.jpeg'
           }
         />
         <meta
           property='og:url'
-          content={`https://www.genzshop.store/product/${product.slug}`}
+          content={`https://www.kinomart.store/product/${product.slug}`}
         />
-        <meta property='og:site_name' content='GenZ Shop' />
+        <meta property='og:site_name' content='Kino Mart' />
         <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content={`${product.title} | GenZ Shop`} />
+        <meta name='twitter:title' content={`${product.title} | Kino Mart`} />
         <meta name='twitter:description' content={product.description} />
         <meta
           name='twitter:image'
           content={
             product.images[0] ||
-            'https://www.genzshop.store/assets/footer-logo.png'
+            'https://www.kinomart.store/assets/footer-logo.jpeg'
           }
         />
         <script
@@ -434,10 +434,10 @@ const ProductDetails = ({ initialProduct }) => {
               image: product.images,
               description: product.description,
               sku: product.id,
-              brand: { '@type': 'Brand', name: 'GenZ Shop' },
+              brand: { '@type': 'Brand', name: 'Kino Mart' },
               offers: {
                 '@type': 'Offer',
-                url: `https://www.genzshop.store/product/${product.slug}`,
+                url: `https://www.kinomart.store/product/${product.slug}`,
                 priceCurrency: 'BDT',
                 price: product.price,
                 availability: product.inStock

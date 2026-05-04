@@ -3,8 +3,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#A4DD00', // Deep sky
-        secondary: '#D2FF72', // Purple
+        primary: '#A4DD00', // Kino Mart Green
+        secondary: '#D2FF72', // Light Lime
         dark: '#1E1E1E',
         'dark-2': '#212121', // Top header color
         accent: '#FF4423', // Orange
