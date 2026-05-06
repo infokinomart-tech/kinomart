@@ -24,7 +24,7 @@ function Footer() {
             </p>
             <div className='flex gap-4'>
               <a
-                href='https://www.facebook.com/share/1Y36dHzXAW/?mibextid=wwXIfr'
+                href='https://www.facebook.com/share/1Czb9Sn3cV/'
                 rel='noreferrer'
                 target='_blank'
                 className='group rounded-full p-2 transition-all duration-300 hover:bg-teal-500/20'
@@ -33,6 +33,19 @@ function Footer() {
                 <img
                   src='https://www.svgrepo.com/show/452196/facebook-1.svg'
                   alt='Facebook'
+                  className='w-10 transition-transform duration-300 group-hover:scale-110'
+                />
+              </a>
+              <a
+                href='https://www.instagram.com/kinomart_?igsh=MXdzNDIzdjQ2NTZ6cA=='
+                rel='noreferrer'
+                target='_blank'
+                className='group rounded-full p-2 transition-all duration-300 hover:bg-teal-500/20'
+                aria-label='Instagram'
+              >
+                <img
+                  src='https://www.svgrepo.com/show/452229/instagram-1.svg'
+                  alt='Instagram'
                   className='w-10 transition-transform duration-300 group-hover:scale-110'
                 />
               </a>

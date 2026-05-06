@@ -46,7 +46,7 @@ function Navbar() {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className='hidden md:flex items-center bg-gray-900 shadow-lg px-8 py-3'>
+      <nav className='hidden md:flex items-center bg-black shadow-lg px-8 py-3'>
         {/* Logo — left */}
         <Link href='/' className='flex-shrink-0'>
           <img
@@ -80,7 +80,7 @@ function Navbar() {
       </nav>
 
       {/* Mobile Navbar */}
-      <nav className='block md:hidden bg-gray-900 shadow-lg'>
+      <nav className='block md:hidden bg-black shadow-lg'>
         <div className='px-4 py-3 flex items-center justify-between'>
           {/* Logo — left */}
           <Link href='/'>
@@ -121,7 +121,7 @@ function Navbar() {
         <div
           className={`${
             isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
-          } overflow-hidden transition-all duration-300 ease-in-out bg-gray-800`}
+          } overflow-hidden transition-all duration-300 ease-in-out bg-gray-900`}
         >
           <div className='flex flex-col px-6 py-4 text-base font-medium'>
             {mobileNavLink('/products', 'Products')}

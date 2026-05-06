@@ -7,7 +7,9 @@ function about_us() {
   return (
     <div>
       <Head>
-        <title>About Us | Kino Mart - Bangladesh's Tech & Gadgets Shop</title>
+        <title>
+          About Us | Kino Mart - Bangladesh&apos;s Tech & Gadgets Shop
+        </title>
         <meta
           name='description'
           content="Learn about Kino Mart — Bangladesh's trusted online shop for premium gadgets, accessories, and imported branded products. Our mission, values, and story."
@@ -61,7 +63,7 @@ function about_us() {
               doorstep.
               <br />
               <br />
-              Whether you're looking for the latest smart watches, imported
+              Whether you&apos;re looking for the latest smart watches, imported
               accessories, or unique branded gadgets, Kino Mart is your trusted
               one-stop tech shop in Bangladesh.
             </p>
