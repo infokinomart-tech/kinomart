@@ -22,32 +22,39 @@ const Hero = () => {
             >
               <SwiperSlide>
                 <img
-                  src='/assets/banner/main.jpg'
+                  src='/assets/banner/kino-banner1.png'
                   alt='Winter Collection'
                   className='h-full w-full object-fit rounded-xl'
                 />
               </SwiperSlide>
               <SwiperSlide>
                 <img
-                  src='/assets/banner/main2.jpeg'
+                  src='/assets/banner/kino-banner2.png'
                   alt='Winter Collection'
                   className='h-full w-full object-fit rounded-xl'
                 />
               </SwiperSlide>
-              {/* <SwiperSlide>
+              <SwiperSlide>
                 <img
-                  src='/assets/banner/fan-banner.png'
+                  src='/assets/banner/kino-banner3.png'
                   alt='Winter Collection Slide 2'
                   className='h-full w-full object-fit rounded-xl'
                 />
               </SwiperSlide>
               <SwiperSlide>
                 <img
-                  src='/assets/banner/watch2.webp'
+                  src='/assets/banner/kino-banner4.png'
                   alt='Winter Collection Slide 3'
                   className='h-full w-full object-fit rounded-xl'
                 />
-              </SwiperSlide> */}
+              </SwiperSlide>
+              <SwiperSlide>
+                <img
+                  src='/assets/banner/kino-banner5.png'
+                  alt='Winter Collection Slide 3'
+                  className='h-full w-full object-fit rounded-xl'
+                />
+              </SwiperSlide>
             </Swiper>
           </div>
 
@@ -97,20 +104,41 @@ const Hero = () => {
           pagination={{ clickable: true, el: '.hero-pagination' }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           speed={1000}
-          className='h-[183px] w-full rounded-xl overflow-hidden'
+          className='h-[200px] w-full rounded-xl overflow-hidden'
         >
           <SwiperSlide>
             <img
-              src='/assets/banner/main.jpg'
+              src='/assets/banner/kino-banner1.png'
               alt='Winter Collection'
-              className='h-full w-full object-cover rounded-xl'
+              className='h-full w-full object-fit rounded-xl'
             />
           </SwiperSlide>
           <SwiperSlide>
             <img
-              src='/assets/banner/main2.jpeg'
+              src='/assets/banner/kino-banner2.png'
               alt='Winter Collection'
-              className='h-full w-full object-cover rounded-xl'
+              className='h-full w-full object-fit rounded-xl'
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src='/assets/banner/kino-banner3.png'
+              alt='Winter Collection Slide 2'
+              className='h-full w-full object-fit rounded-xl'
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src='/assets/banner/kino-banner4.png'
+              alt='Winter Collection Slide 3'
+              className='h-full w-full object-fit rounded-xl'
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src='/assets/banner/kino-banner5.png'
+              alt='Winter Collection Slide 3'
+              className='h-full w-full object-fit rounded-xl'
             />
           </SwiperSlide>
           {/* <SwiperSlide>
