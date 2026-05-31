@@ -374,7 +374,7 @@ const ProductDetails = ({ initialProduct }) => {
                       সর্বমোট মূল্য ({totalQuantity}টি পণ্য):
                     </span>
                     <div className='flex items-center gap-2 flex-wrap'>
-                      <span className='text-black font-bold text-xl sm:text-2xl'>
+                      <span className='font-bold text-xl sm:text-2xl' style={{background:'linear-gradient(to right,#ef4444,#9f1239)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                         ৳ {bundlePrice.toFixed(0)}
                       </span>
                       {savings > 0 && (

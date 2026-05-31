@@ -320,7 +320,7 @@ const ProductDetails = ({ initialProduct }) => {
 
                 {/* price */}
                 <div className='flex items-end gap-3 mb-6'>
-                  <span className='text-4xl font-extrabold text-indigo-600'>
+                  <span className='text-4xl font-extrabold' style={{background:'linear-gradient(to right,#ef4444,#9f1239)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                     ৳{product.price.toFixed(0)}
                   </span>
                   <span className='text-xl text-gray-400 line-through mb-1'>

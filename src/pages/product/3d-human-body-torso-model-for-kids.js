@@ -232,7 +232,7 @@ const ProductDetails = ({ initialProduct }) => {
                 {product.description}
               </p>
               <div className='flex items-center justify-start gap-2 text-md mb-6'>
-                <span className='text-black font-bold text-lg sm:text-xl'>
+                <span className='font-bold text-lg sm:text-xl' style={{background:'linear-gradient(to right,#ef4444,#9f1239)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                   ৳ {product.price.toFixed(2)}
                 </span>
                 {product.originalPrice && (

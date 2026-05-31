@@ -42,6 +42,12 @@ function ProductDetailsCard() {
             opacity: 0.7;
             border-color: transparent;
           }
+          .price-gradient {
+            background: linear-gradient(to right, #ef4444, #9f1239);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
         `}
       </style>
       <div className='py-8 container mx-auto px-4 lg:px-8'>
@@ -133,7 +139,7 @@ function ProductDetailsCard() {
 
               {/* Price */}
               <div className='flex items-center justify-start gap-2 text-md mb-6'>
-                <span className='text-blue-600 font-bold text-xl'>$385.00</span>
+                <span className='price-gradient font-bold text-xl'>$385.00</span>
                 <span className='text-gray-500 font-normal text-lg line-through'>
                   $485.00
                 </span>

@@ -303,7 +303,7 @@ const ProductDetails = ({ initialProduct }) => {
                   </div>
                 </div> */}
                 <div className='flex items-center justify-start gap-2 text-md mb-6'>
-                  <span className='text-blue-600 font-bold text-xl'>
+                  <span className='font-bold text-xl' style={{background:'linear-gradient(to right,#ef4444,#9f1239)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>
                     ৳ {product.price.toFixed(2)}
                   </span>
                   <span className='text-gray-500 font-normal text-lg line-through'>
