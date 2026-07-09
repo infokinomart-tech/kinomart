@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import CustomSection from '../layout/CustomSection';
 import ProductCard from '../product/ProductCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,13 +7,20 @@ import { Autoplay, Navigation } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import products from '@/utils/products';
 import Link from 'next/link';
 
 function Trending() {
   const swiperRef = useRef(null);
   const prevButtonRef = useRef(null);
   const nextButtonRef = useRef(null);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/public/products')
+      .then((r) => r.json())
+      .then((d) => setProducts(d.products || []))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (swiperRef.current && swiperRef.current.params) {

@@ -7,7 +7,6 @@ import { MdFormatListBulleted } from 'react-icons/md';
 import { GoChevronDown } from 'react-icons/go';
 import Link from 'next/link';
 import { addToCart } from '@/store/cartSlice';
-import { products } from '@/utils/products';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
@@ -17,7 +16,8 @@ const categories = ['Smart Watches', 'Smart Rings'];
 function Products() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState('newest');
   const [viewMode, setViewMode] = useState('grid');
   const [filters, setFilters] = useState({
@@ -37,6 +37,13 @@ function Products() {
 
   // Stock status options
   const stockStatuses = ['In Stock', 'Out of Stock'];
+
+  useEffect(() => {
+    fetch('/api/public/products')
+      .then((r) => r.json())
+      .then((d) => setProducts(d.products || []))
+      .catch(() => {});
+  }, []);
 
   // Apply filters and sorting
   useEffect(() => {
@@ -67,13 +74,15 @@ function Products() {
       });
     }
 
-    // Apply sorting
+    // Apply sorting — the API already returns DB products (newest) before
+    // static ones, so "newest" keeps that order and "oldest" just reverses it.
+    // (DB ids are Mongo ObjectId strings, not comparable numerically like the
+    // static array's numeric ids used to be.)
     switch (sortOption) {
       case 'newest':
-        result.sort((a, b) => b.id - a.id); // Higher ID = newer
         break;
       case 'oldest':
-        result.sort((a, b) => a.id - b.id); // Lower ID = older
+        result.reverse();
         break;
       case 'highPrice':
         result.sort((a, b) => b.price - a.price);
@@ -86,7 +95,7 @@ function Products() {
     }
 
     setFilteredProducts(result);
-  }, [filters, sortOption]);
+  }, [products, filters, sortOption]);
 
   // Handle sort option change
   const handleSortChange = (option) => {

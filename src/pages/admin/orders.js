@@ -263,9 +263,11 @@ export default function AdminOrders() {
               <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-sm'>G</div>
               <span className='font-black text-slate-100 tracking-tight hidden sm:block text-sm'>Kino Mart Admin</span>
             </div>
-            <nav className='flex items-center gap-1 bg-slate-900/60 p-1 rounded-lg border border-slate-700'>
-              <Link href='/admin/orders' className='text-[11px] px-4 py-1.5 rounded-md bg-blue-600 text-white font-black uppercase tracking-wider'>Orders</Link>
-              <Link href='/admin/admins' className='text-[11px] px-4 py-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors font-black uppercase tracking-wider'>Team</Link>
+            <nav className='flex items-center gap-1 bg-slate-900/60 p-1 rounded-lg border border-slate-700 overflow-x-auto'>
+              <Link href='/admin/orders' className='text-[11px] px-4 py-1.5 rounded-md bg-blue-600 text-white font-black uppercase tracking-wider whitespace-nowrap'>Orders</Link>
+              <Link href='/admin/products' className='text-[11px] px-4 py-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors font-black uppercase tracking-wider whitespace-nowrap'>Products</Link>
+              <Link href='/admin/categories' className='text-[11px] px-4 py-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors font-black uppercase tracking-wider whitespace-nowrap'>Categories</Link>
+              <Link href='/admin/admins' className='text-[11px] px-4 py-1.5 rounded-md text-slate-400 hover:text-slate-100 hover:bg-slate-700 transition-colors font-black uppercase tracking-wider whitespace-nowrap'>Team</Link>
             </nav>
           </div>
           <div className='flex items-center gap-4'>

@@ -8,8 +8,6 @@ const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  console.log(product);
-
   const handleBuyNow = () => {
     if (product && product.inStock) {
       // Use the first variant's color and image as defaults
