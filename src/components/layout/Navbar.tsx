@@ -113,7 +113,7 @@ export const Navbar: React.FC = () => {
                 className="h-10 md:h-12 w-auto max-w-[160px] object-contain group-hover:scale-105 transition-transform"
               />
             ) : (
-              <KinoMartLogo className="w-10 h-10 md:w-12 md:h-12 group-hover:scale-105 transition-transform" />
+              <KinoMartLogo className="w-10 h-10 md:w-12 md:h-12 group-hover:scale-105 transition-transform" logoUrl={settings?.logo_url} />
             )}
             <div className="flex flex-col">
               <span className="font-bold text-xl md:text-2xl text-[#1A1A1A] tracking-tight group-hover:text-[#6B7A4F] transition-colors">

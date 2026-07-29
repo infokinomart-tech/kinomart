@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import {
   Star,
   Zap,
@@ -114,25 +114,42 @@ export const ProductDetail: React.FC = () => {
     }
   };
 
+  const location = useLocation();
+
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (!slug) return;
-      try {
-        setIsLoading(true);
-        const data = await api.getProduct(slug);
-        setProduct(data);
-        setSelectedImage(data.images?.[0] || '');
 
-        if (data.variants && data.variants.length > 0 && data.variants[0].options?.length > 0) {
-          setSelectedVariant(data.variants[0].options[0]);
+      const preloaded = (location.state as any)?.product || api.getCachedProduct(slug);
+
+      if (preloaded) {
+        setProduct(preloaded);
+        setSelectedImage(preloaded.images?.[0] || '');
+        if (preloaded.variants && preloaded.variants.length > 0 && preloaded.variants[0].options?.length > 0) {
+          setSelectedVariant(preloaded.variants[0].options[0]);
+        }
+        setIsLoading(false);
+      } else {
+        setIsLoading(true);
+      }
+
+      try {
+        const [data, fetchedReviews, allProds] = await Promise.all([
+          api.getProduct(slug),
+          api.getProductReviews(slug).catch(() => []),
+          api.getProducts().catch(() => [])
+        ]);
+
+        setProduct(data);
+        if (!preloaded) {
+          setSelectedImage(data.images?.[0] || '');
+          if (data.variants && data.variants.length > 0 && data.variants[0].options?.length > 0) {
+            setSelectedVariant(data.variants[0].options[0]);
+          }
         }
 
-        // Fetch product reviews
-        const fetchedReviews = await api.getProductReviews(slug);
         setReviews(fetchedReviews);
 
-        // Fetch related products
-        const allProds = await api.getProducts();
         const related = allProds.filter(
           p => p.id !== data.id && (p.category_id === data.category_id || p.category_name === data.category_name)
         );

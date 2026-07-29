@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
                   className="h-9 w-auto max-w-[150px] object-contain bg-white/10 p-1 rounded-lg"
                 />
               ) : (
-                <KinoMartLogo className="w-9 h-9" />
+                <KinoMartLogo className="w-9 h-9" logoUrl={settings?.logo_url} />
               )}
               <span className="font-bold text-2xl tracking-tight text-white">
                 {settings?.logo_title || 'KinoMart'}

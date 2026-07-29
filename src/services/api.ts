@@ -1,6 +1,23 @@
 import { Product, Category, Order, SiteSettings, ContactMessage, ProductReview, Coupon } from '../types';
 
+const productsCacheMap = new Map<string, Product>();
+let allProductsCache: Product[] | null = null;
+let allProductsCacheTime = 0;
+
 export const api = {
+  getCachedProduct(identifier: string): Product | undefined {
+    return productsCacheMap.get(identifier);
+  },
+
+  setProductCache(products: Product[]) {
+    allProductsCache = products;
+    allProductsCacheTime = Date.now();
+    products.forEach(p => {
+      if (p.id) productsCacheMap.set(p.id, p);
+      if (p.slug) productsCacheMap.set(p.slug, p);
+    });
+  },
+
   // Coupons
   async getCoupons(): Promise<Coupon[]> {
     const res = await fetch('/api/coupons');
@@ -118,6 +135,11 @@ export const api = {
 
   // Products
   async getProducts(params?: { category?: string; search?: string; sort?: string; status?: string }): Promise<Product[]> {
+    const hasParams = params && Object.keys(params).some(k => Boolean((params as any)[k]));
+    if (!hasParams && allProductsCache && (Date.now() - allProductsCacheTime < 60000)) {
+      return allProductsCache;
+    }
+
     const url = new URL('/api/products', window.location.origin);
     if (params?.category) url.searchParams.set('category', params.category);
     if (params?.search) url.searchParams.set('search', params.search);
@@ -126,13 +148,40 @@ export const api = {
 
     const res = await fetch(url.toString());
     if (!res.ok) throw new Error('Failed to fetch products');
-    return res.json();
+    const products: Product[] = await res.json();
+    if (!hasParams) {
+      this.setProductCache(products);
+    } else {
+      products.forEach(p => {
+        if (p.id) productsCacheMap.set(p.id, p);
+        if (p.slug) productsCacheMap.set(p.slug, p);
+      });
+    }
+    return products;
   },
 
   async getProduct(identifier: string): Promise<Product> {
+    const cached = productsCacheMap.get(identifier);
+    if (cached) {
+      // Revalidate in background without blocking caller
+      fetch(`/api/products/${identifier}`)
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            productsCacheMap.set(data.id, data);
+            if (data.slug) productsCacheMap.set(data.slug, data);
+          }
+        })
+        .catch(() => {});
+      return cached;
+    }
+
     const res = await fetch(`/api/products/${identifier}`);
     if (!res.ok) throw new Error('Product not found');
-    return res.json();
+    const data: Product = await res.json();
+    productsCacheMap.set(data.id, data);
+    if (data.slug) productsCacheMap.set(data.slug, data);
+    return data;
   },
 
   async createProduct(product: Partial<Product>): Promise<Product> {

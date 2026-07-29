@@ -36,7 +36,7 @@ export const AdminLayout: React.FC = () => {
                   className="h-9 w-auto max-w-[120px] object-contain rounded-lg bg-white/10 p-1"
                 />
               ) : (
-                <KinoMartLogo className="w-9 h-9" />
+                <KinoMartLogo className="w-9 h-9" logoUrl={settings?.logo_url} />
               )}
               <div className="flex flex-col">
                 <span className="font-bold text-lg text-white tracking-wide">{settings?.logo_title || 'KinoMart'}</span>
