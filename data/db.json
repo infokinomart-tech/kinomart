@@ -1,0 +1,381 @@
+{
+  "categories": [
+    {
+      "id": "cat-1",
+      "name": "স্মার্টওয়াচ",
+      "slug": "smartwatch",
+      "icon_name": "Watch",
+      "icon_url": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=300&q=80",
+      "display_order": 1,
+      "is_visible": true
+    },
+    {
+      "id": "cat-2",
+      "name": "এয়ারবাডস ও হেডফোন",
+      "slug": "earbuds-headphones",
+      "icon_name": "Headphones",
+      "icon_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=300&q=80",
+      "display_order": 2,
+      "is_visible": true
+    },
+    {
+      "id": "cat-3",
+      "name": "চার্জার ও পাওয়ার ব্যাংক",
+      "slug": "chargers-powerbank",
+      "icon_name": "Zap",
+      "icon_url": "https://images.unsplash.com/photo-1609592424109-dd9892f1b177?auto=format&fit=crop&w=300&q=80",
+      "display_order": 3,
+      "is_visible": true
+    },
+    {
+      "id": "cat-4",
+      "name": "স্পিকার ও সাউন্ড",
+      "slug": "speakers-sound",
+      "icon_name": "Speaker",
+      "icon_url": "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=300&q=80",
+      "display_order": 4,
+      "is_visible": true
+    },
+    {
+      "id": "cat-5",
+      "name": "ফিটনেস ও হেলথ গ্যাজেট",
+      "slug": "fitness-health",
+      "icon_name": "Activity",
+      "icon_url": "https://images.unsplash.com/photo-1576243345690-4e4b79b63288?auto=format&fit=crop&w=300&q=80",
+      "display_order": 5,
+      "is_visible": true
+    },
+    {
+      "id": "cat-6",
+      "name": "মোবাইল এক্সেসরিজ",
+      "slug": "mobile-accessories",
+      "icon_name": "Smartphone",
+      "icon_url": "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=300&q=80",
+      "display_order": 6,
+      "is_visible": true
+    },
+    {
+      "id": "cat-7",
+      "name": "স্মার্ট হোম ও লাইফস্টাইল",
+      "slug": "smart-home",
+      "icon_name": "Home",
+      "icon_url": "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=300&q=80",
+      "display_order": 7,
+      "is_visible": true
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Kino Ultra ANC Wireless Earbuds",
+      "slug": "kino-ultra-anc-wireless-earbuds",
+      "description": "এইচডি সাউন্ড এবং অ্যাক্টিভ নয়েজ ক্যানসেলেশন (ANC) সহ সেরা এয়ারবাডস। ৩০ ঘন্টা ব্যাকআপ, টাইপ-সি ফাস্ট চার্জিং এবং ওয়াটারপ্রুফ ডিজাইন।",
+      "price": 2490,
+      "discount_price": 1490,
+      "category_id": "cat-2",
+      "category_name": "এয়ারবাডস ও হেডফোন",
+      "images": [
+        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "BLACK",
+            "PEACE",
+            "MINT",
+            "WHITE"
+          ]
+        }
+      ],
+      "stock": 45,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": true,
+      "rating": 4.9,
+      "reviews_count": 128,
+      "seo_title": "Kino Ultra ANC Wireless Earbuds Buy Online in BD",
+      "seo_description": "Buy Kino Ultra ANC Wireless Earbuds in Bangladesh at best price.",
+      "created_at": "2026-07-18T14:14:09.295Z"
+    },
+    {
+      "id": "prod-2",
+      "name": "KinoFit Pro Amoled Smartwatch",
+      "slug": "kinofit-pro-amoled-smartwatch",
+      "description": "১.৪৩ ইঞ্চি প্রিমিয়াম অ্যামোলেড ডিসপ্লে, ব্লুটুথ কলিং, হার্ট রেট ও অক্সিজেন মনিটর, ১০০+ স্পোর্টস মোড এবং ৭ দিনের ব্যাটারি ব্যাকআপ।",
+      "price": 4500,
+      "discount_price": 2990,
+      "category_id": "cat-1",
+      "category_name": "স্মার্টওয়াচ",
+      "images": [
+        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "MATTE BLACK",
+            "SILVER",
+            "ARMY GREEN"
+          ]
+        }
+      ],
+      "stock": 30,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": true,
+      "rating": 4.8,
+      "reviews_count": 94,
+      "seo_title": "KinoFit Pro Amoled Smartwatch BD",
+      "seo_description": "Best Amoled Smartwatch with bluetooth calling in Bangladesh.",
+      "created_at": "2026-07-19T14:14:09.296Z"
+    },
+    {
+      "id": "prod-3",
+      "name": "KinoBreathe Nasal Inhaler & Health Aid",
+      "slug": "kinobreathe-nasal-inhaler-health-aid",
+      "description": "শ্বাস-প্রশ্বাস সহজ করার জন্য প্রাকৃতিক এসেনশিয়াল অয়েল ইনহেলার ও অ্যালার্জি রিলিফ গ্যাজেট। কমপ্যাক্ট এবং পোর্টেবল ডিজাইন।",
+      "price": 1200,
+      "discount_price": 690,
+      "category_id": "cat-3",
+      "category_name": "হেলথ ও কেয়ার গ্যাজেট",
+      "images": [
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "ফ্লেভার",
+          "options": [
+            "MINT",
+            "EUCALYPTUS",
+            "PEACE",
+            "WATERMELON"
+          ]
+        }
+      ],
+      "stock": 60,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": false,
+      "rating": 4.7,
+      "reviews_count": 62,
+      "seo_title": "KinoBreathe Health Inhaler BD",
+      "seo_description": "Natural nasal health aid gadget in BD.",
+      "created_at": "2026-07-20T14:14:09.296Z"
+    },
+    {
+      "id": "prod-4",
+      "name": "Kino Charge Fast Magnetic Power Bank 10,000mAh",
+      "slug": "kino-charge-fast-magnetic-power-bank",
+      "description": "১৫W ম্যাগনেটিক ওয়ারলেস চার্জিং + ২২.৫W সুপার ফাস্ট ক্যাবল চার্জিং। স্লিম মেটাল বডি ও ডিজিটাল ব্যাটারি ডিসপ্লে।",
+      "price": 3200,
+      "discount_price": 1890,
+      "category_id": "cat-5",
+      "category_name": "চার্জার ও পাওয়ার ব্যাংক",
+      "images": [
+        "https://images.unsplash.com/photo-1609592424083-d92e5a407335?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "SPACE GRAY",
+            "MIDNIGHT BLUE"
+          ]
+        }
+      ],
+      "stock": 25,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": true,
+      "rating": 4.9,
+      "reviews_count": 87,
+      "seo_title": "Kino Power Bank 10000mAh Price in Bangladesh",
+      "seo_description": "MagSafe Wireless powerbank in BD.",
+      "created_at": "2026-07-21T14:14:09.296Z"
+    },
+    {
+      "id": "prod-5",
+      "name": "KinoBand Sleek Fitness & Sleep Tracker",
+      "slug": "kinoband-sleek-fitness-sleep-tracker",
+      "description": "২৪ ঘন্টা হার্টরেট, স্লিপ ট্র্যাকিং, ব্লাড প্রেশার মনিটরিং এবং কমপ্লিট স্টেপ কাউন্টার। ওয়াটারপ্রুফ IP68 সুবিধা।",
+      "price": 2200,
+      "discount_price": 1290,
+      "category_id": "cat-4",
+      "category_name": "ফিটনেস ট্র্যাকার",
+      "images": [
+        "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "BLACK",
+            "NAVY BLUE",
+            "ROSE GOLD"
+          ]
+        }
+      ],
+      "stock": 40,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 4.6,
+      "reviews_count": 41,
+      "seo_title": "KinoBand Fitness Tracker BD",
+      "seo_description": "Accurate fitness and health tracker in BD.",
+      "created_at": "2026-07-22T14:14:09.296Z"
+    },
+    {
+      "id": "prod-6",
+      "name": "Kino Stream RGB Gaming Desk Headset Stand",
+      "slug": "kino-stream-rgb-gaming-headset-stand",
+      "description": "আরজিবি লাইটিং লাইট বার, ৩টি ইউএসবি হাব পোর্ট এবং ৭.১ সারাউন্ড সাউন্ড প্যাস থ্রু অডিও জ্যাক সহ ডেস্ক স্ট্যান্ড।",
+      "price": 1800,
+      "discount_price": 990,
+      "category_id": "cat-6",
+      "category_name": "মোবাইল এক্সেসরিজ",
+      "images": [
+        "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "RGB BLACK",
+            "RGB WHITE"
+          ]
+        }
+      ],
+      "stock": 20,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 4.7,
+      "reviews_count": 29,
+      "seo_title": "RGB Gaming Headset Stand BD",
+      "seo_description": "RGB Stand with USB hub.",
+      "created_at": "2026-07-23T14:14:09.296Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ord-1001",
+      "order_number": "KM-10821",
+      "customer_name": "আরিফুল ইসলাম",
+      "phone": "01711223344",
+      "address": "হাউজ ১২, রোড ৫, ধানমন্ডি, ঢাকা",
+      "area": "inside_dhaka",
+      "shipping_cost": 60,
+      "items": [
+        {
+          "product_id": "prod-1",
+          "product_name": "Kino Ultra ANC Wireless Earbuds",
+          "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80",
+          "price": 1490,
+          "qty": 1,
+          "selected_variant": "MINT"
+        }
+      ],
+      "total_revenue": 1550,
+      "payment_method": "cod",
+      "order_status": "confirmed",
+      "call_status": "call_success",
+      "note": "কাস্টমার কালকে ১০টার পর ডেলিভারি চেয়েছে।",
+      "created_at": "2026-07-23T12:14:09.296Z"
+    },
+    {
+      "id": "ord-1002",
+      "order_number": "KM-10822",
+      "customer_name": "সাবরিনা সুলতানা",
+      "phone": "01899887766",
+      "address": "জিইসি মোড়, সিডিএ এভিনিউ, চট্টগ্রাম",
+      "area": "outside_dhaka",
+      "shipping_cost": 120,
+      "items": [
+        {
+          "product_id": "prod-2",
+          "product_name": "KinoFit Pro Amoled Smartwatch",
+          "image": "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80",
+          "price": 2990,
+          "qty": 1,
+          "selected_variant": "MATTE BLACK"
+        }
+      ],
+      "total_revenue": 3110,
+      "payment_method": "bkash",
+      "bkash_number": "01899887766",
+      "transaction_id": "9B2K71L0",
+      "order_status": "pending",
+      "call_status": "not_called",
+      "note": "",
+      "created_at": "2026-07-23T13:44:09.296Z"
+    },
+    {
+      "id": "ord-1003",
+      "order_number": "KM-10823",
+      "customer_name": "তানভীর আহমেদ",
+      "phone": "01522334455",
+      "address": "মিরপুর ১০, সেনপাড়া পর্বতা, ঢাকা",
+      "area": "inside_dhaka",
+      "shipping_cost": 60,
+      "items": [
+        {
+          "product_id": "prod-3",
+          "product_name": "KinoBreathe Nasal Inhaler & Health Aid",
+          "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80",
+          "price": 690,
+          "qty": 2,
+          "selected_variant": "EUCALYPTUS"
+        }
+      ],
+      "total_revenue": 1440,
+      "payment_method": "cod",
+      "order_status": "cancelled",
+      "call_status": "fake_order",
+      "note": "ফেক নম্বর, ভুল ঠিকানা।",
+      "created_at": "2026-07-22T14:14:09.296Z"
+    }
+  ],
+  "settings": {
+    "logo_title": "KinoMart",
+    "tagline": "সেরা গ্যাজেট ও প্রিমিয়াম ইলেকট্রনিক্স",
+    "phone": "01700-123456",
+    "whatsapp": "8801700123456",
+    "address": "লেভেল ৫, বসুন্ধরা সিটি শপিং মল, পান্থপথ, ঢাকা-১২০৫",
+    "hero_title": "অরিজিনাল প্রিমিয়াম গ্যাজেট সেরা দামে",
+    "hero_subtitle": "দেশজুড়ে ক্যাশ অন ডেলিভারি এবং ১-৩ দিনে দ্রুত নিরাপদ হোম ডেলিভারি!",
+    "hero_image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80",
+    "special_offer_text": "🔥 বিশেষ অফার: যেকোনো দুটি পণ্য অর্ডারে ফ্রি সারা বাংলাদেশ হোম ডেলিভারি!",
+    "special_offer_active": true,
+    "footer_about": "কীনোমার্ট বাংলাদেশের একটি বিশ্বস্ত প্রিমিয়াম গ্যাজেট অনলাইন শপ। আমরা সরবরাহ করি ১০০% অরিজিনাল ও মানসম্মত ইলেকট্রনিক্স গ্যাজেট।",
+    "pixel_id": "123456789012345",
+    "capi_token": "EAA123456789ABCDEF...",
+    "bkash_number": "01700123456",
+    "nagad_number": "01700123456",
+    "admin_id": "kinomart",
+    "admin_password": "@kinomart12@"
+  },
+  "customers": [
+    {
+      "id": "cust-1",
+      "phone": "01711223344",
+      "name": "আরিফুল ইসলাম",
+      "address": "হাউজ ১২, রোড ৫, ধানমন্ডি, ঢাকা",
+      "created_at": "2026-07-23T14:14:09.296Z"
+    },
+    {
+      "id": "cust-2",
+      "phone": "01899887766",
+      "name": "সাবরিনা সুলতানা",
+      "address": "জিইসি মোড়, সিডিএ এভিনিউ, চট্টগ্রাম",
+      "created_at": "2026-07-23T14:14:09.296Z"
+    }
+  ],
+  "contact_messages": []
+}

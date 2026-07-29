@@ -1,0 +1,1163 @@
+import express from 'express';
+import path from 'path';
+import fs from 'fs';
+import { createServer as createViteServer } from 'vite';
+import { createClient } from '@supabase/supabase-js';
+
+const app = express();
+const PORT = 3000;
+
+// Supabase setup (if environment variables are provided)
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+export const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Database file setup
+const DATA_DIR = path.join(process.cwd(), 'data');
+const DB_FILE = path.join(DATA_DIR, 'db.json');
+
+// Ensure data folder exists
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+// Initial Seed Data for KinoMart
+const initialCategories = [
+  {
+    id: 'cat-1',
+    name: 'স্মার্টওয়াচ',
+    slug: 'smartwatch',
+    icon_name: 'Watch',
+    icon_url: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=300&q=80',
+    display_order: 1,
+    is_visible: true
+  },
+  {
+    id: 'cat-2',
+    name: 'এয়ারবাডস ও হেডফোন',
+    slug: 'earbuds-headphones',
+    icon_name: 'Headphones',
+    icon_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=300&q=80',
+    display_order: 2,
+    is_visible: true
+  },
+  {
+    id: 'cat-3',
+    name: 'চার্জার ও পাওয়ার ব্যাংক',
+    slug: 'chargers-powerbank',
+    icon_name: 'Zap',
+    icon_url: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?auto=format&fit=crop&w=300&q=80',
+    display_order: 3,
+    is_visible: true
+  },
+  {
+    id: 'cat-4',
+    name: 'স্পিকার ও সাউন্ড',
+    slug: 'speakers-sound',
+    icon_name: 'Speaker',
+    icon_url: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=300&q=80',
+    display_order: 4,
+    is_visible: true
+  },
+  {
+    id: 'cat-5',
+    name: 'ফিটনেস ও হেলথ গ্যাজেট',
+    slug: 'fitness-health',
+    icon_name: 'Activity',
+    icon_url: 'https://images.unsplash.com/photo-1576243345690-4e4b79b63288?auto=format&fit=crop&w=300&q=80',
+    display_order: 5,
+    is_visible: true
+  },
+  {
+    id: 'cat-6',
+    name: 'মোবাইল এক্সেসরিজ',
+    slug: 'mobile-accessories',
+    icon_name: 'Smartphone',
+    icon_url: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=300&q=80',
+    display_order: 6,
+    is_visible: true
+  },
+  {
+    id: 'cat-7',
+    name: 'স্মার্ট হোম ও লাইফস্টাইল',
+    slug: 'smart-home',
+    icon_name: 'Home',
+    icon_url: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=300&q=80',
+    display_order: 7,
+    is_visible: true
+  }
+];
+
+const initialProducts = [
+  {
+    id: 'prod-1',
+    name: 'Kino Ultra ANC Wireless Earbuds',
+    slug: 'kino-ultra-anc-wireless-earbuds',
+    description: 'এইচডি সাউন্ড এবং অ্যাক্টিভ নয়েজ ক্যানসেলেশন (ANC) সহ সেরা এয়ারবাডস। ৩০ ঘন্টা ব্যাকআপ, টাইপ-সি ফাস্ট চার্জিং এবং ওয়াটারপ্রুফ ডিজাইন।',
+    short_description: 'এইচডি অডিও ক্ল্যারিটি, অ্যাক্টিভ নয়েজ ক্যানসেলেশন এবং ৩০ ঘন্টা ব্যাকআপ সহ প্রিমিয়াম কোয়ালিটি গ্যাজেট।',
+    price: 2490,
+    discount_price: 1490,
+    category_id: 'cat-2',
+    category_name: 'এয়ারবাডস ও হেডফোন',
+    images: [
+      'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'
+    ],
+    video_url: 'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
+    variants: [
+      { name: 'কালার', options: ['BLACK', 'PEACE', 'MINT', 'WHITE'] }
+    ],
+    specifications: [
+      { key: 'ব্লুটুথ ভার্সন (Bluetooth)', value: 'v5.3 Fast Pair' },
+      { key: 'নয়েজ ক্যানসেলেশন (ANC)', value: 'Up to 35dB Active Noise Cancellation' },
+      { key: 'প্লেব্যাক টাইম (Battery)', value: '৩০ ঘণ্টা পর্যন্ত (চার্জিং কেস সহ)' },
+      { key: 'চার্জিং প্রযুক্তি', value: 'Type-C Fast Charging (10 min charge = 2 hours)' },
+      { key: 'ওয়াটার রেজিস্ট্যান্স', value: 'IPX5 Water & Sweat Proof' },
+      { key: 'ড্রাইভার সাইজ', value: '10mm Dynamic Bass Boost Drivers' },
+      { key: 'ওয়ারেন্টি', value: '৬ মাসের রিপ্লেসমেন্ট ওয়ারেন্টি' }
+    ],
+    stock: 45,
+    low_stock_threshold: 10,
+    status: 'active',
+    is_featured: true,
+    is_best_seller: true,
+    rating: 4.9,
+    reviews_count: 128,
+    seo_title: 'Kino Ultra ANC Wireless Earbuds Buy Online in BD',
+    seo_description: 'Buy Kino Ultra ANC Wireless Earbuds in Bangladesh at best price.',
+    timer_enabled: true,
+    timer_title: 'অফারটি শেষ হতে বাকি:',
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString()
+  },
+  {
+    id: 'prod-2',
+    name: 'KinoFit Pro Amoled Smartwatch',
+    slug: 'kinofit-pro-amoled-smartwatch',
+    description: '১.৪৩ ইঞ্চি প্রিমিয়াম অ্যামোলেড ডিসপ্লে, ব্লুটুথ কলিং, হার্ট রেট ও অক্সিজেন মনিটর, ১০০+ স্পোর্টস মোড এবং ৭ দিনের ব্যাটারি ব্যাকআপ।',
+    price: 4500,
+    discount_price: 2990,
+    category_id: 'cat-1',
+    category_name: 'স্মার্টওয়াচ',
+    images: [
+      'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80'
+    ],
+    variants: [
+      { name: 'কালার', options: ['MATTE BLACK', 'SILVER', 'ARMY GREEN'] }
+    ],
+    stock: 30,
+    status: 'active',
+    is_featured: true,
+    is_best_seller: true,
+    rating: 4.8,
+    reviews_count: 94,
+    seo_title: 'KinoFit Pro Amoled Smartwatch BD',
+    seo_description: 'Best Amoled Smartwatch with bluetooth calling in Bangladesh.',
+    created_at: new Date(Date.now() - 86400000 * 4).toISOString()
+  },
+  {
+    id: 'prod-3',
+    name: 'KinoBreathe Nasal Inhaler & Health Aid',
+    slug: 'kinobreathe-nasal-inhaler-health-aid',
+    description: 'শ্বাস-প্রশ্বাস সহজ করার জন্য প্রাকৃতিক এসেনশিয়াল অয়েল ইনহেলার ও অ্যালার্জি রিলিফ গ্যাজেট। কমপ্যাক্ট এবং পোর্টেবল ডিজাইন।',
+    price: 1200,
+    discount_price: 690,
+    category_id: 'cat-3',
+    category_name: 'হেলথ ও কেয়ার গ্যাজেট',
+    images: [
+      'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=800&q=80'
+    ],
+    variants: [
+      { name: 'ফ্লেভার', options: ['MINT', 'EUCALYPTUS', 'PEACE', 'WATERMELON'] }
+    ],
+    stock: 60,
+    status: 'active',
+    is_featured: true,
+    is_best_seller: false,
+    rating: 4.7,
+    reviews_count: 62,
+    seo_title: 'KinoBreathe Health Inhaler BD',
+    seo_description: 'Natural nasal health aid gadget in BD.',
+    created_at: new Date(Date.now() - 86400000 * 3).toISOString()
+  },
+  {
+    id: 'prod-4',
+    name: 'Kino Charge Fast Magnetic Power Bank 10,000mAh',
+    slug: 'kino-charge-fast-magnetic-power-bank',
+    description: '১৫W ম্যাগনেটিক ওয়ারলেস চার্জিং + ২২.৫W সুপার ফাস্ট ক্যাবল চার্জিং। স্লিম মেটাল বডি ও ডিজিটাল ব্যাটারি ডিসপ্লে।',
+    price: 3200,
+    discount_price: 1890,
+    category_id: 'cat-5',
+    category_name: 'চার্জার ও পাওয়ার ব্যাংক',
+    images: [
+      'https://images.unsplash.com/photo-1609592424083-d92e5a407335?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80'
+    ],
+    variants: [
+      { name: 'কালার', options: ['SPACE GRAY', 'MIDNIGHT BLUE'] }
+    ],
+    stock: 25,
+    status: 'active',
+    is_featured: true,
+    is_best_seller: true,
+    rating: 4.9,
+    reviews_count: 87,
+    seo_title: 'Kino Power Bank 10000mAh Price in Bangladesh',
+    seo_description: 'MagSafe Wireless powerbank in BD.',
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString()
+  },
+  {
+    id: 'prod-5',
+    name: 'KinoBand Sleek Fitness & Sleep Tracker',
+    slug: 'kinoband-sleek-fitness-sleep-tracker',
+    description: '২৪ ঘন্টা হার্টরেট, স্লিপ ট্র্যাকিং, ব্লাড প্রেশার মনিটরিং এবং কমপ্লিট স্টেপ কাউন্টার। ওয়াটারপ্রুফ IP68 সুবিধা।',
+    price: 2200,
+    discount_price: 1290,
+    category_id: 'cat-4',
+    category_name: 'ফিটনেস ট্র্যাকার',
+    images: [
+      'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=800&q=80'
+    ],
+    variants: [
+      { name: 'কালার', options: ['BLACK', 'NAVY BLUE', 'ROSE GOLD'] }
+    ],
+    stock: 40,
+    status: 'active',
+    is_featured: false,
+    is_best_seller: false,
+    rating: 4.6,
+    reviews_count: 41,
+    seo_title: 'KinoBand Fitness Tracker BD',
+    seo_description: 'Accurate fitness and health tracker in BD.',
+    created_at: new Date(Date.now() - 86400000 * 1).toISOString()
+  },
+  {
+    id: 'prod-6',
+    name: 'Kino Stream RGB Gaming Desk Headset Stand',
+    slug: 'kino-stream-rgb-gaming-headset-stand',
+    description: 'আরজিবি লাইটিং লাইট বার, ৩টি ইউএসবি হাব পোর্ট এবং ৭.১ সারাউন্ড সাউন্ড প্যাস থ্রু অডিও জ্যাক সহ ডেস্ক স্ট্যান্ড।',
+    price: 1800,
+    discount_price: 990,
+    category_id: 'cat-6',
+    category_name: 'মোবাইল এক্সেসরিজ',
+    images: [
+      'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=800&q=80'
+    ],
+    variants: [
+      { name: 'কালার', options: ['RGB BLACK', 'RGB WHITE'] }
+    ],
+    stock: 20,
+    status: 'active',
+    is_featured: false,
+    is_best_seller: false,
+    rating: 4.7,
+    reviews_count: 29,
+    seo_title: 'RGB Gaming Headset Stand BD',
+    seo_description: 'RGB Stand with USB hub.',
+    created_at: new Date(Date.now()).toISOString()
+  }
+];
+
+const initialOrders = [
+  {
+    id: 'ord-1001',
+    order_number: 'KM-10821',
+    customer_name: 'আরিফুল ইসলাম',
+    phone: '01711223344',
+    address: 'হাউজ ১২, রোড ৫, ধানমন্ডি, ঢাকা',
+    area: 'inside_dhaka',
+    shipping_cost: 60,
+    items: [
+      {
+        product_id: 'prod-1',
+        product_name: 'Kino Ultra ANC Wireless Earbuds',
+        image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=800&q=80',
+        price: 1490,
+        qty: 1,
+        selected_variant: 'MINT'
+      }
+    ],
+    total_revenue: 1550,
+    payment_method: 'cod',
+    order_status: 'confirmed',
+    call_status: 'call_success',
+    note: 'কাস্টমার কালকে ১০টার পর ডেলিভারি চেয়েছে।',
+    created_at: new Date(Date.now() - 3600000 * 2).toISOString()
+  },
+  {
+    id: 'ord-1002',
+    order_number: 'KM-10822',
+    customer_name: 'সাবরিনা সুলতানা',
+    phone: '01899887766',
+    address: 'জিইসি মোড়, সিডিএ এভিনিউ, চট্টগ্রাম',
+    area: 'outside_dhaka',
+    shipping_cost: 120,
+    items: [
+      {
+        product_id: 'prod-2',
+        product_name: 'KinoFit Pro Amoled Smartwatch',
+        image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80',
+        price: 2990,
+        qty: 1,
+        selected_variant: 'MATTE BLACK'
+      }
+    ],
+    total_revenue: 3110,
+    payment_method: 'bkash',
+    bkash_number: '01899887766',
+    transaction_id: '9B2K71L0',
+    order_status: 'pending',
+    call_status: 'not_called',
+    note: '',
+    created_at: new Date(Date.now() - 1800000).toISOString()
+  },
+  {
+    id: 'ord-1003',
+    order_number: 'KM-10823',
+    customer_name: 'তানভীর আহমেদ',
+    phone: '01522334455',
+    address: 'মিরপুর ১০, সেনপাড়া পর্বতা, ঢাকা',
+    area: 'inside_dhaka',
+    shipping_cost: 60,
+    items: [
+      {
+        product_id: 'prod-3',
+        product_name: 'KinoBreathe Nasal Inhaler & Health Aid',
+        image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80',
+        price: 690,
+        qty: 2,
+        selected_variant: 'EUCALYPTUS'
+      }
+    ],
+    total_revenue: 1440,
+    payment_method: 'cod',
+    order_status: 'cancelled',
+    call_status: 'fake_order',
+    note: 'ফেক নম্বর, ভুল ঠিকানা।',
+    created_at: new Date(Date.now() - 86400000).toISOString()
+  }
+];
+
+const initialSettings = {
+  logo_title: 'KinoMart',
+  tagline: 'সেরা গ্যাজেট ও প্রিমিয়াম ইলেকট্রনিক্স',
+  logo_url: '',
+  favicon_url: '',
+  phone: '01700-123456',
+  whatsapp: '8801700123456',
+  address: 'লেভেল ৫, বসুন্ধরা সিটি শপিং মল, পান্থপথ, ঢাকা-১২০৫',
+  hero_title: 'অরিজিনাল প্রিমিয়াম গ্যাজেট সেরা দামে',
+  hero_subtitle: 'দেশজুড়ে ক্যাশ অন ডেলিভারি এবং ১-৩ দিনে দ্রুত নিরাপদ হোম ডেলিভারি!',
+  hero_image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80',
+  banner_images: [
+    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1587049352847-81a56d773cae?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1508061253366-f7da158b6d96?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1200&q=80',
+    'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&q=80'
+  ],
+  special_offer_text: '🔥 বিশেষ অফার: যেকোনো দুটি পণ্য অর্ডারে ফ্রি সারা বাংলাদেশ হোম ডেলিভারি!',
+  special_offer_active: true,
+  footer_about: 'কীনোমার্ট বাংলাদেশের একটি বিশ্বস্ত প্রিমিয়াম গ্যাজেট অনলাইন শপ। আমরা সরবরাহ করি ১০০% অরিজিনাল ও মানসম্মত ইলেকট্রনিক্স গ্যাজেট।',
+  pixel_id: '123456789012345',
+  capi_token: 'EAA123456789ABCDEF...',
+  bkash_number: '01700123456',
+  nagad_number: '01700123456',
+  admin_id: 'kinomart',
+  admin_password: '@kinomart12@'
+};
+
+const initialCustomers = [
+  {
+    id: 'cust-1',
+    phone: '01711223344',
+    name: 'আরিফুল ইসলাম',
+    address: 'হাউজ ১২, রোড ৫, ধানমন্ডি, ঢাকা',
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'cust-2',
+    phone: '01899887766',
+    name: 'সাবরিনা সুলতানা',
+    address: 'জিইসি মোড়, সিডিএ এভিনিউ, চট্টগ্রাম',
+    created_at: new Date().toISOString()
+  }
+];
+
+const initialReviews = [
+  {
+    id: 'rev-1',
+    product_id: 'prod-1',
+    customer_name: 'তানভীর আহমেদ',
+    rating: 5,
+    comment: 'এক কথায় অসাধারণ এয়ারবাডস! ANC ফাংশনালিটি সত্যিই চমৎকার কাজ করে। আর সাউন্ড কোয়ালিটি বিট অনুযায়ী সেরা। ২ দিনে ডেলিভারি পেয়েছি।',
+    is_verified_buyer: true,
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString()
+  },
+  {
+    id: 'rev-2',
+    product_id: 'prod-1',
+    customer_name: 'মেহেদী হাসান',
+    rating: 5,
+    comment: 'ব্যাটারি ব্যাকআপ অবিশ্বাস্য। এক চার্জে সারা দিন চলেছে। কীনোমার্টের সার্ভিস অনেক ভালো, প্রডাক্ট প্যাকেট চেক করে নেয়ার সুযোগ ছিল।',
+    is_verified_buyer: true,
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString()
+  },
+  {
+    id: 'rev-3',
+    product_id: 'prod-1',
+    customer_name: 'ফারজানা আক্তার',
+    rating: 4,
+    comment: 'প্যাকেজিং খুব প্রিমিয়াম ছিল। মাইক্রোফোনের ভয়েস ক্ল্যারিটি খুব ক্লিয়ার। সাউন্ড বেইজ আরেকটু বেশি হলে ১০/১০ দিতাম, তবে এই প্রাইসে সেরা।',
+    is_verified_buyer: true,
+    created_at: new Date(Date.now() - 86400000 * 8).toISOString()
+  },
+  {
+    id: 'rev-4',
+    product_id: 'prod-2',
+    customer_name: 'রাশেদুল ইসলাম',
+    rating: 5,
+    comment: 'অ্যামোলেড ডিসপ্লে এবং ব্লুটুথ কলিং সিস্টেমটা খুব স্মুথ। ফুল চার্জে ৬ দিন সার্ভিস দিচ্ছে। ধন্যবাদ কীনোমার্ট।',
+    is_verified_buyer: true,
+    created_at: new Date(Date.now() - 86400000 * 3).toISOString()
+  }
+];
+
+const initialCoupons = [
+  {
+    id: 'coup-1',
+    code: 'KINO10',
+    discount_type: 'percentage',
+    discount_value: 10,
+    min_order_amount: 500,
+    max_discount_amount: 300,
+    usage_limit: 100,
+    used_count: 14,
+    expires_at: '',
+    is_active: true,
+    created_at: new Date(Date.now() - 86400000 * 10).toISOString()
+  },
+  {
+    id: 'coup-2',
+    code: 'SAVE100',
+    discount_type: 'fixed',
+    discount_value: 100,
+    min_order_amount: 1000,
+    usage_limit: 50,
+    used_count: 8,
+    expires_at: '',
+    is_active: true,
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString()
+  },
+  {
+    id: 'coup-3',
+    code: 'SPECIAL50',
+    discount_type: 'fixed',
+    discount_value: 50,
+    min_order_amount: 300,
+    usage_limit: 200,
+    used_count: 32,
+    expires_at: '',
+    is_active: true,
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString()
+  }
+];
+
+function loadDatabase() {
+  if (!fs.existsSync(DB_FILE)) {
+    const defaultData = {
+      categories: initialCategories,
+      products: initialProducts,
+      orders: initialOrders,
+      settings: initialSettings,
+      customers: initialCustomers,
+      reviews: initialReviews,
+      coupons: initialCoupons,
+      contact_messages: []
+    };
+    fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2), 'utf-8');
+    return defaultData;
+  }
+  try {
+    const raw = fs.readFileSync(DB_FILE, 'utf-8');
+    const db = JSON.parse(raw);
+    if (db.products && db.products.length > 0) {
+      db.products.forEach((p: any) => {
+        if (p.low_stock_threshold === undefined) {
+          p.low_stock_threshold = 10;
+        }
+      });
+      const p1 = db.products.find((p: any) => p.id === 'prod-1' || p.slug === 'kino-ultra-anc-wireless-earbuds');
+      if (p1) {
+        if (p1.timer_enabled === undefined) {
+          p1.timer_enabled = true;
+          p1.timer_title = 'অফারটি শেষ হতে বাকি:';
+        }
+        if (!p1.specifications || p1.specifications.length === 0) {
+          p1.specifications = [
+            { key: 'ব্লুটুথ ভার্সন (Bluetooth)', value: 'v5.3 Fast Pair' },
+            { key: 'নয়েজ ক্যানসেলেশন (ANC)', value: 'Up to 35dB Active Noise Cancellation' },
+            { key: 'প্লেব্যাক টাইম (Battery)', value: '৩০ ঘণ্টা পর্যন্ত (চার্জিং কেস সহ)' },
+            { key: 'চার্জিং প্রযুক্তি', value: 'Type-C Fast Charging (10 min charge = 2 hours)' },
+            { key: 'ওয়াটার রেজিস্ট্যান্স', value: 'IPX5 Water & Sweat Proof' },
+            { key: 'ড্রাইভার সাইজ', value: '10mm Dynamic Bass Boost Drivers' },
+            { key: 'ওয়ারেন্টি', value: '৬ মাসের রিপ্লেসমেন্ট ওয়ারেন্টি' }
+          ];
+        }
+      }
+    }
+    if (!db.reviews || db.reviews.length === 0) {
+      db.reviews = initialReviews;
+    }
+    if (!db.coupons || db.coupons.length === 0) {
+      db.coupons = initialCoupons;
+    }
+    if (db.settings) {
+      if (db.settings.admin_id === 'Kinomart') {
+        db.settings.admin_id = 'kinomart';
+      }
+      if (db.settings.admin_password === 'Kinomart1') {
+        db.settings.admin_password = '@kinomart12@';
+      }
+    }
+    return db;
+  } catch (err) {
+    console.error('Error reading db.json, resetting to initial', err);
+    return {
+      categories: initialCategories,
+      products: initialProducts,
+      orders: initialOrders,
+      settings: initialSettings,
+      customers: initialCustomers,
+      contact_messages: []
+    };
+  }
+}
+
+async function syncDbToSupabase(db: any) {
+  if (!supabase) return;
+  try {
+    if (db.categories && db.categories.length > 0) {
+      await supabase.from('categories').upsert(db.categories, { onConflict: 'id' });
+    }
+    if (db.products && db.products.length > 0) {
+      await supabase.from('products').upsert(db.products, { onConflict: 'id' });
+    }
+    if (db.orders && db.orders.length > 0) {
+      await supabase.from('orders').upsert(db.orders, { onConflict: 'id' });
+    }
+    if (db.customers && db.customers.length > 0) {
+      await supabase.from('customers').upsert(db.customers, { onConflict: 'id' });
+    }
+    if (db.coupons && db.coupons.length > 0) {
+      await supabase.from('coupons').upsert(db.coupons, { onConflict: 'id' });
+    }
+    if (db.settings) {
+      await supabase.from('settings').upsert([{ id: 'store_settings', ...db.settings }], { onConflict: 'id' });
+    }
+  } catch (err) {
+    console.error('[Supabase Sync Error]', err);
+  }
+}
+
+function saveDatabase(data: any) {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('Writing to local filesystem skipped or restricted:', e);
+  }
+  if (supabase) {
+    syncDbToSupabase(data).catch(err => console.error('Supabase async save error:', err));
+  }
+}
+
+// REST API ROUTES
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
+});
+
+// Settings
+app.get('/api/settings', (req, res) => {
+  const db = loadDatabase();
+  const safeSettings = { ...db.settings };
+  delete safeSettings.admin_password; // Don't send password
+  res.json(safeSettings);
+});
+
+app.post('/api/settings', (req, res) => {
+  const db = loadDatabase();
+  db.settings = { ...db.settings, ...req.body };
+  saveDatabase(db);
+  res.json({ success: true, settings: db.settings });
+});
+
+// Admin Auth
+app.post('/api/admin/login', (req, res) => {
+  const { admin_id, password } = req.body;
+  const db = loadDatabase();
+  const currentAdminId = db.settings.admin_id || 'kinomart';
+  const currentPassword = db.settings.admin_password || '@kinomart12@';
+
+  const isIdMatch = admin_id && currentAdminId && String(admin_id).trim().toLowerCase() === String(currentAdminId).trim().toLowerCase();
+  const isPassMatch = password && password === currentPassword;
+
+  if (isIdMatch && isPassMatch) {
+    res.json({ success: true, token: 'admin-token-kinomart-secret', admin_id: currentAdminId });
+  } else {
+    res.status(401).json({ success: false, error: 'ভুল আইডি অথবা পাসওয়ার্ড!' });
+  }
+});
+
+app.post('/api/admin/change-password', (req, res) => {
+  const { old_password, new_admin_id, new_password } = req.body;
+  const db = loadDatabase();
+  const currentPassword = db.settings.admin_password || '@kinomart12@';
+
+  if (old_password !== currentPassword) {
+    return res.status(400).json({ success: false, error: 'বর্তমান পাসওয়ার্ড সঠিক নয়' });
+  }
+  if (new_admin_id && new_admin_id.trim()) {
+    db.settings.admin_id = new_admin_id.trim();
+  }
+  if (new_password && new_password.trim()) {
+    db.settings.admin_password = new_password.trim();
+  }
+  saveDatabase(db);
+  res.json({ success: true, admin_id: db.settings.admin_id, message: 'এডমিন আইডি ও পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে' });
+});
+
+// Categories
+app.get('/api/categories', (req, res) => {
+  const db = loadDatabase();
+  const categories = db.categories.sort((a: any, b: any) => a.display_order - b.display_order);
+  res.json(categories);
+});
+
+// Coupons API
+app.get('/api/coupons', (req, res) => {
+  const db = loadDatabase();
+  const coupons = db.coupons || [];
+  coupons.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  res.json(coupons);
+});
+
+app.post('/api/coupons', (req, res) => {
+  const db = loadDatabase();
+  const { code, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, expires_at, is_active } = req.body;
+
+  if (!code || !discount_value) {
+    return res.status(400).json({ error: 'কুপন কোড ও ডিসকাউন্টের পরিমাণ আবশ্যক' });
+  }
+
+  const cleanCode = String(code).trim().toUpperCase();
+  const exists = (db.coupons || []).some((c: any) => c.code.toUpperCase() === cleanCode);
+  if (exists) {
+    return res.status(400).json({ error: 'এই নামের কুপন কোড ইতিমধ্যেই রয়েছে' });
+  }
+
+  const newCoupon = {
+    id: 'coup-' + Date.now(),
+    code: cleanCode,
+    discount_type: discount_type || 'fixed',
+    discount_value: Number(discount_value),
+    min_order_amount: min_order_amount ? Number(min_order_amount) : 0,
+    max_discount_amount: max_discount_amount ? Number(max_discount_amount) : undefined,
+    usage_limit: usage_limit ? Number(usage_limit) : undefined,
+    used_count: 0,
+    expires_at: expires_at || '',
+    is_active: is_active ?? true,
+    created_at: new Date().toISOString()
+  };
+
+  db.coupons = db.coupons || [];
+  db.coupons.unshift(newCoupon);
+  saveDatabase(db);
+  res.json({ success: true, coupon: newCoupon });
+});
+
+app.put('/api/coupons/:id', (req, res) => {
+  const db = loadDatabase();
+  const idx = (db.coupons || []).findIndex((c: any) => c.id === req.params.id);
+  if (idx !== -1) {
+    db.coupons[idx] = { ...db.coupons[idx], ...req.body };
+    saveDatabase(db);
+    res.json({ success: true, coupon: db.coupons[idx] });
+  } else {
+    res.status(404).json({ error: 'কুপন পাওয়া যায়নি' });
+  }
+});
+
+app.delete('/api/coupons/:id', (req, res) => {
+  const db = loadDatabase();
+  db.coupons = (db.coupons || []).filter((c: any) => c.id !== req.params.id);
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
+app.post('/api/coupons/validate', (req, res) => {
+  const db = loadDatabase();
+  const { code, cart_total } = req.body;
+
+  if (!code || !code.trim()) {
+    return res.status(400).json({ valid: false, message: 'কুপন কোড টাইপ করুন' });
+  }
+
+  const cleanCode = String(code).trim().toUpperCase();
+  const coupon = (db.coupons || []).find((c: any) => c.code.toUpperCase() === cleanCode);
+
+  if (!coupon) {
+    return res.status(404).json({ valid: false, message: 'কুপন কোডটি সঠিক নয়' });
+  }
+
+  if (!coupon.is_active) {
+    return res.status(400).json({ valid: false, message: 'এই কুপন কোডটি বর্তমানে বন্ধ রয়েছে' });
+  }
+
+  if (coupon.expires_at) {
+    const expDate = new Date(coupon.expires_at);
+    if (!isNaN(expDate.getTime()) && new Date() > expDate) {
+      return res.status(400).json({ valid: false, message: 'কুপন কোডটির মেয়াদ শেষ হয়ে গেছে' });
+    }
+  }
+
+  if (coupon.usage_limit !== undefined && coupon.usage_limit > 0) {
+    if (coupon.used_count >= coupon.usage_limit) {
+      return res.status(400).json({ valid: false, message: 'এই কুপনের মোট ব্যবহারের সীমা শেষ হয়ে গেছে' });
+    }
+  }
+
+  const subtotal = Number(cart_total) || 0;
+  if (coupon.min_order_amount && subtotal < coupon.min_order_amount) {
+    return res.status(400).json({
+      valid: false,
+      message: `এই কুপনটি ব্যবহার করতে অন্তত ৳${coupon.min_order_amount} টাকার প্রোডাক্ট অর্ডার করতে হবে`
+    });
+  }
+
+  let discountAmount = 0;
+  if (coupon.discount_type === 'percentage') {
+    discountAmount = Math.round((subtotal * coupon.discount_value) / 100);
+    if (coupon.max_discount_amount && discountAmount > coupon.max_discount_amount) {
+      discountAmount = coupon.max_discount_amount;
+    }
+  } else {
+    discountAmount = Math.min(coupon.discount_value, subtotal);
+  }
+
+  res.json({
+    valid: true,
+    coupon_code: coupon.code,
+    discount_type: coupon.discount_type,
+    discount_value: coupon.discount_value,
+    discount_amount: discountAmount,
+    message: `সফলভাবে ৳${discountAmount} ছাড় যুক্ত হয়েছে!`
+  });
+});
+
+app.post('/api/categories', (req, res) => {
+  const db = loadDatabase();
+  const newCat = {
+    id: 'cat-' + Date.now(),
+    name: req.body.name,
+    slug: req.body.slug || req.body.name.toLowerCase().replace(/\s+/g, '-'),
+    icon_name: req.body.icon_name || 'Grid',
+    icon_url: req.body.icon_url || '',
+    display_order: req.body.display_order || db.categories.length + 1,
+    is_visible: req.body.is_visible ?? true
+  };
+  db.categories.push(newCat);
+  saveDatabase(db);
+  res.json({ success: true, category: newCat });
+});
+
+app.put('/api/categories/:id', (req, res) => {
+  const db = loadDatabase();
+  const idx = db.categories.findIndex((c: any) => c.id === req.params.id);
+  if (idx !== -1) {
+    db.categories[idx] = { ...db.categories[idx], ...req.body };
+    saveDatabase(db);
+    res.json({ success: true, category: db.categories[idx] });
+  } else {
+    res.status(404).json({ error: 'Category not found' });
+  }
+});
+
+app.delete('/api/categories/:id', (req, res) => {
+  const db = loadDatabase();
+  db.categories = db.categories.filter((c: any) => c.id !== req.params.id);
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
+// Products
+app.get('/api/products', (req, res) => {
+  const db = loadDatabase();
+  let products = db.products || [];
+
+  const { category, search, sort, status } = req.query;
+
+  if (status) {
+    if (status !== 'all') {
+      products = products.filter((p: any) => p.status === status);
+    }
+  } else {
+    // default public view active only
+    products = products.filter((p: any) => p.status === 'active');
+  }
+
+  if (category && category !== 'all') {
+    products = products.filter((p: any) => p.category_id === category || p.category_name === category);
+  }
+
+  if (search) {
+    const q = (search as string).toLowerCase();
+    products = products.filter((p: any) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+  }
+
+  if (sort === 'price-low') {
+    products.sort((a: any, b: any) => (a.discount_price || a.price) - (b.discount_price || b.price));
+  } else if (sort === 'price-high') {
+    products.sort((a: any, b: any) => (b.discount_price || b.price) - (a.discount_price || a.price));
+  } else if (sort === 'rating') {
+    products.sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0));
+  } else {
+    // new or default
+    products.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+
+  res.json(products);
+});
+
+app.get('/api/products/:identifier', (req, res) => {
+  const db = loadDatabase();
+  const idOrSlug = req.params.identifier;
+  const product = db.products.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
+
+app.post('/api/products', (req, res) => {
+  const db = loadDatabase();
+  const newProduct = {
+    id: 'prod-' + Date.now(),
+    name: req.body.name,
+    slug: req.body.slug || req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    description: req.body.description || '',
+    short_description: req.body.short_description || '',
+    price: Number(req.body.price),
+    discount_price: req.body.discount_price ? Number(req.body.discount_price) : undefined,
+    category_id: req.body.category_id,
+    category_name: req.body.category_name,
+    images: req.body.images || ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'],
+    video_url: req.body.video_url || '',
+    variants: req.body.variants || [],
+    specifications: req.body.specifications || [],
+    stock: Number(req.body.stock || 50),
+    low_stock_threshold: req.body.low_stock_threshold !== undefined ? Number(req.body.low_stock_threshold) : 10,
+    status: req.body.status || 'active',
+    is_featured: req.body.is_featured || false,
+    is_best_seller: req.body.is_best_seller || false,
+    timer_enabled: req.body.timer_enabled || false,
+    timer_title: req.body.timer_title || 'অফারটি শেষ হতে বাকি:',
+    timer_end_time: req.body.timer_end_time || '',
+    timer_hours: req.body.timer_hours,
+    rating: 5.0,
+    reviews_count: 1,
+    seo_title: req.body.seo_title || req.body.name,
+    seo_description: req.body.seo_description || req.body.description,
+    created_at: new Date().toISOString()
+  };
+
+  db.products.unshift(newProduct);
+  saveDatabase(db);
+  res.json({ success: true, product: newProduct });
+});
+
+app.put('/api/products/:id', (req, res) => {
+  const db = loadDatabase();
+  const idx = db.products.findIndex((p: any) => p.id === req.params.id);
+  if (idx !== -1) {
+    db.products[idx] = { ...db.products[idx], ...req.body };
+    saveDatabase(db);
+    res.json({ success: true, product: db.products[idx] });
+  } else {
+    res.status(404).json({ error: 'Product not found' });
+  }
+});
+
+app.delete('/api/products/:id', (req, res) => {
+  const db = loadDatabase();
+  db.products = db.products.filter((p: any) => p.id !== req.params.id);
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
+// Product Reviews
+app.get('/api/products/:identifier/reviews', (req, res) => {
+  const db = loadDatabase();
+  const idOrSlug = req.params.identifier;
+  const product = db.products.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
+  const productId = product ? product.id : idOrSlug;
+
+  const reviews = (db.reviews || []).filter((r: any) => r.product_id === productId);
+  reviews.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  res.json(reviews);
+});
+
+app.post('/api/products/:identifier/reviews', (req, res) => {
+  const db = loadDatabase();
+  const idOrSlug = req.params.identifier;
+  const product = db.products.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
+
+  if (!product) {
+    return res.status(404).json({ error: 'প্রোডাক্ট পাওয়া যায়নি' });
+  }
+
+  const { customer_name, rating, comment, phone } = req.body;
+
+  if (!customer_name || !rating || !comment) {
+    return res.status(400).json({ error: 'সকল প্রয়োজনীয় তথ্য (নাম, স্টার রেটিং ও কমেন্ট) পূরণ করুন' });
+  }
+
+  const newReview = {
+    id: 'rev-' + Date.now(),
+    product_id: product.id,
+    customer_name: String(customer_name).trim(),
+    phone: phone ? String(phone).trim() : undefined,
+    rating: Number(rating),
+    comment: String(comment).trim(),
+    is_verified_buyer: true,
+    created_at: new Date().toISOString()
+  };
+
+  db.reviews = db.reviews || [];
+  db.reviews.unshift(newReview);
+
+  // Recalculate average rating & reviews count
+  const productReviews = db.reviews.filter((r: any) => r.product_id === product.id);
+  const totalRating = productReviews.reduce((sum: number, r: any) => sum + Number(r.rating || 5), 0);
+  const avgRating = Number((totalRating / productReviews.length).toFixed(1));
+
+  const prodIndex = db.products.findIndex((p: any) => p.id === product.id);
+  if (prodIndex !== -1) {
+    db.products[prodIndex].rating = avgRating;
+    db.products[prodIndex].reviews_count = productReviews.length;
+  }
+
+  saveDatabase(db);
+
+  res.json({
+    success: true,
+    review: newReview,
+    new_rating: avgRating,
+    reviews_count: productReviews.length
+  });
+});
+
+// Orders & Auto Account Creation
+app.get('/api/orders', (req, res) => {
+  const db = loadDatabase();
+  let orders = db.orders || [];
+
+  const { status, call_status, search, from, to } = req.query;
+
+  if (status && status !== 'all') {
+    orders = orders.filter((o: any) => o.order_status === status);
+  }
+
+  if (call_status && call_status !== 'all') {
+    orders = orders.filter((o: any) => o.call_status === call_status);
+  }
+
+  if (search) {
+    const q = (search as string).toLowerCase();
+    orders = orders.filter((o: any) => 
+      o.order_number.toLowerCase().includes(q) ||
+      o.customer_name.toLowerCase().includes(q) ||
+      o.phone.includes(q) ||
+      o.address.toLowerCase().includes(q)
+    );
+  }
+
+  if (from) {
+    orders = orders.filter((o: any) => new Date(o.created_at) >= new Date(from as string));
+  }
+  if (to) {
+    orders = orders.filter((o: any) => new Date(o.created_at) <= new Date(to as string));
+  }
+
+  // Sort newest first
+  orders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  res.json(orders);
+});
+
+// Create Order (Public Checkout)
+app.post('/api/orders', (req, res) => {
+  const db = loadDatabase();
+  const { customer_name, phone, address, area, shipping_cost, items, payment_method, bkash_number, transaction_id, coupon_code, discount_amount } = req.body;
+
+  if (!customer_name || !phone || !address || !items || items.length === 0) {
+    return res.status(400).json({ error: 'সকল প্রয়োজনীয় তথ্য প্রদান করুন' });
+  }
+
+  // Calculate total revenue
+  const itemsSubtotal = items.reduce((sum: number, item: any) => sum + item.price * item.qty, 0);
+  const discountVal = Number(discount_amount) || 0;
+  const total_revenue = Math.max(0, itemsSubtotal - discountVal) + (Number(shipping_cost) || 60);
+
+  // Auto Customer Creation / Match
+  let customer = db.customers.find((c: any) => c.phone === phone);
+  if (!customer) {
+    customer = {
+      id: 'cust-' + Date.now(),
+      phone: phone,
+      name: customer_name,
+      address: address,
+      created_at: new Date().toISOString()
+    };
+    db.customers.push(customer);
+  } else {
+    // Update name and address if changed
+    customer.name = customer_name;
+    customer.address = address;
+  }
+
+  // Increment coupon usage count if applied
+  if (coupon_code) {
+    const cleanCoup = String(coupon_code).trim().toUpperCase();
+    const coupIdx = (db.coupons || []).findIndex((c: any) => c.code.toUpperCase() === cleanCoup);
+    if (coupIdx !== -1) {
+      db.coupons[coupIdx].used_count = (db.coupons[coupIdx].used_count || 0) + 1;
+    }
+  }
+
+  const orderNumber = 'KM-' + Math.floor(10000 + Math.random() * 90000);
+
+  const newOrder = {
+    id: 'ord-' + Date.now(),
+    order_number: orderNumber,
+    customer_id: customer.id,
+    customer_name,
+    phone,
+    address,
+    area: area || 'inside_dhaka',
+    shipping_cost: Number(shipping_cost) || 60,
+    items,
+    total_revenue,
+    payment_method: payment_method || 'cod',
+    bkash_number: bkash_number || '',
+    transaction_id: transaction_id || '',
+    coupon_code: coupon_code ? String(coupon_code).trim().toUpperCase() : undefined,
+    discount_amount: discountVal > 0 ? discountVal : undefined,
+    order_status: 'pending',
+    call_status: 'not_called',
+    note: '',
+    created_at: new Date().toISOString()
+  };
+
+  db.orders.unshift(newOrder);
+  saveDatabase(db);
+
+  // Simulating Facebook Pixel & Conversions API (CAPI) purchase event
+  console.log(`[CAPI Event] Purchase logged for Order ${orderNumber}, Total: ৳${total_revenue}, Phone: ${phone}`);
+
+  res.json({
+    success: true,
+    order: newOrder,
+    customer: customer,
+    token: 'session-' + customer.phone // Auto-login token
+  });
+});
+
+app.patch('/api/orders/:id', (req, res) => {
+  const db = loadDatabase();
+  const idx = db.orders.findIndex((o: any) => o.id === req.params.id);
+  if (idx !== -1) {
+    db.orders[idx] = { ...db.orders[idx], ...req.body };
+    saveDatabase(db);
+    res.json({ success: true, order: db.orders[idx] });
+  } else {
+    res.status(404).json({ error: 'Order not found' });
+  }
+});
+
+app.delete('/api/orders/:id', (req, res) => {
+  const db = loadDatabase();
+  db.orders = db.orders.filter((o: any) => o.id !== req.params.id);
+  saveDatabase(db);
+  res.json({ success: true });
+});
+
+// Customer Orders Lookup
+app.get('/api/customer/orders', (req, res) => {
+  const phone = req.query.phone as string;
+  const db = loadDatabase();
+  if (!phone) {
+    return res.json([]);
+  }
+  const orders = db.orders.filter((o: any) => o.phone === phone);
+  orders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  res.json(orders);
+});
+
+// Contact message
+app.post('/api/contact', (req, res) => {
+  const db = loadDatabase();
+  const newMsg = {
+    id: 'msg-' + Date.now(),
+    name: req.body.name,
+    phone: req.body.phone,
+    message: req.body.message,
+    created_at: new Date().toISOString()
+  };
+  db.contact_messages = db.contact_messages || [];
+  db.contact_messages.unshift(newMsg);
+  saveDatabase(db);
+  res.json({ success: true, message: 'আপনার বার্তাটি গ্রহণ করা হয়েছে। ধন্যবাদ!' });
+});
+
+app.get('/api/contact', (req, res) => {
+  const db = loadDatabase();
+  res.json(db.contact_messages || []);
+});
+
+// Server boot with Vite middleware
+async function startServer() {
+  if (process.env.NODE_ENV !== 'production') {
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: 'spa',
+    });
+    app.use(vite.middlewares);
+  } else {
+    const distPath = path.join(process.cwd(), 'dist');
+    app.use(express.static(distPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+    });
+  }
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[KinoMart] Server running on http://localhost:${PORT}`);
+  });
+}
+
+if (process.env.VERCEL !== '1') {
+  startServer();
+}
+
+export default app;
