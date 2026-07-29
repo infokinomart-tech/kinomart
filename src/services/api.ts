@@ -85,12 +85,18 @@ export const api = {
 
   // Admin Auth
   async adminLogin(admin_id: string, password: string): Promise<{ success: boolean; token?: string; error?: string }> {
-    const res = await fetch('/api/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin_id, password })
-    });
-    return res.json();
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ admin_id, password })
+      });
+      const data = await res.json();
+      return data;
+    } catch (e: any) {
+      console.error('Admin login error:', e);
+      return { success: false, error: 'সার্ভারের সাথে যোগাযোগ করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।' };
+    }
   },
 
   async adminChangePassword(old_password: string, new_password: string, new_admin_id?: string): Promise<{ success: boolean; admin_id?: string; error?: string }> {

@@ -59,7 +59,8 @@ export const AdminLogin: React.FC = () => {
                 type="text"
                 value={adminId}
                 onChange={e => setAdminId(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[#0F1420] border border-[#27324A] rounded-xl text-sm text-white focus:border-[#3B82F6] outline-none"
+                placeholder="kinomart"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#0F1420] border border-[#27324A] rounded-xl text-sm text-white focus:border-[#3B82F6] outline-none placeholder-gray-500"
                 required
               />
               <User className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -73,7 +74,8 @@ export const AdminLogin: React.FC = () => {
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-[#0F1420] border border-[#27324A] rounded-xl text-sm text-white focus:border-[#3B82F6] outline-none"
+                placeholder="@kinomart12@"
+                className="w-full pl-10 pr-4 py-2.5 bg-[#0F1420] border border-[#27324A] rounded-xl text-sm text-white focus:border-[#3B82F6] outline-none placeholder-gray-500"
                 required
               />
               <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
@@ -87,6 +89,11 @@ export const AdminLogin: React.FC = () => {
           >
             {isLoading ? 'লগইন হচ্ছে...' : 'প্যানেলে প্রবেশ করুন'}
           </button>
+
+          <div className="pt-2 text-center text-xs text-gray-400 border-t border-[#27324A]/60 space-y-1">
+            <p>ডিফল্ট আইডি: <span className="text-blue-400 font-semibold select-all">kinomart</span></p>
+            <p>পাসওয়ার্ড: <span className="text-blue-400 font-semibold select-all">@kinomart12@</span></p>
+          </div>
         </form>
       </div>
     </div>
