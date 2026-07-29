@@ -554,48 +554,58 @@ async function loadDatabase() {
 
   if (supabase) {
     try {
-      // 1. Try reading from store_data table
-      const { data: storeRow, error: storeErr } = await supabase.from('store_data').select('data').eq('id', 'main').maybeSingle();
-      if (!storeErr && storeRow && storeRow.data) {
-        cachedDbMemory = storeRow.data;
-        if (!cachedDbMemory.settings) cachedDbMemory.settings = { ...initialSettings };
-        if (!cachedDbMemory.settings.admin_id) cachedDbMemory.settings.admin_id = 'kinomart';
-        if (!cachedDbMemory.settings.admin_password) cachedDbMemory.settings.admin_password = '@kinomart12@';
-        lastDbFetchTime = Date.now();
-        return cachedDbMemory;
-      }
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Supabase timeout')), 1200)
+      );
 
-      // 2. Try reading from relational tables
-      const [catRes, prodRes, ordRes, custRes, coupRes, revRes, setRes] = await Promise.all([
-        supabase.from('categories').select('*'),
-        supabase.from('products').select('*'),
-        supabase.from('orders').select('*'),
-        supabase.from('customers').select('*'),
-        supabase.from('coupons').select('*'),
-        supabase.from('reviews').select('*'),
-        supabase.from('settings').select('*')
-      ]);
+      const fetchPromise = (async () => {
+        // 1. Try reading from store_data table
+        const { data: storeRow, error: storeErr } = await supabase.from('store_data').select('data').eq('id', 'main').maybeSingle();
+        if (!storeErr && storeRow && storeRow.data) {
+          cachedDbMemory = storeRow.data;
+          if (!cachedDbMemory.settings) cachedDbMemory.settings = { ...initialSettings };
+          if (!cachedDbMemory.settings.admin_id) cachedDbMemory.settings.admin_id = 'kinomart';
+          if (!cachedDbMemory.settings.admin_password) cachedDbMemory.settings.admin_password = '@kinomart12@';
+          lastDbFetchTime = Date.now();
+          return cachedDbMemory;
+        }
 
-      const hasSupaData = (prodRes.data && prodRes.data.length > 0) || (ordRes.data && ordRes.data.length > 0) || (setRes.data && setRes.data.length > 0);
+        // 2. Try reading from relational tables
+        const [catRes, prodRes, ordRes, custRes, coupRes, revRes, setRes] = await Promise.all([
+          supabase.from('categories').select('*'),
+          supabase.from('products').select('*'),
+          supabase.from('orders').select('*'),
+          supabase.from('customers').select('*'),
+          supabase.from('coupons').select('*'),
+          supabase.from('reviews').select('*'),
+          supabase.from('settings').select('*')
+        ]);
 
-      if (hasSupaData) {
-        const db = loadDatabaseFromFile();
-        if (catRes.data && catRes.data.length > 0) db.categories = catRes.data;
-        if (prodRes.data && prodRes.data.length > 0) db.products = prodRes.data;
-        if (ordRes.data && ordRes.data.length > 0) db.orders = ordRes.data;
-        if (custRes.data && custRes.data.length > 0) db.customers = custRes.data;
-        if (coupRes.data && coupRes.data.length > 0) db.coupons = coupRes.data;
-        if (revRes.data && revRes.data.length > 0) db.reviews = revRes.data;
-        if (setRes.data && setRes.data.length > 0) db.settings = { ...db.settings, ...setRes.data[0] };
-        if (!db.settings.admin_id) db.settings.admin_id = 'kinomart';
-        if (!db.settings.admin_password) db.settings.admin_password = '@kinomart12@';
+        const hasSupaData = (prodRes.data && prodRes.data.length > 0) || (ordRes.data && ordRes.data.length > 0) || (setRes.data && setRes.data.length > 0);
 
-        cachedDbMemory = db;
-        lastDbFetchTime = Date.now();
-        return cachedDbMemory;
-      }
+        if (hasSupaData) {
+          const db = loadDatabaseFromFile();
+          if (catRes.data && catRes.data.length > 0) db.categories = catRes.data;
+          if (prodRes.data && prodRes.data.length > 0) db.products = prodRes.data;
+          if (ordRes.data && ordRes.data.length > 0) db.orders = ordRes.data;
+          if (custRes.data && custRes.data.length > 0) db.customers = custRes.data;
+          if (coupRes.data && coupRes.data.length > 0) db.coupons = coupRes.data;
+          if (revRes.data && revRes.data.length > 0) db.reviews = revRes.data;
+          if (setRes.data && setRes.data.length > 0) db.settings = { ...db.settings, ...setRes.data[0] };
+          if (!db.settings.admin_id) db.settings.admin_id = 'kinomart';
+          if (!db.settings.admin_password) db.settings.admin_password = '@kinomart12@';
+
+          cachedDbMemory = db;
+          lastDbFetchTime = Date.now();
+          return cachedDbMemory;
+        }
+        return null;
+      })();
+
+      const result = await Promise.race([fetchPromise, timeoutPromise]) as any;
+      if (result) return result;
     } catch (err) {
-      console.error('[Supabase Read Error]', err);
+      console.error('[Supabase Read Error or Timeout]', err);
     }
   }
 
