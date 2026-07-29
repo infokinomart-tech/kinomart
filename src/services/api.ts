@@ -9,6 +9,12 @@ export const api = {
     return productsCacheMap.get(identifier);
   },
 
+  clearProductCache() {
+    allProductsCache = null;
+    allProductsCacheTime = 0;
+    productsCacheMap.clear();
+  },
+
   setProductCache(products: Product[]) {
     allProductsCache = products;
     allProductsCacheTime = Date.now();
@@ -74,13 +80,15 @@ export const api = {
     return res.json();
   },
 
-  async updateSettings(settings: Partial<SiteSettings>): Promise<void> {
+  async updateSettings(settings: Partial<SiteSettings>): Promise<SiteSettings> {
     const res = await fetch('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings)
     });
     if (!res.ok) throw new Error('Failed to update settings');
+    const data = await res.json();
+    return data.settings || data;
   },
 
   // Admin Auth
@@ -142,7 +150,7 @@ export const api = {
   // Products
   async getProducts(params?: { category?: string; search?: string; sort?: string; status?: string }): Promise<Product[]> {
     const hasParams = params && Object.keys(params).some(k => Boolean((params as any)[k]));
-    if (!hasParams && allProductsCache && (Date.now() - allProductsCacheTime < 60000)) {
+    if (!hasParams && allProductsCache && (Date.now() - allProductsCacheTime < 2000)) {
       return allProductsCache;
     }
 
@@ -167,21 +175,6 @@ export const api = {
   },
 
   async getProduct(identifier: string): Promise<Product> {
-    const cached = productsCacheMap.get(identifier);
-    if (cached) {
-      // Revalidate in background without blocking caller
-      fetch(`/api/products/${identifier}`)
-        .then(res => res.ok ? res.json() : null)
-        .then(data => {
-          if (data) {
-            productsCacheMap.set(data.id, data);
-            if (data.slug) productsCacheMap.set(data.slug, data);
-          }
-        })
-        .catch(() => {});
-      return cached;
-    }
-
     const res = await fetch(`/api/products/${identifier}`);
     if (!res.ok) throw new Error('Product not found');
     const data: Product = await res.json();
@@ -197,6 +190,7 @@ export const api = {
       body: JSON.stringify(product)
     });
     const data = await res.json();
+    this.clearProductCache();
     return data.product;
   },
 
@@ -207,11 +201,13 @@ export const api = {
       body: JSON.stringify(product)
     });
     const data = await res.json();
+    this.clearProductCache();
     return data.product;
   },
 
   async deleteProduct(id: string): Promise<void> {
     await fetch(`/api/products/${id}`, { method: 'DELETE' });
+    this.clearProductCache();
   },
 
   // Reviews

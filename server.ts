@@ -548,14 +548,14 @@ function loadDatabaseFromFile() {
 }
 
 async function loadDatabase() {
-  if (cachedDbMemory && (Date.now() - lastDbFetchTime < 3000)) {
+  if (cachedDbMemory && (Date.now() - lastDbFetchTime < 10000)) {
     return cachedDbMemory;
   }
 
   if (supabase) {
     try {
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Supabase timeout')), 1200)
+        setTimeout(() => reject(new Error('Supabase timeout')), 1500)
       );
 
       const fetchPromise = (async () => {
@@ -630,29 +630,34 @@ async function saveDatabase(data: any) {
   if (supabase) {
     try {
       // 1. Save to backup store_data table
-      await supabase.from('store_data').upsert({ id: 'main', data, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+      try {
+        const { error: storeErr } = await supabase.from('store_data').upsert({ id: 'main', data, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+        if (storeErr) console.error('[Supabase store_data upsert error]:', storeErr.message);
+      } catch (e: any) {
+        console.error('[Supabase store_data catch]:', e?.message || e);
+      }
 
-      // 2. Save to individual relational tables
+      // 2. Save to individual relational tables safely
       if (data.categories && data.categories.length > 0) {
-        await supabase.from('categories').upsert(data.categories, { onConflict: 'id' });
+        try { await supabase.from('categories').upsert(data.categories, { onConflict: 'id' }); } catch (e) {}
       }
       if (data.products && data.products.length > 0) {
-        await supabase.from('products').upsert(data.products, { onConflict: 'id' });
+        try { await supabase.from('products').upsert(data.products, { onConflict: 'id' }); } catch (e) {}
       }
       if (data.orders && data.orders.length > 0) {
-        await supabase.from('orders').upsert(data.orders, { onConflict: 'id' });
+        try { await supabase.from('orders').upsert(data.orders, { onConflict: 'id' }); } catch (e) {}
       }
       if (data.customers && data.customers.length > 0) {
-        await supabase.from('customers').upsert(data.customers, { onConflict: 'id' });
+        try { await supabase.from('customers').upsert(data.customers, { onConflict: 'id' }); } catch (e) {}
       }
       if (data.coupons && data.coupons.length > 0) {
-        await supabase.from('coupons').upsert(data.coupons, { onConflict: 'id' });
+        try { await supabase.from('coupons').upsert(data.coupons, { onConflict: 'id' }); } catch (e) {}
       }
       if (data.reviews && data.reviews.length > 0) {
-        await supabase.from('reviews').upsert(data.reviews, { onConflict: 'id' });
+        try { await supabase.from('reviews').upsert(data.reviews, { onConflict: 'id' }); } catch (e) {}
       }
       if (data.settings) {
-        await supabase.from('settings').upsert([{ id: 'store_settings', ...data.settings }], { onConflict: 'id' });
+        try { await supabase.from('settings').upsert([{ id: 'store_settings', ...data.settings }], { onConflict: 'id' }); } catch (e) {}
       }
     } catch (err) {
       console.error('[Supabase Write Error]', err);
