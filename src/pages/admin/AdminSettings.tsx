@@ -21,7 +21,32 @@ CREATE TABLE IF NOT EXISTS public.store_data (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-ALTER TABLE public.store_data DISABLE ROW LEVEL SECURITY;`;
+ALTER TABLE public.store_data DISABLE ROW LEVEL SECURITY;
+
+DO $$ 
+BEGIN
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'categories') THEN
+    ALTER TABLE public.categories DISABLE ROW LEVEL SECURITY;
+  END IF;
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'products') THEN
+    ALTER TABLE public.products DISABLE ROW LEVEL SECURITY;
+  END IF;
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'orders') THEN
+    ALTER TABLE public.orders DISABLE ROW LEVEL SECURITY;
+  END IF;
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'customers') THEN
+    ALTER TABLE public.customers DISABLE ROW LEVEL SECURITY;
+  END IF;
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'coupons') THEN
+    ALTER TABLE public.coupons DISABLE ROW LEVEL SECURITY;
+  END IF;
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'reviews') THEN
+    ALTER TABLE public.reviews DISABLE ROW LEVEL SECURITY;
+  END IF;
+  IF EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'settings') THEN
+    ALTER TABLE public.settings DISABLE ROW LEVEL SECURITY;
+  END IF;
+END $$;`;
 
   const checkSupabaseStatus = async () => {
     try {

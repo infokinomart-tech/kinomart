@@ -64,21 +64,21 @@
       "is_visible": true
     },
     {
-      "id": "cat-1785318796529",
-      "name": "Test Category",
-      "slug": "test-category",
-      "icon_name": "Grid",
-      "icon_url": "https://example.com/icon.png",
-      "display_order": 10,
-      "is_visible": true
-    },
-    {
       "id": "cat-1785318942390",
       "name": "নতুন স্মার্ট ওয়াচ",
       "slug": "নতুন-স্মার্ট-ওয়াচ",
       "icon_name": "Grid",
       "icon_url": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=300&q=80",
       "display_order": 11,
+      "is_visible": true
+    },
+    {
+      "id": "cat-1785320643983",
+      "name": "প্রিমিয়াম হেডফোন",
+      "slug": "প্রিমিয়াম-হেডফোন",
+      "icon_name": "Grid",
+      "icon_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=300&q=80",
+      "display_order": 12,
       "is_visible": true
     }
   ],

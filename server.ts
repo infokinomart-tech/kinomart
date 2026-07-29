@@ -547,8 +547,8 @@ function loadDatabaseFromFile() {
   }
 }
 
-async function loadDatabase() {
-  if (cachedDbMemory && (Date.now() - lastDbFetchTime < 3000)) {
+async function loadDatabase(forceRefresh = false) {
+  if (cachedDbMemory && !forceRefresh) {
     return cachedDbMemory;
   }
 
@@ -557,7 +557,7 @@ async function loadDatabase() {
   if (supabase) {
     try {
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Supabase timeout')), 2000)
+        setTimeout(() => reject(new Error('Supabase timeout')), 3000)
       );
 
       const fetchPromise = (async () => {
@@ -596,16 +596,10 @@ async function loadDatabase() {
           cachedDbMemory = merged;
           lastDbFetchTime = Date.now();
 
-          // If local items were merged that were missing in Supabase, update Supabase asynchronously
-          if ((merged.categories || []).length > (supaDb.categories || []).length ||
-              (merged.products || []).length > (supaDb.products || []).length) {
-            saveDatabase(merged).catch(() => {});
-          }
-
           return cachedDbMemory;
         }
 
-        // 2. Try reading from relational tables
+        // 2. Try reading from relational tables if store_data is empty or missing
         const [catRes, prodRes, ordRes, custRes, coupRes, revRes, setRes] = await Promise.all([
           supabase.from('categories').select('*'),
           supabase.from('products').select('*'),
