@@ -473,7 +473,10 @@ const initialCoupons = [
   }
 ];
 
-function loadDatabase() {
+let cachedDbMemory: any = null;
+let lastDbFetchTime = 0;
+
+function loadDatabaseFromFile() {
   if (!fs.existsSync(DB_FILE)) {
     const defaultData = {
       categories: initialCategories,
@@ -485,126 +488,181 @@ function loadDatabase() {
       coupons: initialCoupons,
       contact_messages: []
     };
-    fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2), 'utf-8');
+    } catch (e) {}
     return defaultData;
   }
   try {
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     const db = JSON.parse(raw);
-    if (db.products && db.products.length > 0) {
-      db.products.forEach((p: any) => {
-        if (p.low_stock_threshold === undefined) {
-          p.low_stock_threshold = 10;
-        }
-      });
-      const p1 = db.products.find((p: any) => p.id === 'prod-1' || p.slug === 'kino-ultra-anc-wireless-earbuds');
-      if (p1) {
-        if (p1.timer_enabled === undefined) {
-          p1.timer_enabled = true;
-          p1.timer_title = 'অফারটি শেষ হতে বাকি:';
-        }
-        if (!p1.specifications || p1.specifications.length === 0) {
-          p1.specifications = [
-            { key: 'ব্লুটুথ ভার্সন (Bluetooth)', value: 'v5.3 Fast Pair' },
-            { key: 'নয়েজ ক্যানসেলেশন (ANC)', value: 'Up to 35dB Active Noise Cancellation' },
-            { key: 'প্লেব্যাক টাইম (Battery)', value: '৩০ ঘণ্টা পর্যন্ত (চার্জিং কেস সহ)' },
-            { key: 'চার্জিং প্রযুক্তি', value: 'Type-C Fast Charging (10 min charge = 2 hours)' },
-            { key: 'ওয়াটার রেজিস্ট্যান্স', value: 'IPX5 Water & Sweat Proof' },
-            { key: 'ড্রাইভার সাইজ', value: '10mm Dynamic Bass Boost Drivers' },
-            { key: 'ওয়ারেন্টি', value: '৬ মাসের রিপ্লেসমেন্ট ওয়ারেন্টি' }
-          ];
-        }
-      }
-    }
-    if (!db.reviews || db.reviews.length === 0) {
-      db.reviews = initialReviews;
-    }
-    if (!db.coupons || db.coupons.length === 0) {
-      db.coupons = initialCoupons;
-    }
-    if (db.settings) {
-      if (db.settings.admin_id === 'Kinomart') {
-        db.settings.admin_id = 'kinomart';
-      }
-      if (db.settings.admin_password === 'Kinomart1') {
-        db.settings.admin_password = '@kinomart12@';
-      }
-    }
+    if (!db.categories || db.categories.length === 0) db.categories = initialCategories;
+    if (!db.products || db.products.length === 0) db.products = initialProducts;
+    if (!db.orders) db.orders = initialOrders;
+    if (!db.settings) db.settings = initialSettings;
+    if (!db.customers) db.customers = initialCustomers;
+    if (!db.reviews) db.reviews = initialReviews;
+    if (!db.coupons) db.coupons = initialCoupons;
+    if (!db.contact_messages) db.contact_messages = [];
     return db;
   } catch (err) {
-    console.error('Error reading db.json, resetting to initial', err);
     return {
       categories: initialCategories,
       products: initialProducts,
       orders: initialOrders,
       settings: initialSettings,
       customers: initialCustomers,
+      reviews: initialReviews,
+      coupons: initialCoupons,
       contact_messages: []
     };
   }
 }
 
-async function syncDbToSupabase(db: any) {
-  if (!supabase) return;
-  try {
-    if (db.categories && db.categories.length > 0) {
-      await supabase.from('categories').upsert(db.categories, { onConflict: 'id' });
-    }
-    if (db.products && db.products.length > 0) {
-      await supabase.from('products').upsert(db.products, { onConflict: 'id' });
-    }
-    if (db.orders && db.orders.length > 0) {
-      await supabase.from('orders').upsert(db.orders, { onConflict: 'id' });
-    }
-    if (db.customers && db.customers.length > 0) {
-      await supabase.from('customers').upsert(db.customers, { onConflict: 'id' });
-    }
-    if (db.coupons && db.coupons.length > 0) {
-      await supabase.from('coupons').upsert(db.coupons, { onConflict: 'id' });
-    }
-    if (db.settings) {
-      await supabase.from('settings').upsert([{ id: 'store_settings', ...db.settings }], { onConflict: 'id' });
-    }
-  } catch (err) {
-    console.error('[Supabase Sync Error]', err);
+async function loadDatabase() {
+  if (cachedDbMemory && (Date.now() - lastDbFetchTime < 3000)) {
+    return cachedDbMemory;
   }
+
+  if (supabase) {
+    try {
+      // 1. Try reading from store_data table
+      const { data: storeRow, error: storeErr } = await supabase.from('store_data').select('data').eq('id', 'main').maybeSingle();
+      if (!storeErr && storeRow && storeRow.data) {
+        cachedDbMemory = storeRow.data;
+        lastDbFetchTime = Date.now();
+        return cachedDbMemory;
+      }
+
+      // 2. Try reading from relational tables
+      const [catRes, prodRes, ordRes, custRes, coupRes, revRes, setRes] = await Promise.all([
+        supabase.from('categories').select('*'),
+        supabase.from('products').select('*'),
+        supabase.from('orders').select('*'),
+        supabase.from('customers').select('*'),
+        supabase.from('coupons').select('*'),
+        supabase.from('reviews').select('*'),
+        supabase.from('settings').select('*')
+      ]);
+
+      const hasSupaData = (prodRes.data && prodRes.data.length > 0) || (ordRes.data && ordRes.data.length > 0) || (setRes.data && setRes.data.length > 0);
+
+      if (hasSupaData) {
+        const db = loadDatabaseFromFile();
+        if (catRes.data && catRes.data.length > 0) db.categories = catRes.data;
+        if (prodRes.data && prodRes.data.length > 0) db.products = prodRes.data;
+        if (ordRes.data && ordRes.data.length > 0) db.orders = ordRes.data;
+        if (custRes.data && custRes.data.length > 0) db.customers = custRes.data;
+        if (coupRes.data && coupRes.data.length > 0) db.coupons = coupRes.data;
+        if (revRes.data && revRes.data.length > 0) db.reviews = revRes.data;
+        if (setRes.data && setRes.data.length > 0) db.settings = { ...db.settings, ...setRes.data[0] };
+
+        cachedDbMemory = db;
+        lastDbFetchTime = Date.now();
+        return cachedDbMemory;
+      }
+    } catch (err) {
+      console.error('[Supabase Read Error]', err);
+    }
+  }
+
+  cachedDbMemory = loadDatabaseFromFile();
+  lastDbFetchTime = Date.now();
+  return cachedDbMemory;
 }
 
-function saveDatabase(data: any) {
+async function saveDatabase(data: any) {
+  cachedDbMemory = data;
+  lastDbFetchTime = Date.now();
+
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (e) {
-    console.warn('Writing to local filesystem skipped or restricted:', e);
+    // Readonly filesystem on Vercel
   }
+
   if (supabase) {
-    syncDbToSupabase(data).catch(err => console.error('Supabase async save error:', err));
+    try {
+      // 1. Save to backup store_data table
+      await supabase.from('store_data').upsert({ id: 'main', data, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+
+      // 2. Save to individual relational tables
+      if (data.categories && data.categories.length > 0) {
+        await supabase.from('categories').upsert(data.categories, { onConflict: 'id' });
+      }
+      if (data.products && data.products.length > 0) {
+        await supabase.from('products').upsert(data.products, { onConflict: 'id' });
+      }
+      if (data.orders && data.orders.length > 0) {
+        await supabase.from('orders').upsert(data.orders, { onConflict: 'id' });
+      }
+      if (data.customers && data.customers.length > 0) {
+        await supabase.from('customers').upsert(data.customers, { onConflict: 'id' });
+      }
+      if (data.coupons && data.coupons.length > 0) {
+        await supabase.from('coupons').upsert(data.coupons, { onConflict: 'id' });
+      }
+      if (data.reviews && data.reviews.length > 0) {
+        await supabase.from('reviews').upsert(data.reviews, { onConflict: 'id' });
+      }
+      if (data.settings) {
+        await supabase.from('settings').upsert([{ id: 'store_settings', ...data.settings }], { onConflict: 'id' });
+      }
+    } catch (err) {
+      console.error('[Supabase Write Error]', err);
+    }
   }
 }
 
 // REST API ROUTES
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date().toISOString() });
+  res.json({ status: 'ok', time: new Date().toISOString(), supabaseConnected: Boolean(supabase) });
+});
+
+app.get('/api/supabase-status', async (req, res) => {
+  if (!supabase) {
+    return res.json({
+      connected: false,
+      message: 'Supabase environment variables (SUPABASE_URL and SUPABASE_ANON_KEY) are not set on Vercel.'
+    });
+  }
+  try {
+    const { data, error } = await supabase.from('store_data').select('id').limit(1);
+    if (error) {
+      return res.json({
+        connected: false,
+        error: error.message,
+        hint: 'Ensure you executed the SQL script in Supabase SQL Editor.'
+      });
+    }
+    res.json({
+      connected: true,
+      message: 'Supabase is successfully connected and responding!'
+    });
+  } catch (err: any) {
+    res.json({ connected: false, error: err?.message || String(err) });
+  }
 });
 
 // Settings
-app.get('/api/settings', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/settings', async (req, res) => {
+  const db = await loadDatabase();
   const safeSettings = { ...db.settings };
   delete safeSettings.admin_password; // Don't send password
   res.json(safeSettings);
 });
 
-app.post('/api/settings', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/settings', async (req, res) => {
+  const db = await loadDatabase();
   db.settings = { ...db.settings, ...req.body };
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true, settings: db.settings });
 });
 
 // Admin Auth
-app.post('/api/admin/login', (req, res) => {
+app.post('/api/admin/login', async (req, res) => {
   const { admin_id, password } = req.body;
-  const db = loadDatabase();
+  const db = await loadDatabase();
   const currentAdminId = db.settings.admin_id || 'kinomart';
   const currentPassword = db.settings.admin_password || '@kinomart12@';
 
@@ -618,9 +676,9 @@ app.post('/api/admin/login', (req, res) => {
   }
 });
 
-app.post('/api/admin/change-password', (req, res) => {
+app.post('/api/admin/change-password', async (req, res) => {
   const { old_password, new_admin_id, new_password } = req.body;
-  const db = loadDatabase();
+  const db = await loadDatabase();
   const currentPassword = db.settings.admin_password || '@kinomart12@';
 
   if (old_password !== currentPassword) {
@@ -632,27 +690,27 @@ app.post('/api/admin/change-password', (req, res) => {
   if (new_password && new_password.trim()) {
     db.settings.admin_password = new_password.trim();
   }
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true, admin_id: db.settings.admin_id, message: 'এডমিন আইডি ও পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে' });
 });
 
 // Categories
-app.get('/api/categories', (req, res) => {
-  const db = loadDatabase();
-  const categories = db.categories.sort((a: any, b: any) => a.display_order - b.display_order);
+app.get('/api/categories', async (req, res) => {
+  const db = await loadDatabase();
+  const categories = (db.categories || []).sort((a: any, b: any) => a.display_order - b.display_order);
   res.json(categories);
 });
 
 // Coupons API
-app.get('/api/coupons', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/coupons', async (req, res) => {
+  const db = await loadDatabase();
   const coupons = db.coupons || [];
   coupons.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   res.json(coupons);
 });
 
-app.post('/api/coupons', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/coupons', async (req, res) => {
+  const db = await loadDatabase();
   const { code, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, expires_at, is_active } = req.body;
 
   if (!code || !discount_value) {
@@ -681,31 +739,31 @@ app.post('/api/coupons', (req, res) => {
 
   db.coupons = db.coupons || [];
   db.coupons.unshift(newCoupon);
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true, coupon: newCoupon });
 });
 
-app.put('/api/coupons/:id', (req, res) => {
-  const db = loadDatabase();
+app.put('/api/coupons/:id', async (req, res) => {
+  const db = await loadDatabase();
   const idx = (db.coupons || []).findIndex((c: any) => c.id === req.params.id);
   if (idx !== -1) {
     db.coupons[idx] = { ...db.coupons[idx], ...req.body };
-    saveDatabase(db);
+    await saveDatabase(db);
     res.json({ success: true, coupon: db.coupons[idx] });
   } else {
     res.status(404).json({ error: 'কুপন পাওয়া যায়নি' });
   }
 });
 
-app.delete('/api/coupons/:id', (req, res) => {
-  const db = loadDatabase();
+app.delete('/api/coupons/:id', async (req, res) => {
+  const db = await loadDatabase();
   db.coupons = (db.coupons || []).filter((c: any) => c.id !== req.params.id);
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true });
 });
 
-app.post('/api/coupons/validate', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/coupons/validate', async (req, res) => {
+  const db = await loadDatabase();
   const { code, cart_total } = req.body;
 
   if (!code || !code.trim()) {
@@ -764,44 +822,45 @@ app.post('/api/coupons/validate', (req, res) => {
   });
 });
 
-app.post('/api/categories', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/categories', async (req, res) => {
+  const db = await loadDatabase();
   const newCat = {
     id: 'cat-' + Date.now(),
     name: req.body.name,
     slug: req.body.slug || req.body.name.toLowerCase().replace(/\s+/g, '-'),
     icon_name: req.body.icon_name || 'Grid',
     icon_url: req.body.icon_url || '',
-    display_order: req.body.display_order || db.categories.length + 1,
+    display_order: req.body.display_order || (db.categories || []).length + 1,
     is_visible: req.body.is_visible ?? true
   };
+  db.categories = db.categories || [];
   db.categories.push(newCat);
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true, category: newCat });
 });
 
-app.put('/api/categories/:id', (req, res) => {
-  const db = loadDatabase();
+app.put('/api/categories/:id', async (req, res) => {
+  const db = await loadDatabase();
   const idx = db.categories.findIndex((c: any) => c.id === req.params.id);
   if (idx !== -1) {
     db.categories[idx] = { ...db.categories[idx], ...req.body };
-    saveDatabase(db);
+    await saveDatabase(db);
     res.json({ success: true, category: db.categories[idx] });
   } else {
     res.status(404).json({ error: 'Category not found' });
   }
 });
 
-app.delete('/api/categories/:id', (req, res) => {
-  const db = loadDatabase();
+app.delete('/api/categories/:id', async (req, res) => {
+  const db = await loadDatabase();
   db.categories = db.categories.filter((c: any) => c.id !== req.params.id);
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true });
 });
 
 // Products
-app.get('/api/products', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/products', async (req, res) => {
+  const db = await loadDatabase();
   let products = db.products || [];
 
   const { category, search, sort, status } = req.query;
@@ -821,7 +880,7 @@ app.get('/api/products', (req, res) => {
 
   if (search) {
     const q = (search as string).toLowerCase();
-    products = products.filter((p: any) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+    products = products.filter((p: any) => p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q)));
   }
 
   if (sort === 'price-low') {
@@ -838,10 +897,10 @@ app.get('/api/products', (req, res) => {
   res.json(products);
 });
 
-app.get('/api/products/:identifier', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/products/:identifier', async (req, res) => {
+  const db = await loadDatabase();
   const idOrSlug = req.params.identifier;
-  const product = db.products.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
+  const product = (db.products || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
   if (product) {
     res.json(product);
   } else {
@@ -849,8 +908,8 @@ app.get('/api/products/:identifier', (req, res) => {
   }
 });
 
-app.post('/api/products', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/products', async (req, res) => {
+  const db = await loadDatabase();
   const newProduct = {
     id: 'prod-' + Date.now(),
     name: req.body.name,
@@ -881,35 +940,36 @@ app.post('/api/products', (req, res) => {
     created_at: new Date().toISOString()
   };
 
+  db.products = db.products || [];
   db.products.unshift(newProduct);
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true, product: newProduct });
 });
 
-app.put('/api/products/:id', (req, res) => {
-  const db = loadDatabase();
-  const idx = db.products.findIndex((p: any) => p.id === req.params.id);
+app.put('/api/products/:id', async (req, res) => {
+  const db = await loadDatabase();
+  const idx = (db.products || []).findIndex((p: any) => p.id === req.params.id);
   if (idx !== -1) {
     db.products[idx] = { ...db.products[idx], ...req.body };
-    saveDatabase(db);
+    await saveDatabase(db);
     res.json({ success: true, product: db.products[idx] });
   } else {
     res.status(404).json({ error: 'Product not found' });
   }
 });
 
-app.delete('/api/products/:id', (req, res) => {
-  const db = loadDatabase();
-  db.products = db.products.filter((p: any) => p.id !== req.params.id);
-  saveDatabase(db);
+app.delete('/api/products/:id', async (req, res) => {
+  const db = await loadDatabase();
+  db.products = (db.products || []).filter((p: any) => p.id !== req.params.id);
+  await saveDatabase(db);
   res.json({ success: true });
 });
 
 // Product Reviews
-app.get('/api/products/:identifier/reviews', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/products/:identifier/reviews', async (req, res) => {
+  const db = await loadDatabase();
   const idOrSlug = req.params.identifier;
-  const product = db.products.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
+  const product = (db.products || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
   const productId = product ? product.id : idOrSlug;
 
   const reviews = (db.reviews || []).filter((r: any) => r.product_id === productId);
@@ -917,10 +977,10 @@ app.get('/api/products/:identifier/reviews', (req, res) => {
   res.json(reviews);
 });
 
-app.post('/api/products/:identifier/reviews', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/products/:identifier/reviews', async (req, res) => {
+  const db = await loadDatabase();
   const idOrSlug = req.params.identifier;
-  const product = db.products.find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
+  const product = (db.products || []).find((p: any) => p.id === idOrSlug || p.slug === idOrSlug);
 
   if (!product) {
     return res.status(404).json({ error: 'প্রোডাক্ট পাওয়া যায়নি' });
@@ -957,7 +1017,7 @@ app.post('/api/products/:identifier/reviews', (req, res) => {
     db.products[prodIndex].reviews_count = productReviews.length;
   }
 
-  saveDatabase(db);
+  await saveDatabase(db);
 
   res.json({
     success: true,
@@ -968,8 +1028,8 @@ app.post('/api/products/:identifier/reviews', (req, res) => {
 });
 
 // Orders & Auto Account Creation
-app.get('/api/orders', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/orders', async (req, res) => {
+  const db = await loadDatabase();
   let orders = db.orders || [];
 
   const { status, call_status, search, from, to } = req.query;
@@ -985,10 +1045,10 @@ app.get('/api/orders', (req, res) => {
   if (search) {
     const q = (search as string).toLowerCase();
     orders = orders.filter((o: any) => 
-      o.order_number.toLowerCase().includes(q) ||
-      o.customer_name.toLowerCase().includes(q) ||
-      o.phone.includes(q) ||
-      o.address.toLowerCase().includes(q)
+      (o.order_number && o.order_number.toLowerCase().includes(q)) ||
+      (o.customer_name && o.customer_name.toLowerCase().includes(q)) ||
+      (o.phone && o.phone.includes(q)) ||
+      (o.address && o.address.toLowerCase().includes(q))
     );
   }
 
@@ -1006,8 +1066,8 @@ app.get('/api/orders', (req, res) => {
 });
 
 // Create Order (Public Checkout)
-app.post('/api/orders', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/orders', async (req, res) => {
+  const db = await loadDatabase();
   const { customer_name, phone, address, area, shipping_cost, items, payment_method, bkash_number, transaction_id, coupon_code, discount_amount } = req.body;
 
   if (!customer_name || !phone || !address || !items || items.length === 0) {
@@ -1019,7 +1079,7 @@ app.post('/api/orders', (req, res) => {
   const discountVal = Number(discount_amount) || 0;
   const total_revenue = Math.max(0, itemsSubtotal - discountVal) + (Number(shipping_cost) || 60);
 
-  // Auto Customer Creation / Match
+  db.customers = db.customers || [];
   let customer = db.customers.find((c: any) => c.phone === phone);
   if (!customer) {
     customer = {
@@ -1031,12 +1091,10 @@ app.post('/api/orders', (req, res) => {
     };
     db.customers.push(customer);
   } else {
-    // Update name and address if changed
     customer.name = customer_name;
     customer.address = address;
   }
 
-  // Increment coupon usage count if applied
   if (coupon_code) {
     const cleanCoup = String(coupon_code).trim().toUpperCase();
     const coupIdx = (db.coupons || []).findIndex((c: any) => c.code.toUpperCase() === cleanCoup);
@@ -1069,54 +1127,54 @@ app.post('/api/orders', (req, res) => {
     created_at: new Date().toISOString()
   };
 
+  db.orders = db.orders || [];
   db.orders.unshift(newOrder);
-  saveDatabase(db);
+  await saveDatabase(db);
 
-  // Simulating Facebook Pixel & Conversions API (CAPI) purchase event
   console.log(`[CAPI Event] Purchase logged for Order ${orderNumber}, Total: ৳${total_revenue}, Phone: ${phone}`);
 
   res.json({
     success: true,
     order: newOrder,
     customer: customer,
-    token: 'session-' + customer.phone // Auto-login token
+    token: 'session-' + customer.phone
   });
 });
 
-app.patch('/api/orders/:id', (req, res) => {
-  const db = loadDatabase();
-  const idx = db.orders.findIndex((o: any) => o.id === req.params.id);
+app.patch('/api/orders/:id', async (req, res) => {
+  const db = await loadDatabase();
+  const idx = (db.orders || []).findIndex((o: any) => o.id === req.params.id);
   if (idx !== -1) {
     db.orders[idx] = { ...db.orders[idx], ...req.body };
-    saveDatabase(db);
+    await saveDatabase(db);
     res.json({ success: true, order: db.orders[idx] });
   } else {
     res.status(404).json({ error: 'Order not found' });
   }
 });
 
-app.delete('/api/orders/:id', (req, res) => {
-  const db = loadDatabase();
-  db.orders = db.orders.filter((o: any) => o.id !== req.params.id);
-  saveDatabase(db);
+app.delete('/api/orders/:id', async (req, res) => {
+  const db = await loadDatabase();
+  db.orders = (db.orders || []).filter((o: any) => o.id !== req.params.id);
+  await saveDatabase(db);
   res.json({ success: true });
 });
 
 // Customer Orders Lookup
-app.get('/api/customer/orders', (req, res) => {
+app.get('/api/customer/orders', async (req, res) => {
   const phone = req.query.phone as string;
-  const db = loadDatabase();
+  const db = await loadDatabase();
   if (!phone) {
     return res.json([]);
   }
-  const orders = db.orders.filter((o: any) => o.phone === phone);
+  const orders = (db.orders || []).filter((o: any) => o.phone === phone);
   orders.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   res.json(orders);
 });
 
 // Contact message
-app.post('/api/contact', (req, res) => {
-  const db = loadDatabase();
+app.post('/api/contact', async (req, res) => {
+  const db = await loadDatabase();
   const newMsg = {
     id: 'msg-' + Date.now(),
     name: req.body.name,
@@ -1126,12 +1184,12 @@ app.post('/api/contact', (req, res) => {
   };
   db.contact_messages = db.contact_messages || [];
   db.contact_messages.unshift(newMsg);
-  saveDatabase(db);
+  await saveDatabase(db);
   res.json({ success: true, message: 'আপনার বার্তাটি গ্রহণ করা হয়েছে। ধন্যবাদ!' });
 });
 
-app.get('/api/contact', (req, res) => {
-  const db = loadDatabase();
+app.get('/api/contact', async (req, res) => {
+  const db = await loadDatabase();
   res.json(db.contact_messages || []);
 });
 
