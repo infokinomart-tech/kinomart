@@ -548,25 +548,60 @@ function loadDatabaseFromFile() {
 }
 
 async function loadDatabase() {
-  if (cachedDbMemory && (Date.now() - lastDbFetchTime < 10000)) {
+  if (cachedDbMemory && (Date.now() - lastDbFetchTime < 3000)) {
     return cachedDbMemory;
   }
+
+  let localDb = loadDatabaseFromFile();
 
   if (supabase) {
     try {
       const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Supabase timeout')), 1500)
+        setTimeout(() => reject(new Error('Supabase timeout')), 2000)
       );
 
       const fetchPromise = (async () => {
         // 1. Try reading from store_data table
-        const { data: storeRow, error: storeErr } = await supabase.from('store_data').select('data').eq('id', 'main').maybeSingle();
+        const { data: storeRow, error: storeErr } = await supabase
+          .from('store_data')
+          .select('data')
+          .eq('id', 'main')
+          .maybeSingle();
+
         if (!storeErr && storeRow && storeRow.data) {
-          cachedDbMemory = storeRow.data;
-          if (!cachedDbMemory.settings) cachedDbMemory.settings = { ...initialSettings };
-          if (!cachedDbMemory.settings.admin_id) cachedDbMemory.settings.admin_id = 'kinomart';
-          if (!cachedDbMemory.settings.admin_password) cachedDbMemory.settings.admin_password = '@kinomart12@';
+          const supaDb = storeRow.data;
+          
+          const mergeById = (supaList: any[] = [], localList: any[] = []) => {
+            const map = new Map();
+            (supaList || []).forEach(item => { if (item && item.id) map.set(item.id, item); });
+            (localList || []).forEach(item => { if (item && item.id && !map.has(item.id)) map.set(item.id, item); });
+            return Array.from(map.values());
+          };
+
+          const merged = {
+            ...localDb,
+            ...supaDb,
+            categories: mergeById(supaDb.categories, localDb.categories),
+            products: mergeById(supaDb.products, localDb.products),
+            orders: mergeById(supaDb.orders, localDb.orders),
+            customers: mergeById(supaDb.customers, localDb.customers),
+            coupons: mergeById(supaDb.coupons, localDb.coupons),
+            reviews: mergeById(supaDb.reviews, localDb.reviews),
+            settings: { ...localDb.settings, ...supaDb.settings }
+          };
+
+          if (!merged.settings.admin_id) merged.settings.admin_id = 'kinomart';
+          if (!merged.settings.admin_password) merged.settings.admin_password = '@kinomart12@';
+
+          cachedDbMemory = merged;
           lastDbFetchTime = Date.now();
+
+          // If local items were merged that were missing in Supabase, update Supabase asynchronously
+          if ((merged.categories || []).length > (supaDb.categories || []).length ||
+              (merged.products || []).length > (supaDb.products || []).length) {
+            saveDatabase(merged).catch(() => {});
+          }
+
           return cachedDbMemory;
         }
 
@@ -581,17 +616,26 @@ async function loadDatabase() {
           supabase.from('settings').select('*')
         ]);
 
-        const hasSupaData = (prodRes.data && prodRes.data.length > 0) || (ordRes.data && ordRes.data.length > 0) || (setRes.data && setRes.data.length > 0);
+        const hasSupaData = (catRes.data && catRes.data.length > 0) || (prodRes.data && prodRes.data.length > 0) || (setRes.data && setRes.data.length > 0);
 
         if (hasSupaData) {
-          const db = loadDatabaseFromFile();
-          if (catRes.data && catRes.data.length > 0) db.categories = catRes.data;
-          if (prodRes.data && prodRes.data.length > 0) db.products = prodRes.data;
-          if (ordRes.data && ordRes.data.length > 0) db.orders = ordRes.data;
-          if (custRes.data && custRes.data.length > 0) db.customers = custRes.data;
-          if (coupRes.data && coupRes.data.length > 0) db.coupons = coupRes.data;
-          if (revRes.data && revRes.data.length > 0) db.reviews = revRes.data;
-          if (setRes.data && setRes.data.length > 0) db.settings = { ...db.settings, ...setRes.data[0] };
+          const mergeById = (supaArr: any[] = [], localArr: any[] = []) => {
+            const map = new Map();
+            (supaArr || []).forEach(i => { if (i && i.id) map.set(i.id, i); });
+            (localArr || []).forEach(i => { if (i && i.id && !map.has(i.id)) map.set(i.id, i); });
+            return Array.from(map.values());
+          };
+
+          const db = {
+            categories: mergeById(catRes.data, localDb.categories),
+            products: mergeById(prodRes.data, localDb.products),
+            orders: mergeById(ordRes.data, localDb.orders),
+            customers: mergeById(custRes.data, localDb.customers),
+            coupons: mergeById(coupRes.data, localDb.coupons),
+            reviews: mergeById(revRes.data, localDb.reviews),
+            settings: { ...localDb.settings, ...(setRes.data && setRes.data[0] ? setRes.data[0] : {}) }
+          };
+
           if (!db.settings.admin_id) db.settings.admin_id = 'kinomart';
           if (!db.settings.admin_password) db.settings.admin_password = '@kinomart12@';
 
@@ -609,7 +653,7 @@ async function loadDatabase() {
     }
   }
 
-  cachedDbMemory = loadDatabaseFromFile();
+  cachedDbMemory = localDb;
   if (!cachedDbMemory.settings) cachedDbMemory.settings = { ...initialSettings };
   if (!cachedDbMemory.settings.admin_id) cachedDbMemory.settings.admin_id = 'kinomart';
   if (!cachedDbMemory.settings.admin_password) cachedDbMemory.settings.admin_password = '@kinomart12@';
@@ -629,21 +673,51 @@ async function saveDatabase(data: any) {
 
   if (supabase) {
     try {
-      // 1. Save to backup store_data table
+      // 1. Save full DB blob to store_data table
       try {
-        const { error: storeErr } = await supabase.from('store_data').upsert({ id: 'main', data, updated_at: new Date().toISOString() }, { onConflict: 'id' });
-        if (storeErr) console.error('[Supabase store_data upsert error]:', storeErr.message);
+        const { error: storeErr } = await supabase
+          .from('store_data')
+          .upsert({ id: 'main', data, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+        if (storeErr) {
+          console.error('[Supabase store_data upsert error]:', storeErr.message);
+        }
       } catch (e: any) {
         console.error('[Supabase store_data catch]:', e?.message || e);
       }
 
-      // 2. Save to individual relational tables safely
+      // 2. Save cleaned items to relational tables
       if (data.categories && data.categories.length > 0) {
-        try { await supabase.from('categories').upsert(data.categories, { onConflict: 'id' }); } catch (e) {}
+        const cleanCats = data.categories.map((c: any) => ({
+          id: String(c.id),
+          name: String(c.name || ''),
+          slug: String(c.slug || ''),
+          icon_name: String(c.icon_name || 'Grid'),
+          icon_url: String(c.icon_url || ''),
+          display_order: Number(c.display_order || 1),
+          is_visible: Boolean(c.is_visible ?? true)
+        }));
+        try { await supabase.from('categories').upsert(cleanCats, { onConflict: 'id' }); } catch (e) {}
       }
+
       if (data.products && data.products.length > 0) {
-        try { await supabase.from('products').upsert(data.products, { onConflict: 'id' }); } catch (e) {}
+        const cleanProds = data.products.map((p: any) => ({
+          id: String(p.id),
+          name: String(p.name || ''),
+          slug: String(p.slug || ''),
+          description: String(p.description || ''),
+          short_description: String(p.short_description || ''),
+          price: Number(p.price || 0),
+          discount_price: p.discount_price ? Number(p.discount_price) : null,
+          category_id: p.category_id ? String(p.category_id) : null,
+          category_name: p.category_name ? String(p.category_name) : null,
+          images: Array.isArray(p.images) ? p.images : [],
+          stock: Number(p.stock || 0),
+          status: String(p.status || 'active'),
+          created_at: p.created_at || new Date().toISOString()
+        }));
+        try { await supabase.from('products').upsert(cleanProds, { onConflict: 'id' }); } catch (e) {}
       }
+
       if (data.orders && data.orders.length > 0) {
         try { await supabase.from('orders').upsert(data.orders, { onConflict: 'id' }); } catch (e) {}
       }

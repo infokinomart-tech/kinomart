@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Settings, Save, Lock, Code2, Phone, MapPin, CheckCircle2, Image, Plus, Trash2, Upload, CreditCard } from 'lucide-react';
+import { Settings, Save, Lock, Code2, Phone, MapPin, CheckCircle2, Image, Plus, Trash2, Upload, CreditCard, Database, Copy, Check } from 'lucide-react';
 import { SiteSettings } from '../../types';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -9,6 +9,29 @@ export const AdminSettings: React.FC = () => {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+
+  // Supabase Status
+  const [supaStatus, setSupaStatus] = useState<any>(null);
+  const [copiedSql, setCopiedSql] = useState(false);
+
+  const sqlScript = `-- Run this in Supabase SQL Editor to enable full data saving & persistence:
+CREATE TABLE IF NOT EXISTS public.store_data (
+  id TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.store_data DISABLE ROW LEVEL SECURITY;`;
+
+  const checkSupabaseStatus = async () => {
+    try {
+      const res = await fetch('/api/supabase-status');
+      const data = await res.json();
+      setSupaStatus(data);
+    } catch (e) {
+      setSupaStatus({ connected: false, error: 'Cannot connect to server status endpoint' });
+    }
+  };
 
   // Form states
   const [logoTitle, setLogoTitle] = useState('');
@@ -73,6 +96,7 @@ export const AdminSettings: React.FC = () => {
     };
 
     loadSettings();
+    checkSupabaseStatus();
   }, []);
 
   const sampleBanners = [
@@ -686,6 +710,72 @@ export const AdminSettings: React.FC = () => {
           <span>{isSaved ? 'সেটিংস সেভ হয়েছে✓' : 'সকল সেটিংস সেভ করুন'}</span>
         </button>
       </form>
+
+      {/* Supabase Database Persistence Status & Setup */}
+      <div className="bg-[#181F30] border border-[#27324A] p-6 rounded-2xl space-y-4">
+        <div className="border-b border-[#27324A] pb-3 flex items-center justify-between flex-wrap gap-2">
+          <h3 className="font-bold text-base text-white flex items-center space-x-2">
+            <Database className="w-5 h-5 text-emerald-400" />
+            <span>Supabase ডাটাবেজ কানেকশন ও পারসিস্টেন্স স্ট্যাটাস</span>
+          </h3>
+          <button
+            type="button"
+            onClick={checkSupabaseStatus}
+            className="text-xs px-3 py-1.5 bg-[#27324A] hover:bg-[#323F5D] text-white rounded-lg transition-colors font-semibold"
+          >
+            🔄 রিফ্রেশ স্ট্যাটাস
+          </button>
+        </div>
+
+        {supaStatus ? (
+          <div className="space-y-3 text-xs">
+            {supaStatus.connected ? (
+              <div className="p-3 bg-emerald-950/70 border border-emerald-800 text-emerald-300 rounded-xl flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div>
+                  <span className="font-bold">Supabase কানেক্টেড আছে! </span>
+                  <span>{supaStatus.message || 'আপনার স্টোরের প্রোডাক্ট, ক্যাটাগরি ও অর্ডার ডাটাবেজে সেভ হচ্ছে।'}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-3 bg-amber-950/80 border border-amber-800 text-amber-200 rounded-xl space-y-1">
+                <div className="font-bold flex items-center space-x-2 text-amber-300">
+                  <span>⚡ Supabase Environment Variables Not Set on Hosting</span>
+                </div>
+                <p className="text-[11px] text-amber-300/90">
+                  {supaStatus.message || supaStatus.error || 'Vercel / Hosting এর Environment Variables এ SUPABASE_URL এবং SUPABASE_ANON_KEY সেট করলে আপনার ডাটা ক্লাউডে সুরক্ষিত থাকবে।'}
+                </p>
+              </div>
+            )}
+
+            <div className="bg-[#0F1420] border border-[#27324A] p-4 rounded-xl space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-white text-xs">📋 Supabase 1-Click SQL Setup Script</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(sqlScript);
+                    setCopiedSql(true);
+                    setTimeout(() => setCopiedSql(false), 2000);
+                  }}
+                  className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center space-x-1 transition-colors text-[11px]"
+                >
+                  {copiedSql ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedSql ? 'কপি হয়েছে!' : 'SQL কপি করুন'}</span>
+                </button>
+              </div>
+              <p className="text-[11px] text-gray-400">
+                Supabase Dashboard &gt; SQL Editor এ গিয়ে এই কোডটি Run করলে ডাটাবেজে কোনো টেবিল মিসিং থাকলেও সমস্ত প্রোডাক্ট, ক্যাটাগরি, অর্ডার ও সেটিংস পারফেক্টলি সেভ হবে:
+              </p>
+              <pre className="p-3 bg-black/60 border border-gray-800 rounded-lg text-[11px] text-emerald-400 font-mono overflow-x-auto whitespace-pre-wrap">
+                {sqlScript}
+              </pre>
+            </div>
+          </div>
+        ) : (
+          <div className="text-xs text-gray-400 py-2">স্ট্যাটাস চেক করা হচ্ছে...</div>
+        )}
+      </div>
 
       {/* Change Admin Credentials Panel */}
       <div className="bg-[#181F30] border border-[#27324A] p-6 rounded-2xl space-y-4">
