@@ -145,6 +145,11 @@ export const api = {
     return safeFetchJson('/api/categories', undefined, 'ক্যাটাগরি লোড করতে ব্যর্থ হয়েছে');
   },
 
+  async resetCategories(): Promise<Category[]> {
+    const data = await safeFetchJson('/api/categories/reset', { method: 'POST' }, 'ক্যাটাগরি রিসেট করতে ব্যর্থ হয়েছে');
+    return data.categories || data;
+  },
+
   async createCategory(cat: Partial<Category>): Promise<Category> {
     const data = await safeFetchJson('/api/categories', {
       method: 'POST',

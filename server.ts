@@ -958,7 +958,7 @@ app.post('/api/admin/login', async (req, res) => {
 
       res.json({ success: true, token: 'admin-token-kinomart-secret', admin_id: db.settings.admin_id });
     } else {
-      res.json({ success: false, error: 'ভুল আইডি অথবা পাসওয়ার্ড! (ডিফল্ট আইডি: kinomart | পাসওয়ার্ড: @kinomart12@)' });
+      res.json({ success: false, error: 'ভুল আইডি অথবা পাসওয়ার্ড! অনুগ্রহ করে আবার চেষ্টা করুন।' });
     }
   } catch (err: any) {
     console.error('Admin login handler error:', err);
@@ -984,14 +984,31 @@ app.post('/api/admin/change-password', async (req, res) => {
     db.settings.admin_password = hashPassword(new_password.trim());
   }
   await saveDatabase(db);
-  res.json({ success: true, admin_id: db.settings.admin_id, message: 'এডমিন আইডি ও পাসওয়ার্ড সফলভাবে সিকিউর হ্যাশ আকারে পরিবর্তন করা হয়েছে' });
+  res.json({ success: true, admin_id: db.settings.admin_id, message: 'এডমিন আইডি ও পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে' });
 });
 
 // Categories
 app.get('/api/categories', async (req, res) => {
   const db = await loadDatabase();
-  const categories = (db.categories || []).sort((a: any, b: any) => a.display_order - b.display_order);
-  res.json(categories);
+  let categories = db.categories;
+  if (!Array.isArray(categories) || categories.length === 0) {
+    categories = [...initialCategories];
+    db.categories = categories;
+    await saveDatabase(db);
+  }
+  const sorted = [...categories].sort((a: any, b: any) => Number(a.display_order || 0) - Number(b.display_order || 0));
+  res.json(sorted);
+});
+
+app.post('/api/categories/reset', async (req, res) => {
+  try {
+    const db = await loadDatabase();
+    db.categories = [...initialCategories];
+    await saveDatabase(db);
+    res.json({ success: true, categories: db.categories });
+  } catch (err: any) {
+    res.status(500).json({ error: 'ক্যাটাগরি রিসেট করতে সমস্যা হয়েছে' });
+  }
 });
 
 // Coupons API

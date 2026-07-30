@@ -32,9 +32,22 @@ export const AdminCategories: React.FC = () => {
     setIsLoading(true);
     try {
       const data = await api.getCategories();
-      setCategories(data);
+      setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Failed to load categories', err);
+      setCategories([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResetCategories = async () => {
+    setIsLoading(true);
+    try {
+      const data = await api.resetCategories();
+      setCategories(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to reset categories', err);
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +130,26 @@ export const AdminCategories: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {isLoading ? (
-          <div className="text-gray-400 text-xs py-8">ক্যাটাগরি লোড হচ্ছে...</div>
+          <div className="text-gray-400 text-xs py-8 col-span-full text-center">ক্যাটাগরি লোড হচ্ছে...</div>
+        ) : categories.length === 0 ? (
+          <div className="col-span-full bg-[#181F30] border border-[#27324A] rounded-2xl p-8 text-center space-y-4">
+            <FolderTree className="w-12 h-12 text-gray-500 mx-auto" />
+            <p className="text-gray-300 text-sm font-semibold">কোনো ক্যাটাগরি পাওয়া যায়নি</p>
+            <div className="flex items-center justify-center space-x-3 pt-2">
+              <button
+                onClick={handleOpenAdd}
+                className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl transition-colors"
+              >
+                + নতুন ক্যাটাগরি তৈরি করুন
+              </button>
+              <button
+                onClick={handleResetCategories}
+                className="px-4 py-2 bg-[#27324A] hover:bg-[#32405D] text-gray-200 font-bold text-xs rounded-xl transition-colors"
+              >
+                ডিফল্ট ক্যাটাগরি লোড করুন
+              </button>
+            </div>
+          </div>
         ) : (
           categories.map(cat => (
             <div
