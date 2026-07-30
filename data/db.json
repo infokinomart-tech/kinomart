@@ -307,7 +307,13 @@
       "reviews_count": 94,
       "seo_title": "KinoFit Pro Amoled Smartwatch BD",
       "seo_description": "Best Amoled Smartwatch with bluetooth calling in Bangladesh.",
-      "created_at": "2026-07-26T09:00:14.709Z"
+      "created_at": "2026-07-26T09:00:14.709Z",
+      "short_description": "",
+      "video_url": null,
+      "specifications": [],
+      "low_stock_threshold": 10,
+      "timer_enabled": false,
+      "timer_title": null
     },
     {
       "id": "prod-3",
@@ -341,7 +347,13 @@
       "reviews_count": 62,
       "seo_title": "KinoBreathe Health Inhaler BD",
       "seo_description": "Natural nasal health aid gadget in BD.",
-      "created_at": "2026-07-27T09:00:14.709Z"
+      "created_at": "2026-07-27T09:00:14.709Z",
+      "short_description": "",
+      "video_url": null,
+      "specifications": [],
+      "low_stock_threshold": 10,
+      "timer_enabled": false,
+      "timer_title": null
     },
     {
       "id": "prod-4",
@@ -373,7 +385,13 @@
       "reviews_count": 87,
       "seo_title": "Kino Power Bank 10000mAh Price in Bangladesh",
       "seo_description": "MagSafe Wireless powerbank in BD.",
-      "created_at": "2026-07-28T09:00:14.709Z"
+      "created_at": "2026-07-28T09:00:14.709Z",
+      "short_description": "",
+      "video_url": null,
+      "specifications": [],
+      "low_stock_threshold": 10,
+      "timer_enabled": false,
+      "timer_title": null
     },
     {
       "id": "prod-5",
@@ -405,7 +423,13 @@
       "reviews_count": 41,
       "seo_title": "KinoBand Fitness Tracker BD",
       "seo_description": "Accurate fitness and health tracker in BD.",
-      "created_at": "2026-07-29T09:00:14.709Z"
+      "created_at": "2026-07-29T09:00:14.709Z",
+      "short_description": "",
+      "video_url": null,
+      "specifications": [],
+      "low_stock_threshold": 10,
+      "timer_enabled": false,
+      "timer_title": null
     },
     {
       "id": "prod-6",
@@ -436,7 +460,100 @@
       "reviews_count": 29,
       "seo_title": "RGB Gaming Headset Stand BD",
       "seo_description": "RGB Stand with USB hub.",
-      "created_at": "2026-07-30T09:00:14.709Z"
+      "created_at": "2026-07-30T09:00:14.709Z",
+      "short_description": "",
+      "video_url": null,
+      "specifications": [],
+      "low_stock_threshold": 10,
+      "timer_enabled": false,
+      "timer_title": null
+    },
+    {
+      "id": "prod-1785395199301",
+      "name": "Test Product 1785395199165",
+      "slug": "test-product-1785395199165",
+      "description": "Test product desc",
+      "short_description": "",
+      "price": 1500,
+      "discount_price": 1200,
+      "category_id": "cat-1",
+      "category_name": "স্মার্টওয়াচ",
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+      ],
+      "video_url": null,
+      "variants": [],
+      "specifications": [],
+      "stock": 50,
+      "low_stock_threshold": 10,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 5,
+      "reviews_count": 0,
+      "seo_title": null,
+      "seo_description": null,
+      "timer_enabled": false,
+      "timer_title": null,
+      "created_at": "2026-07-30T07:06:39.301+00:00"
+    },
+    {
+      "id": "prod-1785395033688",
+      "name": "টেস্ট গ্যাজেট ঘড়ি",
+      "slug": "product-prod-1785395033688",
+      "description": "",
+      "short_description": "",
+      "price": 1500,
+      "discount_price": null,
+      "category_id": "cat-1",
+      "category_name": null,
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+      ],
+      "video_url": null,
+      "variants": [],
+      "specifications": [],
+      "stock": 20,
+      "low_stock_threshold": 10,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 5,
+      "reviews_count": 0,
+      "seo_title": null,
+      "seo_description": null,
+      "timer_enabled": false,
+      "timer_title": null,
+      "created_at": "2026-07-30T07:03:53.69+00:00"
+    },
+    {
+      "id": "prod-1785318947954",
+      "name": "টেস্ট নতুন গ্যাজেট প্রোডাক্ট",
+      "slug": "product-prod-1785318947954",
+      "description": "",
+      "short_description": "",
+      "price": 1200,
+      "discount_price": 990,
+      "category_id": "cat-1",
+      "category_name": "স্মার্টওয়াচ",
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+      ],
+      "video_url": null,
+      "variants": [],
+      "specifications": [],
+      "stock": 25,
+      "low_stock_threshold": 10,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 5,
+      "reviews_count": 0,
+      "seo_title": null,
+      "seo_description": null,
+      "timer_enabled": false,
+      "timer_title": null,
+      "created_at": "2026-07-29T09:55:47.954+00:00"
     }
   ],
   "orders": [
@@ -552,21 +669,30 @@
       "name": "আরিফুল ইসলাম",
       "phone": "01711223344",
       "address": "হাউজ ১২, রোড ৫, ধানমন্ডি, ঢাকা",
-      "created_at": "2026-07-23T14:14:09.296Z"
+      "created_at": "2026-07-23T14:14:09.296Z",
+      "password": "01711223344",
+      "orders_count": 0,
+      "total_spent": 0
     },
     {
       "id": "cust-2",
       "name": "সাবরিনা সুলতানা",
       "phone": "01899887766",
       "address": "জিইসি মোড়, সিডিএ এভিনিউ, চট্টগ্রাম",
-      "created_at": "2026-07-23T14:14:09.296Z"
+      "created_at": "2026-07-23T14:14:09.296Z",
+      "password": "01899887766",
+      "orders_count": 0,
+      "total_spent": 0
     },
     {
       "id": "cust-1785312344868",
       "name": "rakib",
       "phone": "01316297483",
       "address": "SgRSFGsrg",
-      "created_at": "2026-07-29T08:05:44.868Z"
+      "created_at": "2026-07-29T08:05:44.868Z",
+      "password": "01316297483",
+      "orders_count": 0,
+      "total_spent": 0
     }
   ],
   "coupons": [

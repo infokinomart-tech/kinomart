@@ -8,6 +8,7 @@ export const AdminProducts: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCatFilter, setSelectedCatFilter] = useState('');
 
   // Add/Edit Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -235,9 +236,11 @@ export const AdminProducts: React.FC = () => {
     }
   };
 
-  const filteredProducts = products.filter(p =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCat = !selectedCatFilter || p.category_id === selectedCatFilter || p.category_name === selectedCatFilter;
+    return matchesSearch && matchesCat;
+  });
 
   return (
     <div className="space-y-6">
@@ -266,16 +269,29 @@ export const AdminProducts: React.FC = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative max-w-md">
-        <input
-          type="text"
-          placeholder="প্রোডাক্ট নাম অনুযায়ী খুঁজুন..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full pl-9 pr-3 py-2 bg-[#181F30] border border-[#27324A] rounded-xl text-xs text-white outline-none focus:border-[#3B82F6]"
-        />
-        <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+      {/* Search Bar & Category Filter */}
+      <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="relative flex-1 w-full max-w-md">
+          <input
+            type="text"
+            placeholder="প্রোডাক্ট নাম অনুযায়ী খুঁজুন..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-3 py-2 bg-[#181F30] border border-[#27324A] rounded-xl text-xs text-white outline-none focus:border-[#3B82F6]"
+          />
+          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
+        </div>
+
+        <select
+          value={selectedCatFilter}
+          onChange={e => setSelectedCatFilter(e.target.value)}
+          className="w-full sm:w-auto px-3.5 py-2 bg-[#181F30] border border-[#27324A] rounded-xl text-xs text-gray-200 outline-none focus:border-[#3B82F6]"
+        >
+          <option value="">সব ক্যাটাগরি ({categories.length} টি)</option>
+          {categories.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
       </div>
 
       {/* Products Table */}

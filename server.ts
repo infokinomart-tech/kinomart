@@ -1054,6 +1054,20 @@ app.post('/api/categories/reset', async (req, res) => {
   try {
     const db = await loadDatabase();
     db.categories = [...initialCategories];
+    if (supabase) {
+      try {
+        const initIds = initialCategories.map(c => c.id);
+        const { data: existing } = await supabase.from('categories').select('id');
+        if (existing && existing.length > 0) {
+          const toDelete = existing.filter(e => !initIds.includes(e.id)).map(e => e.id);
+          if (toDelete.length > 0) {
+            await supabase.from('categories').delete().in('id', toDelete);
+          }
+        }
+      } catch (e) {
+        console.error('Supabase categories cleanup error:', e);
+      }
+    }
     await saveDatabase(db);
     res.json({ success: true, categories: db.categories });
   } catch (err: any) {
