@@ -9,6 +9,7 @@ export const Products: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const selectedCategoryParam = searchParams.get('category') || 'all';
+  const selectedSubCategoryParam = searchParams.get('subcategory') || 'all';
   const searchQueryParam = searchParams.get('search') || '';
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,14 +17,16 @@ export const Products: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [selectedCategory, setSelectedCategory] = useState(selectedCategoryParam);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(selectedSubCategoryParam);
   const [searchQuery, setSearchQuery] = useState(searchQueryParam);
   const [sortBy, setSortBy] = useState('newest');
   const [priceFilter, setPriceFilter] = useState<number>(5000);
 
   useEffect(() => {
     setSelectedCategory(selectedCategoryParam);
+    setSelectedSubCategory(selectedSubCategoryParam);
     setSearchQuery(searchQueryParam);
-  }, [selectedCategoryParam, searchQueryParam]);
+  }, [selectedCategoryParam, selectedSubCategoryParam, searchQueryParam]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,8 +42,11 @@ export const Products: React.FC = () => {
         ]);
         setCategories(cats);
 
-        // Apply price filter on client
-        const filtered = prods.filter(p => (p.discount_price || p.price) <= priceFilter);
+        // Apply subcategory & price filter on client
+        let filtered = prods.filter(p => (p.discount_price || p.price) <= priceFilter);
+        if (selectedSubCategory !== 'all') {
+          filtered = filtered.filter(p => p.subcategory_id === selectedSubCategory);
+        }
         setProducts(filtered);
       } catch (err) {
         console.error('Failed to load products', err);
@@ -50,14 +56,27 @@ export const Products: React.FC = () => {
     };
 
     loadData();
-  }, [selectedCategory, searchQuery, sortBy, priceFilter]);
+  }, [selectedCategory, selectedSubCategory, searchQuery, sortBy, priceFilter]);
 
   const handleCategoryChange = (catId: string) => {
     setSelectedCategory(catId);
+    setSelectedSubCategory('all');
     if (catId === 'all') {
       searchParams.delete('category');
+      searchParams.delete('subcategory');
     } else {
       searchParams.set('category', catId);
+      searchParams.delete('subcategory');
+    }
+    setSearchParams(searchParams);
+  };
+
+  const handleSubCategoryChange = (subId: string) => {
+    setSelectedSubCategory(subId);
+    if (subId === 'all') {
+      searchParams.delete('subcategory');
+    } else {
+      searchParams.set('subcategory', subId);
     }
     setSearchParams(searchParams);
   };
@@ -135,6 +154,36 @@ export const Products: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {/* Subcategory Pills Row (if category is selected & has subcategories) */}
+        {selectedCategory !== 'all' && (categories.find(c => c.id === selectedCategory)?.subcategories?.length || 0) > 0 && (
+          <div className="flex items-center space-x-2 overflow-x-auto pb-1 pl-1 scrollbar-none text-xs bg-[#F7F5EF] p-2.5 rounded-xl border border-[#E5E3DA]">
+            <span className="font-bold text-[#6B7A4F] text-[11px] shrink-0 mr-1">সাব-ক্যাটাগরি:</span>
+            <button
+              onClick={() => handleSubCategoryChange('all')}
+              className={`px-3 py-1 rounded-lg font-semibold transition-all whitespace-nowrap shrink-0 border text-[11px] ${
+                selectedSubCategory === 'all'
+                  ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                  : 'bg-white text-[#4A4A4A] border-[#E5E3DA] hover:border-[#6B7A4F]'
+              }`}
+            >
+              সকল সাব-আইটেম
+            </button>
+            {categories.find(c => c.id === selectedCategory)?.subcategories?.map(sub => (
+              <button
+                key={sub.id}
+                onClick={() => handleSubCategoryChange(sub.id)}
+                className={`px-3 py-1 rounded-lg font-semibold transition-all whitespace-nowrap shrink-0 border text-[11px] ${
+                  selectedSubCategory === sub.id
+                    ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                    : 'bg-white text-[#4A4A4A] border-[#E5E3DA] hover:border-[#6B7A4F]'
+                }`}
+              >
+                {sub.name}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Sorting & Price Range Filter Row */}
         <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl border border-[#E5E3DA] text-xs">

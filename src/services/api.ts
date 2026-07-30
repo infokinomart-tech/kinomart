@@ -173,6 +173,12 @@ export const api = {
   },
 
   // Products
+  async resetProducts(): Promise<Product[]> {
+    const data = await safeFetchJson('/api/products/reset', { method: 'POST' }, 'প্রোডাক্ট রিসেট করতে ব্যর্থ হয়েছে');
+    this.clearProductCache();
+    return data.products || data;
+  },
+
   async getProducts(params?: { category?: string; search?: string; sort?: string; status?: string }): Promise<Product[]> {
     const hasParams = params && Object.keys(params).some(k => Boolean((params as any)[k]));
     if (!hasParams && allProductsCache && (Date.now() - allProductsCacheTime < 2000)) {

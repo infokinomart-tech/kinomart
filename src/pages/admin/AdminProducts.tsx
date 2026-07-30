@@ -20,6 +20,7 @@ export const AdminProducts: React.FC = () => {
   const [price, setPrice] = useState('');
   const [discountPrice, setDiscountPrice] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [subcategoryId, setSubcategoryId] = useState('');
   const [stock, setStock] = useState('50');
   const [lowStockThreshold, setLowStockThreshold] = useState('10');
   const [status, setStatus] = useState<'active' | 'draft'>('active');
@@ -92,6 +93,7 @@ export const AdminProducts: React.FC = () => {
     setPrice('');
     setDiscountPrice('');
     setCategoryId(categories[0]?.id || '');
+    setSubcategoryId('');
     setStock('50');
     setLowStockThreshold('10');
     setStatus('active');
@@ -119,6 +121,7 @@ export const AdminProducts: React.FC = () => {
     setPrice(String(p.price));
     setDiscountPrice(p.discount_price ? String(p.discount_price) : '');
     setCategoryId(p.category_id);
+    setSubcategoryId(p.subcategory_id || '');
     setStock(String(p.stock));
     setLowStockThreshold(p.low_stock_threshold !== undefined ? String(p.low_stock_threshold) : '10');
     setStatus(p.status);
@@ -170,6 +173,7 @@ export const AdminProducts: React.FC = () => {
         .filter(s => s.key.length > 0 || s.value.length > 0);
 
       const selectedCat = categories.find(c => c.id === categoryId);
+      const selectedSubCat = selectedCat?.subcategories?.find(s => s.id === subcategoryId);
 
       const payload = {
         name,
@@ -179,6 +183,8 @@ export const AdminProducts: React.FC = () => {
         discount_price: discountPrice ? Number(discountPrice) : undefined,
         category_id: categoryId,
         category_name: selectedCat?.name || '',
+        subcategory_id: subcategoryId || undefined,
+        subcategory_name: selectedSubCat?.name || undefined,
         images: parsedImages.length > 0 ? parsedImages : ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'],
         video_url: videoUrl,
         variants: parsedVariants,
@@ -216,6 +222,19 @@ export const AdminProducts: React.FC = () => {
     }
   };
 
+  const handleResetProducts = async () => {
+    if (!window.confirm('আপনি কি নিশ্চিত যে ডেমো/ডিফল্ট প্রোডাক্ট ডাটা রিলোড করতে চান?')) return;
+    setIsLoading(true);
+    try {
+      await api.resetProducts();
+      await loadData();
+    } catch (err) {
+      console.error('Failed to reset products', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const filteredProducts = products.filter(p =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -229,13 +248,22 @@ export const AdminProducts: React.FC = () => {
           <p className="text-xs text-gray-400">নতুন গ্যাজেট যোগ করুন বা বিদ্যমান প্রোডাক্ট সম্পাদনা করুন</p>
         </div>
 
-        <button
-          onClick={handleOpenAddModal}
-          className="px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl flex items-center space-x-1.5 transition-colors shadow-md"
-        >
-          <Plus className="w-4 h-4" />
-          <span>নতুন প্রোডাক্ট যোগ করুন</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleResetProducts}
+            className="px-3.5 py-2.5 bg-[#27324A] hover:bg-[#32405D] text-gray-300 hover:text-white font-semibold text-xs rounded-xl transition-colors"
+            title="ডিফল্ট প্রোডাক্ট লোড করুন"
+          >
+            ডিফল্ট প্রোডাক্ট লোড করুন
+          </button>
+          <button
+            onClick={handleOpenAddModal}
+            className="px-4 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl flex items-center space-x-1.5 transition-colors shadow-md"
+          >
+            <Plus className="w-4 h-4" />
+            <span>নতুন প্রোডাক্ট যোগ করুন</span>
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}
@@ -271,7 +299,25 @@ export const AdminProducts: React.FC = () => {
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-400">কোনো প্রোডাক্ট পাওয়া যায়নি</td>
+                  <td colSpan={6} className="py-12 text-center text-gray-400">
+                    <div className="space-y-3">
+                      <p className="text-gray-300 font-semibold text-sm">কোনো প্রোডাক্ট পাওয়া যায়নি</p>
+                      <div className="flex items-center justify-center space-x-3">
+                        <button
+                          onClick={handleResetProducts}
+                          className="px-4 py-2 bg-[#27324A] hover:bg-[#32405D] text-gray-200 font-bold text-xs rounded-xl transition-colors"
+                        >
+                          ডিফল্ট প্রোডাক্ট লোড করুন
+                        </button>
+                        <button
+                          onClick={handleOpenAddModal}
+                          className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs rounded-xl transition-colors"
+                        >
+                          + নতুন প্রোডাক্ট যোগ করুন
+                        </button>
+                      </div>
+                    </div>
+                  </td>
                 </tr>
               ) : (
                 filteredProducts.map(p => (
@@ -398,17 +444,34 @@ export const AdminProducts: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div>
                   <label className="block font-bold text-gray-300 mb-1 text-xs">ক্যাটাগরি *</label>
                   <select
                     value={categoryId}
-                    onChange={e => setCategoryId(e.target.value)}
+                    onChange={e => {
+                      setCategoryId(e.target.value);
+                      setSubcategoryId('');
+                    }}
                     className="w-full p-2.5 bg-[#0F1420] border border-[#27324A] rounded-xl text-white outline-none text-xs"
                     required
                   >
                     {categories.map(c => (
                       <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-gray-300 mb-1 text-xs">সাব-ক্যাটাগরি</label>
+                  <select
+                    value={subcategoryId}
+                    onChange={e => setSubcategoryId(e.target.value)}
+                    className="w-full p-2.5 bg-[#0F1420] border border-[#27324A] rounded-xl text-white outline-none text-xs"
+                  >
+                    <option value="">-- কোনো সাব-ক্যাটাগরি সিলেক্ট নেই --</option>
+                    {(categories.find(c => c.id === categoryId)?.subcategories || []).map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
                   </select>
                 </div>
@@ -424,7 +487,7 @@ export const AdminProducts: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-amber-400 mb-1 text-xs">লিমিটেড স্টক সতর্কবার্তা সীমা (Low Stock Limit)</label>
+                  <label className="block font-bold text-amber-400 mb-1 text-xs">লিমিটেড স্টক সীমা</label>
                   <input
                     type="number"
                     value={lowStockThreshold}

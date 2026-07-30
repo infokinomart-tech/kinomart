@@ -19,6 +19,13 @@ export interface ProductReview {
   created_at: string;
 }
 
+export interface SubCategory {
+  id: string;
+  name: string;
+  slug: string;
+  is_visible?: boolean;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -29,6 +36,8 @@ export interface Product {
   discount_price?: number;
   category_id: string;
   category_name?: string;
+  subcategory_id?: string;
+  subcategory_name?: string;
   images: string[];
   video_url?: string;
   variants?: ProductVariant[];
@@ -57,6 +66,7 @@ export interface Category {
   icon_name?: string;
   display_order: number;
   is_visible: boolean;
+  subcategories?: SubCategory[];
 }
 
 export interface OrderItem {

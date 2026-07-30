@@ -64,7 +64,13 @@ const initialCategories = [
     icon_name: 'Watch',
     icon_url: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=300&q=80',
     display_order: 1,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-1-1', name: 'আল্ট্রা সিরিজ ওয়াচ', slug: 'ultra-series' },
+      { id: 'sub-1-2', name: 'সিরিজ ৯ / ১০', slug: 'series-9-10' },
+      { id: 'sub-1-3', name: 'ফিটনেস ও স্পোর্টস ব্যান্ড', slug: 'fitness-band' },
+      { id: 'sub-1-4', name: 'লেডিজ স্মার্টওয়াচ', slug: 'ladies-smartwatch' }
+    ]
   },
   {
     id: 'cat-2',
@@ -73,7 +79,13 @@ const initialCategories = [
     icon_name: 'Headphones',
     icon_url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=300&q=80',
     display_order: 2,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-2-1', name: 'TWS এয়ারবাডস', slug: 'tws-earbuds' },
+      { id: 'sub-2-2', name: 'নেকব্যান্ড হেডফোন', slug: 'neckband' },
+      { id: 'sub-2-3', name: 'গেমিং হেডসেট', slug: 'gaming-headset' },
+      { id: 'sub-2-4', name: 'ওভার-ইয়ার হেডফোন', slug: 'over-ear-headphones' }
+    ]
   },
   {
     id: 'cat-3',
@@ -82,7 +94,13 @@ const initialCategories = [
     icon_name: 'Zap',
     icon_url: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?auto=format&fit=crop&w=300&q=80',
     display_order: 3,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-3-1', name: 'ফাস্ট চার্জার ও এডাপ্টার', slug: 'fast-charger' },
+      { id: 'sub-3-2', name: 'পাওয়ার ব্যাংক (১০K-২০K mAh)', slug: 'power-bank' },
+      { id: 'sub-3-3', name: 'টাইপ-সি ও লাইটনিং ক্যাবল', slug: 'charging-cables' },
+      { id: 'sub-3-4', name: 'ওয়্যারলেস চার্জার', slug: 'wireless-charger' }
+    ]
   },
   {
     id: 'cat-4',
@@ -91,7 +109,12 @@ const initialCategories = [
     icon_name: 'Speaker',
     icon_url: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=300&q=80',
     display_order: 4,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-4-1', name: 'পোর্টেবল ব্লুটুথ স্পিকার', slug: 'portable-speaker' },
+      { id: 'sub-4-2', name: 'সাউন্ডবার ও হোম থিয়েটার', slug: 'soundbar' },
+      { id: 'sub-4-3', name: 'পার্টি স্পিকার', slug: 'party-speaker' }
+    ]
   },
   {
     id: 'cat-5',
@@ -100,7 +123,12 @@ const initialCategories = [
     icon_name: 'Activity',
     icon_url: 'https://images.unsplash.com/photo-1576243345690-4e4b79b63288?auto=format&fit=crop&w=300&q=80',
     display_order: 5,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-5-1', name: 'স্মার্ট ওয়েট স্কেল', slug: 'smart-scale' },
+      { id: 'sub-5-2', name: 'ম্যাসাজ গান ও গিয়ার', slug: 'massage-gun' },
+      { id: 'sub-5-3', name: 'প্রেসার ও হেলথ মনিটর', slug: 'health-monitor' }
+    ]
   },
   {
     id: 'cat-6',
@@ -109,7 +137,13 @@ const initialCategories = [
     icon_name: 'Smartphone',
     icon_url: 'https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=300&q=80',
     display_order: 6,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-6-1', name: 'মোবাইল ব্যাক কাভার', slug: 'phone-covers' },
+      { id: 'sub-6-2', name: 'স্ক্রিন প্রটেক্টর', slug: 'screen-protector' },
+      { id: 'sub-6-3', name: 'কার মোবাইল হোল্ডার', slug: 'car-holder' },
+      { id: 'sub-6-4', name: 'গিম্বল ও ট্রাইপড', slug: 'gimbal-tripod' }
+    ]
   },
   {
     id: 'cat-7',
@@ -118,7 +152,12 @@ const initialCategories = [
     icon_name: 'Home',
     icon_url: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=300&q=80',
     display_order: 7,
-    is_visible: true
+    is_visible: true,
+    subcategories: [
+      { id: 'sub-7-1', name: 'স্মার্ট এলইডি লাইট', slug: 'smart-light' },
+      { id: 'sub-7-2', name: 'সিকিউরিটি আইপি ক্যামেরা', slug: 'ip-camera' },
+      { id: 'sub-7-3', name: 'স্মার্ট সকেট ও সুইচ', slug: 'smart-plug' }
+    ]
   }
 ];
 
@@ -632,6 +671,13 @@ async function loadDatabase(forceRefresh = false) {
           settings: mergedSettings
         };
 
+        if (!merged.categories || merged.categories.length === 0) {
+          merged.categories = [...initialCategories];
+        }
+        if (!merged.products || merged.products.length === 0) {
+          merged.products = [...initialProducts];
+        }
+
         cachedDbMemory = merged;
         lastDbFetchTime = Date.now();
 
@@ -652,6 +698,12 @@ async function loadDatabase(forceRefresh = false) {
   }
 
   cachedDbMemory = localDb;
+  if (!cachedDbMemory.categories || cachedDbMemory.categories.length === 0) {
+    cachedDbMemory.categories = [...initialCategories];
+  }
+  if (!cachedDbMemory.products || cachedDbMemory.products.length === 0) {
+    cachedDbMemory.products = [...initialProducts];
+  }
   if (!cachedDbMemory.settings) cachedDbMemory.settings = { ...initialSettings };
   if (!cachedDbMemory.settings.admin_id) cachedDbMemory.settings.admin_id = 'kinomart';
   if (!cachedDbMemory.settings.admin_password) cachedDbMemory.settings.admin_password = '@kinomart12@';
@@ -751,7 +803,6 @@ async function saveDatabase(data: any) {
             is_best_seller: Boolean(p.is_best_seller),
             timer_enabled: Boolean(p.timer_enabled),
             timer_title: String(p.timer_title || ''),
-            timer_end_time: String(p.timer_end_time || ''),
             timer_hours: p.timer_hours ? Number(p.timer_hours) : null,
             rating: Number(p.rating || 5.0),
             reviews_count: Number(p.reviews_count || 1),
@@ -762,7 +813,7 @@ async function saveDatabase(data: any) {
         });
         try {
           const { error } = await supabase.from('products').upsert(cleanProds, { onConflict: 'id' });
-          if (error) console.error('[Supabase products upsert error]:', error.message);
+          if (error && !error.message.includes('Could not find')) console.error('[Supabase products upsert error]:', error.message);
         } catch (e) {}
       }
 
@@ -774,7 +825,6 @@ async function saveDatabase(data: any) {
           customer_name: String(o.customer_name || 'গ্রাহক'),
           phone: String(o.phone || ''),
           address: String(o.address || ''),
-          area: String(o.area || 'inside_dhaka'),
           shipping_cost: Number(o.shipping_cost || 60),
           items: Array.isArray(o.items) ? o.items : [],
           total_revenue: Number(o.total_revenue || 0),
@@ -790,7 +840,7 @@ async function saveDatabase(data: any) {
         }));
         try {
           const { error } = await supabase.from('orders').upsert(cleanOrders, { onConflict: 'id' });
-          if (error) console.error('[Supabase orders upsert error]:', error.message);
+          if (error && !error.message.includes('Could not find')) console.error('[Supabase orders upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.customers && data.customers.length > 0) {
@@ -798,19 +848,19 @@ async function saveDatabase(data: any) {
           id: String(c.id),
           name: String(c.name || ''),
           phone: String(c.phone || ''),
+          password: String(c.password || c.phone || 'customer123'),
           address: String(c.address || ''),
           created_at: c.created_at || new Date().toISOString()
         }));
         try {
           const { error } = await supabase.from('customers').upsert(cleanCusts, { onConflict: 'id' });
-          if (error) console.error('[Supabase customers upsert error]:', error.message);
+          if (error && !error.message.includes('Could not find')) console.error('[Supabase customers upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.coupons && data.coupons.length > 0) {
         const cleanCoups = data.coupons.map((c: any) => ({
           id: String(c.id),
           code: String(c.code || '').toUpperCase(),
-          discount_type: String(c.discount_type || 'fixed'),
           discount_value: Number(c.discount_value || 0),
           min_order_amount: Number(c.min_order_amount || 0),
           max_discount_amount: c.max_discount_amount ? Number(c.max_discount_amount) : null,
@@ -822,7 +872,7 @@ async function saveDatabase(data: any) {
         }));
         try {
           const { error } = await supabase.from('coupons').upsert(cleanCoups, { onConflict: 'id' });
-          if (error) console.error('[Supabase coupons upsert error]:', error.message);
+          if (error && !error.message.includes('Could not find')) console.error('[Supabase coupons upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.reviews && data.reviews.length > 0) {
@@ -838,7 +888,7 @@ async function saveDatabase(data: any) {
         }));
         try {
           const { error } = await supabase.from('reviews').upsert(cleanRevs, { onConflict: 'id' });
-          if (error) console.error('[Supabase reviews upsert error]:', error.message);
+          if (error && !error.message.includes('Could not find')) console.error('[Supabase reviews upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.settings) {
@@ -1154,7 +1204,8 @@ app.post('/api/categories', async (req, res) => {
       icon_name: req.body?.icon_name || 'Grid',
       icon_url: req.body?.icon_url || '',
       display_order: Number(req.body?.display_order) || (db.categories || []).length + 1,
-      is_visible: req.body?.is_visible ?? true
+      is_visible: req.body?.is_visible ?? true,
+      subcategories: Array.isArray(req.body?.subcategories) ? req.body.subcategories : []
     };
     db.categories = db.categories || [];
     db.categories.push(newCat);
@@ -1204,6 +1255,12 @@ app.get('/api/products', async (req, res) => {
   const db = await loadDatabase();
   let products = db.products || [];
 
+  if (!Array.isArray(products) || products.length === 0) {
+    products = [...initialProducts];
+    db.products = products;
+    await saveDatabase(db);
+  }
+
   const { category, search, sort, status } = req.query;
 
   if (status) {
@@ -1236,6 +1293,17 @@ app.get('/api/products', async (req, res) => {
   }
 
   res.json(products);
+});
+
+app.post('/api/products/reset', async (req, res) => {
+  try {
+    const db = await loadDatabase();
+    db.products = [...initialProducts];
+    await saveDatabase(db);
+    res.json({ success: true, products: db.products });
+  } catch (err: any) {
+    res.status(500).json({ error: 'প্রোডাক্ট রিসেট করতে সমস্যা হয়েছে' });
+  }
 });
 
 app.get('/api/products/:identifier', async (req, res) => {
