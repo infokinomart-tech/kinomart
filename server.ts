@@ -580,19 +580,33 @@ async function loadDatabase(forceRefresh = false) {
 
         // Helper to merge lists preferring supaDb (JSON blob) over relational or local defaults
         const mergeLists = (relational: any[] | null, blobArr: any[] | null, defaultArr: any[] = []) => {
-          const map = new Map();
-          
-          // Base defaults if neither relational nor blob has data
-          if ((!relational || relational.length === 0) && (!blobArr || blobArr.length === 0)) {
-            (defaultArr || []).forEach(i => { if (i && i.id) map.set(String(i.id), i); });
+          const map = new Map<string, any>();
+
+          // 1. Local defaults
+          if (Array.isArray(defaultArr)) {
+            defaultArr.forEach(i => { if (i && i.id) map.set(String(i.id), { ...i }); });
           }
-          // Relational items first
+
+          // 2. Relational items from Supabase
           if (Array.isArray(relational) && relational.length > 0) {
-            relational.forEach(i => { if (i && i.id) map.set(String(i.id), i); });
+            relational.forEach(i => {
+              if (i && i.id) {
+                const idStr = String(i.id);
+                const prev = map.get(idStr) || {};
+                map.set(idStr, { ...prev, ...i });
+              }
+            });
           }
-          // Blob items second (Master state: blob updates overwrite relational)
+
+          // 3. Master JSON blob from store_data (takes priority for exact state)
           if (Array.isArray(blobArr) && blobArr.length > 0) {
-            blobArr.forEach(i => { if (i && i.id) map.set(String(i.id), i); });
+            blobArr.forEach(i => {
+              if (i && i.id) {
+                const idStr = String(i.id);
+                const prev = map.get(idStr) || {};
+                map.set(idStr, { ...prev, ...i });
+              }
+            });
           }
 
           return Array.from(map.values());
@@ -727,8 +741,22 @@ async function saveDatabase(data: any) {
             category_id: p.category_id ? String(p.category_id) : null,
             category_name: p.category_name ? String(p.category_name) : null,
             images: Array.isArray(p.images) ? p.images : [],
+            video_url: String(p.video_url || ''),
+            variants: Array.isArray(p.variants) ? p.variants : [],
+            specifications: Array.isArray(p.specifications) ? p.specifications : [],
             stock: Number(p.stock || 0),
+            low_stock_threshold: p.low_stock_threshold !== undefined ? Number(p.low_stock_threshold) : 10,
             status: String(p.status || 'active'),
+            is_featured: Boolean(p.is_featured),
+            is_best_seller: Boolean(p.is_best_seller),
+            timer_enabled: Boolean(p.timer_enabled),
+            timer_title: String(p.timer_title || ''),
+            timer_end_time: String(p.timer_end_time || ''),
+            timer_hours: p.timer_hours ? Number(p.timer_hours) : null,
+            rating: Number(p.rating || 5.0),
+            reviews_count: Number(p.reviews_count || 1),
+            seo_title: String(p.seo_title || p.name || ''),
+            seo_description: String(p.seo_description || p.description || ''),
             created_at: p.created_at || new Date().toISOString()
           };
         });
@@ -739,26 +767,77 @@ async function saveDatabase(data: any) {
       }
 
       if (data.orders && data.orders.length > 0) {
+        const cleanOrders = data.orders.map((o: any) => ({
+          id: String(o.id),
+          order_number: String(o.order_number || o.id),
+          customer_id: o.customer_id ? String(o.customer_id) : null,
+          customer_name: String(o.customer_name || 'গ্রাহক'),
+          phone: String(o.phone || ''),
+          address: String(o.address || ''),
+          area: String(o.area || 'inside_dhaka'),
+          shipping_cost: Number(o.shipping_cost || 60),
+          items: Array.isArray(o.items) ? o.items : [],
+          total_revenue: Number(o.total_revenue || 0),
+          payment_method: String(o.payment_method || 'cod'),
+          bkash_number: o.bkash_number ? String(o.bkash_number) : null,
+          transaction_id: o.transaction_id ? String(o.transaction_id) : null,
+          coupon_code: o.coupon_code ? String(o.coupon_code) : null,
+          discount_amount: o.discount_amount ? Number(o.discount_amount) : 0,
+          order_status: String(o.order_status || 'pending'),
+          call_status: String(o.call_status || 'not_called'),
+          note: String(o.note || ''),
+          created_at: o.created_at || new Date().toISOString()
+        }));
         try {
-          const { error } = await supabase.from('orders').upsert(data.orders, { onConflict: 'id' });
+          const { error } = await supabase.from('orders').upsert(cleanOrders, { onConflict: 'id' });
           if (error) console.error('[Supabase orders upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.customers && data.customers.length > 0) {
+        const cleanCusts = data.customers.map((c: any) => ({
+          id: String(c.id),
+          name: String(c.name || ''),
+          phone: String(c.phone || ''),
+          address: String(c.address || ''),
+          created_at: c.created_at || new Date().toISOString()
+        }));
         try {
-          const { error } = await supabase.from('customers').upsert(data.customers, { onConflict: 'id' });
+          const { error } = await supabase.from('customers').upsert(cleanCusts, { onConflict: 'id' });
           if (error) console.error('[Supabase customers upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.coupons && data.coupons.length > 0) {
+        const cleanCoups = data.coupons.map((c: any) => ({
+          id: String(c.id),
+          code: String(c.code || '').toUpperCase(),
+          discount_type: String(c.discount_type || 'fixed'),
+          discount_value: Number(c.discount_value || 0),
+          min_order_amount: Number(c.min_order_amount || 0),
+          max_discount_amount: c.max_discount_amount ? Number(c.max_discount_amount) : null,
+          usage_limit: c.usage_limit ? Number(c.usage_limit) : null,
+          used_count: Number(c.used_count || 0),
+          expires_at: c.expires_at || '',
+          is_active: Boolean(c.is_active ?? true),
+          created_at: c.created_at || new Date().toISOString()
+        }));
         try {
-          const { error } = await supabase.from('coupons').upsert(data.coupons, { onConflict: 'id' });
+          const { error } = await supabase.from('coupons').upsert(cleanCoups, { onConflict: 'id' });
           if (error) console.error('[Supabase coupons upsert error]:', error.message);
         } catch (e) {}
       }
       if (data.reviews && data.reviews.length > 0) {
+        const cleanRevs = data.reviews.map((r: any) => ({
+          id: String(r.id),
+          product_id: String(r.product_id || ''),
+          customer_name: String(r.customer_name || 'গ্রাহক'),
+          phone: String(r.phone || ''),
+          rating: Number(r.rating || 5.0),
+          comment: String(r.comment || ''),
+          is_verified_buyer: Boolean(r.is_verified_buyer ?? true),
+          created_at: r.created_at || new Date().toISOString()
+        }));
         try {
-          const { error } = await supabase.from('reviews').upsert(data.reviews, { onConflict: 'id' });
+          const { error } = await supabase.from('reviews').upsert(cleanRevs, { onConflict: 'id' });
           if (error) console.error('[Supabase reviews upsert error]:', error.message);
         } catch (e) {}
       }
