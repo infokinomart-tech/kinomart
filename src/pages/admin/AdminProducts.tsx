@@ -379,9 +379,9 @@ export const AdminProducts: React.FC = () => {
                     </td>
                     <td className="py-3 px-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        p.status === 'active' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-gray-800 text-gray-400'
+                        (p.status || 'active') === 'active' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-gray-800 text-gray-400'
                       }`}>
-                        {p.status.toUpperCase()}
+                        {(p.status || 'active').toUpperCase()}
                       </span>
                     </td>
                     <td className="py-3 px-3 text-right">

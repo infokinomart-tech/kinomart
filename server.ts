@@ -590,7 +590,7 @@ function loadDatabaseFromFile() {
 }
 
 async function loadDatabase(forceRefresh = false) {
-  if (cachedDbMemory && !forceRefresh) {
+  if (cachedDbMemory && !forceRefresh && (Date.now() - lastDbFetchTime < 3000)) {
     return cachedDbMemory;
   }
 
@@ -617,35 +617,39 @@ async function loadDatabase(forceRefresh = false) {
 
         const supaDb = storeRes.data?.data || {};
 
-        // Helper to merge lists preferring supaDb (JSON blob) over relational or local defaults
+        // Helper to merge lists cleanly without letting null/undefined fields erase existing data
         const mergeLists = (relational: any[] | null, blobArr: any[] | null, defaultArr: any[] = []) => {
           const map = new Map<string, any>();
 
+          const mergeItem = (idStr: string, item: any) => {
+            const prev = map.get(idStr) || {};
+            const clean: any = {};
+            Object.keys(item).forEach(k => {
+              if (item[k] !== undefined && item[k] !== null) {
+                clean[k] = item[k];
+              }
+            });
+            const merged = { ...prev, ...clean };
+            if (prev.subcategories && (!merged.subcategories || merged.subcategories.length === 0)) {
+              merged.subcategories = prev.subcategories;
+            }
+            if (!merged.status) merged.status = 'active';
+            map.set(idStr, merged);
+          };
+
           // 1. Local defaults
           if (Array.isArray(defaultArr)) {
-            defaultArr.forEach(i => { if (i && i.id) map.set(String(i.id), { ...i }); });
+            defaultArr.forEach(i => { if (i && i.id) mergeItem(String(i.id), i); });
           }
 
           // 2. Relational items from Supabase
           if (Array.isArray(relational) && relational.length > 0) {
-            relational.forEach(i => {
-              if (i && i.id) {
-                const idStr = String(i.id);
-                const prev = map.get(idStr) || {};
-                map.set(idStr, { ...prev, ...i });
-              }
-            });
+            relational.forEach(i => { if (i && i.id) mergeItem(String(i.id), i); });
           }
 
           // 3. Master JSON blob from store_data (takes priority for exact state)
           if (Array.isArray(blobArr) && blobArr.length > 0) {
-            blobArr.forEach(i => {
-              if (i && i.id) {
-                const idStr = String(i.id);
-                const prev = map.get(idStr) || {};
-                map.set(idStr, { ...prev, ...i });
-              }
-            });
+            blobArr.forEach(i => { if (i && i.id) mergeItem(String(i.id), i); });
           }
 
           return Array.from(map.values());
