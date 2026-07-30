@@ -200,9 +200,10 @@ export const AdminProducts: React.FC = () => {
       }
 
       setIsModalOpen(false);
-      loadData();
-    } catch (err) {
+      await loadData();
+    } catch (err: any) {
       console.error('Failed to save product', err);
+      alert('প্রোডাক্ট সেভ করতে সমস্যা হয়েছে: ' + (err?.message || 'অনুগ্রহ করে আবার চেষ্টা করুন'));
     } finally {
       setIsSaving(false);
     }

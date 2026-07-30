@@ -82,9 +82,10 @@ export const AdminCategories: React.FC = () => {
       }
 
       setIsModalOpen(false);
-      loadCategories();
-    } catch (err) {
+      await loadCategories();
+    } catch (err: any) {
       console.error('Failed to save category', err);
+      alert('ক্যাটাগরি সেভ করতে সমস্যা হয়েছে: ' + (err?.message || 'অনুগ্রহ করে আবার চেষ্টা করুন'));
     } finally {
       setIsSaving(false);
     }

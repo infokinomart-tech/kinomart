@@ -575,7 +575,7 @@ async function loadDatabase(forceRefresh = false) {
 
         const supaDb = storeRes.data?.data || {};
 
-        // Helper to merge lists preferring relational tables or supaDb over localDb
+        // Helper to merge lists preferring supaDb (JSON blob) over relational or local defaults
         const mergeLists = (relational: any[] | null, blobArr: any[] | null, defaultArr: any[] = []) => {
           const map = new Map();
           
@@ -583,13 +583,13 @@ async function loadDatabase(forceRefresh = false) {
           if ((!relational || relational.length === 0) && (!blobArr || blobArr.length === 0)) {
             (defaultArr || []).forEach(i => { if (i && i.id) map.set(String(i.id), i); });
           }
-          // Blob items
-          if (Array.isArray(blobArr) && blobArr.length > 0) {
-            blobArr.forEach(i => { if (i && i.id) map.set(String(i.id), i); });
-          }
-          // Relational items (most explicit)
+          // Relational items first
           if (Array.isArray(relational) && relational.length > 0) {
             relational.forEach(i => { if (i && i.id) map.set(String(i.id), i); });
+          }
+          // Blob items second (Master state: blob updates overwrite relational)
+          if (Array.isArray(blobArr) && blobArr.length > 0) {
+            blobArr.forEach(i => { if (i && i.id) map.set(String(i.id), i); });
           }
 
           return Array.from(map.values());
@@ -598,8 +598,8 @@ async function loadDatabase(forceRefresh = false) {
         const mergedSettings = {
           ...initialSettings,
           ...localDb.settings,
-          ...(supaDb.settings || {}),
-          ...(setRes.data && setRes.data[0] ? setRes.data[0] : {})
+          ...(setRes.data && setRes.data[0] ? setRes.data[0] : {}),
+          ...(supaDb.settings || {})
         };
         if (!mergedSettings.admin_id) mergedSettings.admin_id = 'kinomart';
         if (!mergedSettings.admin_password) mergedSettings.admin_password = '@kinomart12@';
@@ -668,15 +668,30 @@ async function saveDatabase(data: any) {
 
       // 2. Save cleaned items to relational tables
       if (data.categories && data.categories.length > 0) {
-        const cleanCats = data.categories.map((c: any) => ({
-          id: String(c.id),
-          name: String(c.name || ''),
-          slug: String(c.slug || ''),
-          icon_name: String(c.icon_name || 'Grid'),
-          icon_url: String(c.icon_url || ''),
-          display_order: Number(c.display_order || 1),
-          is_visible: Boolean(c.is_visible ?? true)
-        }));
+        const usedCatSlugs = new Set<string>();
+        const cleanCats = data.categories.map((c: any) => {
+          let baseSlug = (c.slug && c.slug.trim() && c.slug !== '-')
+            ? c.slug.trim()
+            : (c.name ? c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'cat-' + c.id);
+          if (!baseSlug || baseSlug === '-') baseSlug = 'cat-' + c.id;
+          let finalSlug = baseSlug;
+          let count = 1;
+          while (usedCatSlugs.has(finalSlug)) {
+            finalSlug = `${baseSlug}-${count}`;
+            count++;
+          }
+          usedCatSlugs.add(finalSlug);
+
+          return {
+            id: String(c.id),
+            name: String(c.name || ''),
+            slug: finalSlug,
+            icon_name: String(c.icon_name || 'Grid'),
+            icon_url: String(c.icon_url || ''),
+            display_order: Number(c.display_order || 1),
+            is_visible: Boolean(c.is_visible ?? true)
+          };
+        });
         try {
           const { error } = await supabase.from('categories').upsert(cleanCats, { onConflict: 'id' });
           if (error) console.error('[Supabase categories upsert error]:', error.message);
@@ -684,21 +699,36 @@ async function saveDatabase(data: any) {
       }
 
       if (data.products && data.products.length > 0) {
-        const cleanProds = data.products.map((p: any) => ({
-          id: String(p.id),
-          name: String(p.name || ''),
-          slug: String(p.slug || ''),
-          description: String(p.description || ''),
-          short_description: String(p.short_description || ''),
-          price: Number(p.price || 0),
-          discount_price: p.discount_price ? Number(p.discount_price) : null,
-          category_id: p.category_id ? String(p.category_id) : null,
-          category_name: p.category_name ? String(p.category_name) : null,
-          images: Array.isArray(p.images) ? p.images : [],
-          stock: Number(p.stock || 0),
-          status: String(p.status || 'active'),
-          created_at: p.created_at || new Date().toISOString()
-        }));
+        const usedProdSlugs = new Set<string>();
+        const cleanProds = data.products.map((p: any) => {
+          let baseSlug = (p.slug && p.slug.trim() && p.slug !== '-')
+            ? p.slug.trim()
+            : (p.name ? p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'prod-' + p.id);
+          if (!baseSlug || baseSlug === '-') baseSlug = 'prod-' + p.id;
+          let finalSlug = baseSlug;
+          let count = 1;
+          while (usedProdSlugs.has(finalSlug)) {
+            finalSlug = `${baseSlug}-${count}`;
+            count++;
+          }
+          usedProdSlugs.add(finalSlug);
+
+          return {
+            id: String(p.id),
+            name: String(p.name || ''),
+            slug: finalSlug,
+            description: String(p.description || ''),
+            short_description: String(p.short_description || ''),
+            price: Number(p.price || 0),
+            discount_price: p.discount_price ? Number(p.discount_price) : null,
+            category_id: p.category_id ? String(p.category_id) : null,
+            category_name: p.category_name ? String(p.category_name) : null,
+            images: Array.isArray(p.images) ? p.images : [],
+            stock: Number(p.stock || 0),
+            status: String(p.status || 'active'),
+            created_at: p.created_at || new Date().toISOString()
+          };
+        });
         try {
           const { error } = await supabase.from('products').upsert(cleanProds, { onConflict: 'id' });
           if (error) console.error('[Supabase products upsert error]:', error.message);
@@ -731,7 +761,32 @@ async function saveDatabase(data: any) {
       }
       if (data.settings) {
         try {
-          const { error } = await supabase.from('settings').upsert([{ id: 'store_settings', ...data.settings }], { onConflict: 'id' });
+          const cleanSettings = {
+            id: 'store_settings',
+            store_name: String(data.settings.logo_title || data.settings.store_name || 'KinoMart'),
+            logo_title: String(data.settings.logo_title || 'KinoMart'),
+            logo_url: data.settings.logo_url || null,
+            phone: String(data.settings.phone || ''),
+            whatsapp: String(data.settings.whatsapp || ''),
+            address: String(data.settings.address || ''),
+            bkash_number: String(data.settings.bkash_number || ''),
+            nagad_number: String(data.settings.nagad_number || ''),
+            hero_title: String(data.settings.hero_title || ''),
+            hero_subtitle: String(data.settings.hero_subtitle || ''),
+            hero_image: data.settings.hero_image || null,
+            banner_images: Array.isArray(data.settings.banner_images) ? data.settings.banner_images : [],
+            inside_dhaka_charge: Number(data.settings.inside_dhaka_charge || 70),
+            outside_dhaka_charge: Number(data.settings.outside_dhaka_charge || 130),
+            free_shipping_min: Number(data.settings.free_shipping_min || 3000),
+            header_notice: String(data.settings.header_notice || ''),
+            footer_about: String(data.settings.footer_about || ''),
+            pixel_id: String(data.settings.pixel_id || ''),
+            capi_token: String(data.settings.capi_token || ''),
+            admin_id: String(data.settings.admin_id || 'kinomart'),
+            admin_password: String(data.settings.admin_password || '@kinomart12@'),
+            updated_at: new Date().toISOString()
+          };
+          const { error } = await supabase.from('settings').upsert([cleanSettings], { onConflict: 'id' });
           if (error) console.error('[Supabase settings upsert error]:', error.message);
         } catch (e) {}
       }
