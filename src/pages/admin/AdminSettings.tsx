@@ -9,6 +9,8 @@ export const AdminSettings: React.FC = () => {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
+  const [saveErrorMsg, setSaveErrorMsg] = useState('');
 
   // Supabase Status
   const [supaStatus, setSupaStatus] = useState<any>(null);
@@ -236,6 +238,8 @@ END $$;`;
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaveErrorMsg('');
+    setSaveSuccessMsg('');
     try {
       const validBanners = bannerImages.filter(img => img.trim() !== '');
       const updated = await api.updateSettings({
@@ -261,9 +265,14 @@ END $$;`;
       setSettings(updated);
       await refreshSettings();
       setIsSaved(true);
-      setTimeout(() => setIsSaved(false), 2000);
-    } catch (err) {
+      setSaveSuccessMsg('ওয়েবসাইট সেটিংস সফলভাবে সেভ ও আপডেট হয়েছে!');
+      setTimeout(() => {
+        setIsSaved(false);
+        setSaveSuccessMsg('');
+      }, 4000);
+    } catch (err: any) {
       console.error('Error saving settings', err);
+      setSaveErrorMsg('সেটিংস সেভ করতে সমস্যা হয়েছে: ' + (err?.message || 'সার্ভার ত্রুটি'));
     }
   };
 
@@ -306,6 +315,20 @@ END $$;`;
           <p className="text-xs text-gray-400">মার্কেটিং পিক্সেল, কন্টাক্ট ইনফো এবং পাসওয়ার্ড পরিবর্তন</p>
         </div>
       </div>
+
+      {/* Banners */}
+      {saveSuccessMsg && (
+        <div className="p-4 bg-emerald-950/90 border border-emerald-600 text-emerald-200 rounded-2xl flex items-center space-x-3 text-sm font-bold shadow-lg animate-fade-in">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span>{saveSuccessMsg}</span>
+        </div>
+      )}
+      {saveErrorMsg && (
+        <div className="p-4 bg-rose-950/90 border border-rose-600 text-rose-200 rounded-2xl flex items-center space-x-3 text-sm font-bold shadow-lg animate-fade-in">
+          <CheckCircle2 className="w-5 h-5 text-rose-400 shrink-0" />
+          <span>{saveErrorMsg}</span>
+        </div>
+      )}
 
       <form onSubmit={handleSaveSettings} className="space-y-6">
         {/* Logo & Favicon Customization */}

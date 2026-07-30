@@ -84,6 +84,33 @@
   ],
   "products": [
     {
+      "id": "prod-1785395033688",
+      "name": "টেস্ট গ্যাজেট ঘড়ি",
+      "slug": "-",
+      "description": "",
+      "short_description": "",
+      "price": 1500,
+      "category_id": "cat-1",
+      "images": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+      ],
+      "video_url": "",
+      "variants": [],
+      "specifications": [],
+      "stock": 20,
+      "low_stock_threshold": 10,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "timer_enabled": false,
+      "timer_title": "অফারটি শেষ হতে বাকি:",
+      "timer_end_time": "",
+      "rating": 5,
+      "reviews_count": 1,
+      "seo_title": "টেস্ট গ্যাজেট ঘড়ি",
+      "created_at": "2026-07-30T07:03:53.690Z"
+    },
+    {
       "id": "prod-1785318947954",
       "name": "টেস্ট নতুন গ্যাজেট প্রোডাক্ট",
       "slug": "-",
@@ -111,6 +138,173 @@
       "reviews_count": 1,
       "seo_title": "টেস্ট নতুন গ্যাজেট প্রোডাক্ট",
       "created_at": "2026-07-29T09:55:47.954Z"
+    },
+    {
+      "id": "prod-6",
+      "name": "Kino Stream RGB Gaming Desk Headset Stand",
+      "slug": "kino-stream-rgb-gaming-headset-stand",
+      "description": "আরজিবি লাইটিং লাইট বার, ৩টি ইউএসবি হাব পোর্ট এবং ৭.১ সারাউন্ড সাউন্ড প্যাস থ্রু অডিও জ্যাক সহ ডেস্ক স্ট্যান্ড।",
+      "price": 1800,
+      "discount_price": 990,
+      "category_id": "cat-6",
+      "category_name": "মোবাইল এক্সেসরিজ",
+      "images": [
+        "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "RGB BLACK",
+            "RGB WHITE"
+          ]
+        }
+      ],
+      "stock": 20,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 4.7,
+      "reviews_count": 29,
+      "seo_title": "RGB Gaming Headset Stand BD",
+      "seo_description": "RGB Stand with USB hub.",
+      "created_at": "2026-07-23T14:14:09.296Z",
+      "low_stock_threshold": 10
+    },
+    {
+      "id": "prod-5",
+      "name": "KinoBand Sleek Fitness & Sleep Tracker",
+      "slug": "kinoband-sleek-fitness-sleep-tracker",
+      "description": "২৪ ঘন্টা হার্টরেট, স্লিপ ট্র্যাকিং, ব্লাড প্রেশার মনিটরিং এবং কমপ্লিট স্টেপ কাউন্টার। ওয়াটারপ্রুফ IP68 সুবিধা।",
+      "price": 2200,
+      "discount_price": 1290,
+      "category_id": "cat-4",
+      "category_name": "ফিটনেস ট্র্যাকার",
+      "images": [
+        "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "BLACK",
+            "NAVY BLUE",
+            "ROSE GOLD"
+          ]
+        }
+      ],
+      "stock": 40,
+      "status": "active",
+      "is_featured": false,
+      "is_best_seller": false,
+      "rating": 4.6,
+      "reviews_count": 41,
+      "seo_title": "KinoBand Fitness Tracker BD",
+      "seo_description": "Accurate fitness and health tracker in BD.",
+      "created_at": "2026-07-22T14:14:09.296Z",
+      "low_stock_threshold": 10
+    },
+    {
+      "id": "prod-4",
+      "name": "Kino Charge Fast Magnetic Power Bank 10,000mAh",
+      "slug": "kino-charge-fast-magnetic-power-bank",
+      "description": "১৫W ম্যাগনেটিক ওয়ারলেস চার্জিং + ২২.৫W সুপার ফাস্ট ক্যাবল চার্জিং। স্লিম মেটাল বডি ও ডিজিটাল ব্যাটারি ডিসপ্লে।",
+      "price": 3200,
+      "discount_price": 1890,
+      "category_id": "cat-5",
+      "category_name": "চার্জার ও পাওয়ার ব্যাংক",
+      "images": [
+        "https://images.unsplash.com/photo-1609592424083-d92e5a407335?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "SPACE GRAY",
+            "MIDNIGHT BLUE"
+          ]
+        }
+      ],
+      "stock": 25,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": true,
+      "rating": 4.9,
+      "reviews_count": 87,
+      "seo_title": "Kino Power Bank 10000mAh Price in Bangladesh",
+      "seo_description": "MagSafe Wireless powerbank in BD.",
+      "created_at": "2026-07-21T14:14:09.296Z",
+      "low_stock_threshold": 10
+    },
+    {
+      "id": "prod-3",
+      "name": "KinoBreathe Nasal Inhaler & Health Aid",
+      "slug": "kinobreathe-nasal-inhaler-health-aid",
+      "description": "শ্বাস-প্রশ্বাস সহজ করার জন্য প্রাকৃতিক এসেনশিয়াল অয়েল ইনহেলার ও অ্যালার্জি রিলিফ গ্যাজেট। কমপ্যাক্ট এবং পোর্টেবল ডিজাইন।",
+      "price": 1200,
+      "discount_price": 690,
+      "category_id": "cat-3",
+      "category_name": "হেলথ ও কেয়ার গ্যাজেট",
+      "images": [
+        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "ফ্লেভার",
+          "options": [
+            "MINT",
+            "EUCALYPTUS",
+            "PEACE",
+            "WATERMELON"
+          ]
+        }
+      ],
+      "stock": 60,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": false,
+      "rating": 4.7,
+      "reviews_count": 62,
+      "seo_title": "KinoBreathe Health Inhaler BD",
+      "seo_description": "Natural nasal health aid gadget in BD.",
+      "created_at": "2026-07-20T14:14:09.296Z",
+      "low_stock_threshold": 10
+    },
+    {
+      "id": "prod-2",
+      "name": "KinoFit Pro Amoled Smartwatch",
+      "slug": "kinofit-pro-amoled-smartwatch",
+      "description": "১.৪৩ ইঞ্চি প্রিমিয়াম অ্যামোলেড ডিসপ্লে, ব্লুটুথ কলিং, হার্ট রেট ও অক্সিজেন মনিটর, ১০০+ স্পোর্টস মোড এবং ৭ দিনের ব্যাটারি ব্যাকআপ।",
+      "price": 4500,
+      "discount_price": 2990,
+      "category_id": "cat-1",
+      "category_name": "স্মার্টওয়াচ",
+      "images": [
+        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80"
+      ],
+      "variants": [
+        {
+          "name": "কালার",
+          "options": [
+            "MATTE BLACK",
+            "SILVER",
+            "ARMY GREEN"
+          ]
+        }
+      ],
+      "stock": 30,
+      "status": "active",
+      "is_featured": true,
+      "is_best_seller": true,
+      "rating": 4.8,
+      "reviews_count": 94,
+      "seo_title": "KinoFit Pro Amoled Smartwatch BD",
+      "seo_description": "Best Amoled Smartwatch with bluetooth calling in Bangladesh.",
+      "created_at": "2026-07-19T14:14:09.296Z",
+      "low_stock_threshold": 10
     },
     {
       "id": "prod-1",
@@ -179,173 +373,6 @@
           "value": "৬ মাসের রিপ্লেসমেন্ট ওয়ারেন্টি"
         }
       ]
-    },
-    {
-      "id": "prod-2",
-      "name": "KinoFit Pro Amoled Smartwatch",
-      "slug": "kinofit-pro-amoled-smartwatch",
-      "description": "১.৪৩ ইঞ্চি প্রিমিয়াম অ্যামোলেড ডিসপ্লে, ব্লুটুথ কলিং, হার্ট রেট ও অক্সিজেন মনিটর, ১০০+ স্পোর্টস মোড এবং ৭ দিনের ব্যাটারি ব্যাকআপ।",
-      "price": 4500,
-      "discount_price": 2990,
-      "category_id": "cat-1",
-      "category_name": "স্মার্টওয়াচ",
-      "images": [
-        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=800&q=80"
-      ],
-      "variants": [
-        {
-          "name": "কালার",
-          "options": [
-            "MATTE BLACK",
-            "SILVER",
-            "ARMY GREEN"
-          ]
-        }
-      ],
-      "stock": 30,
-      "status": "active",
-      "is_featured": true,
-      "is_best_seller": true,
-      "rating": 4.8,
-      "reviews_count": 94,
-      "seo_title": "KinoFit Pro Amoled Smartwatch BD",
-      "seo_description": "Best Amoled Smartwatch with bluetooth calling in Bangladesh.",
-      "created_at": "2026-07-19T14:14:09.296Z",
-      "low_stock_threshold": 10
-    },
-    {
-      "id": "prod-3",
-      "name": "KinoBreathe Nasal Inhaler & Health Aid",
-      "slug": "kinobreathe-nasal-inhaler-health-aid",
-      "description": "শ্বাস-প্রশ্বাস সহজ করার জন্য প্রাকৃতিক এসেনশিয়াল অয়েল ইনহেলার ও অ্যালার্জি রিলিফ গ্যাজেট। কমপ্যাক্ট এবং পোর্টেবল ডিজাইন।",
-      "price": 1200,
-      "discount_price": 690,
-      "category_id": "cat-3",
-      "category_name": "হেলথ ও কেয়ার গ্যাজেট",
-      "images": [
-        "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=800&q=80"
-      ],
-      "variants": [
-        {
-          "name": "ফ্লেভার",
-          "options": [
-            "MINT",
-            "EUCALYPTUS",
-            "PEACE",
-            "WATERMELON"
-          ]
-        }
-      ],
-      "stock": 60,
-      "status": "active",
-      "is_featured": true,
-      "is_best_seller": false,
-      "rating": 4.7,
-      "reviews_count": 62,
-      "seo_title": "KinoBreathe Health Inhaler BD",
-      "seo_description": "Natural nasal health aid gadget in BD.",
-      "created_at": "2026-07-20T14:14:09.296Z",
-      "low_stock_threshold": 10
-    },
-    {
-      "id": "prod-4",
-      "name": "Kino Charge Fast Magnetic Power Bank 10,000mAh",
-      "slug": "kino-charge-fast-magnetic-power-bank",
-      "description": "১৫W ম্যাগনেটিক ওয়ারলেস চার্জিং + ২২.৫W সুপার ফাস্ট ক্যাবল চার্জিং। স্লিম মেটাল বডি ও ডিজিটাল ব্যাটারি ডিসপ্লে।",
-      "price": 3200,
-      "discount_price": 1890,
-      "category_id": "cat-5",
-      "category_name": "চার্জার ও পাওয়ার ব্যাংক",
-      "images": [
-        "https://images.unsplash.com/photo-1609592424083-d92e5a407335?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80"
-      ],
-      "variants": [
-        {
-          "name": "কালার",
-          "options": [
-            "SPACE GRAY",
-            "MIDNIGHT BLUE"
-          ]
-        }
-      ],
-      "stock": 25,
-      "status": "active",
-      "is_featured": true,
-      "is_best_seller": true,
-      "rating": 4.9,
-      "reviews_count": 87,
-      "seo_title": "Kino Power Bank 10000mAh Price in Bangladesh",
-      "seo_description": "MagSafe Wireless powerbank in BD.",
-      "created_at": "2026-07-21T14:14:09.296Z",
-      "low_stock_threshold": 10
-    },
-    {
-      "id": "prod-5",
-      "name": "KinoBand Sleek Fitness & Sleep Tracker",
-      "slug": "kinoband-sleek-fitness-sleep-tracker",
-      "description": "২৪ ঘন্টা হার্টরেট, স্লিপ ট্র্যাকিং, ব্লাড প্রেশার মনিটরিং এবং কমপ্লিট স্টেপ কাউন্টার। ওয়াটারপ্রুফ IP68 সুবিধা।",
-      "price": 2200,
-      "discount_price": 1290,
-      "category_id": "cat-4",
-      "category_name": "ফিটনেস ট্র্যাকার",
-      "images": [
-        "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=800&q=80"
-      ],
-      "variants": [
-        {
-          "name": "কালার",
-          "options": [
-            "BLACK",
-            "NAVY BLUE",
-            "ROSE GOLD"
-          ]
-        }
-      ],
-      "stock": 40,
-      "status": "active",
-      "is_featured": false,
-      "is_best_seller": false,
-      "rating": 4.6,
-      "reviews_count": 41,
-      "seo_title": "KinoBand Fitness Tracker BD",
-      "seo_description": "Accurate fitness and health tracker in BD.",
-      "created_at": "2026-07-22T14:14:09.296Z",
-      "low_stock_threshold": 10
-    },
-    {
-      "id": "prod-6",
-      "name": "Kino Stream RGB Gaming Desk Headset Stand",
-      "slug": "kino-stream-rgb-gaming-headset-stand",
-      "description": "আরজিবি লাইটিং লাইট বার, ৩টি ইউএসবি হাব পোর্ট এবং ৭.১ সারাউন্ড সাউন্ড প্যাস থ্রু অডিও জ্যাক সহ ডেস্ক স্ট্যান্ড।",
-      "price": 1800,
-      "discount_price": 990,
-      "category_id": "cat-6",
-      "category_name": "মোবাইল এক্সেসরিজ",
-      "images": [
-        "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=800&q=80"
-      ],
-      "variants": [
-        {
-          "name": "কালার",
-          "options": [
-            "RGB BLACK",
-            "RGB WHITE"
-          ]
-        }
-      ],
-      "stock": 20,
-      "status": "active",
-      "is_featured": false,
-      "is_best_seller": false,
-      "rating": 4.7,
-      "reviews_count": 29,
-      "seo_title": "RGB Gaming Headset Stand BD",
-      "seo_description": "RGB Stand with USB hub.",
-      "created_at": "2026-07-23T14:14:09.296Z",
-      "low_stock_threshold": 10
     }
   ],
   "orders": [
@@ -455,25 +482,6 @@
       "created_at": "2026-07-22T14:14:09.296Z"
     }
   ],
-  "settings": {
-    "logo_title": "KinoMart",
-    "tagline": "সেরা গ্যাজেট ও প্রিমিয়াম ইলেকট্রনিক্স",
-    "phone": "01700-123456",
-    "whatsapp": "8801700123456",
-    "address": "লেভেল ৫, বসুন্ধরা সিটি শপিং মল, পান্থপথ, ঢাকা-১২০৫",
-    "hero_title": "অরিজিনাল প্রিমিয়াম গ্যাজেট সেরা দামে",
-    "hero_subtitle": "দেশজুড়ে ক্যাশ অন ডেলিভারি এবং ১-৩ দিনে দ্রুত নিরাপদ হোম ডেলিভারি!",
-    "hero_image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80",
-    "special_offer_text": "🔥 বিশেষ অফার: যেকোনো দুটি পণ্য অর্ডারে ফ্রি সারা বাংলাদেশ হোম ডেলিভারি!",
-    "special_offer_active": true,
-    "footer_about": "কীনোমার্ট বাংলাদেশের একটি বিশ্বস্ত প্রিমিয়াম গ্যাজেট অনলাইন শপ। আমরা সরবরাহ করি ১০০% অরিজিনাল ও মানসম্মত ইলেকট্রনিক্স গ্যাজেট।",
-    "pixel_id": "123456789012345",
-    "capi_token": "EAA123456789ABCDEF...",
-    "bkash_number": "01700123456",
-    "nagad_number": "01700123456",
-    "admin_id": "kinomart",
-    "admin_password": "@kinomart12@"
-  },
   "customers": [
     {
       "id": "cust-1",
@@ -495,45 +503,6 @@
       "name": "rakib",
       "address": "SgRSFGsrg",
       "created_at": "2026-07-29T08:05:44.868Z"
-    }
-  ],
-  "contact_messages": [],
-  "reviews": [
-    {
-      "id": "rev-1",
-      "product_id": "prod-1",
-      "customer_name": "তানভীর আহমেদ",
-      "rating": 5,
-      "comment": "এক কথায় অসাধারণ এয়ারবাডস! ANC ফাংশনালিটি সত্যিই চমৎকার কাজ করে। আর সাউন্ড কোয়ালিটি বিট অনুযায়ী সেরা। ২ দিনে ডেলিভারি পেয়েছি।",
-      "is_verified_buyer": true,
-      "created_at": "2026-07-27T08:05:15.329Z"
-    },
-    {
-      "id": "rev-2",
-      "product_id": "prod-1",
-      "customer_name": "মেহেদী হাসান",
-      "rating": 5,
-      "comment": "ব্যাটারি ব্যাকআপ অবিশ্বাস্য। এক চার্জে সারা দিন চলেছে। কীনোমার্টের সার্ভিস অনেক ভালো, প্রডাক্ট প্যাকেট চেক করে নেয়ার সুযোগ ছিল।",
-      "is_verified_buyer": true,
-      "created_at": "2026-07-24T08:05:15.329Z"
-    },
-    {
-      "id": "rev-3",
-      "product_id": "prod-1",
-      "customer_name": "ফারজানা আক্তার",
-      "rating": 4,
-      "comment": "প্যাকেজিং খুব প্রিমিয়াম ছিল। মাইক্রোফোনের ভয়েস ক্ল্যারিটি খুব ক্লিয়ার। সাউন্ড বেইজ আরেকটু বেশি হলে ১০/১০ দিতাম, তবে এই প্রাইসে সেরা।",
-      "is_verified_buyer": true,
-      "created_at": "2026-07-21T08:05:15.329Z"
-    },
-    {
-      "id": "rev-4",
-      "product_id": "prod-2",
-      "customer_name": "রাশেদুল ইসলাম",
-      "rating": 5,
-      "comment": "অ্যামোলেড ডিসপ্লে এবং ব্লুটুথ কলিং সিস্টেমটা খুব স্মুথ। ফুল চার্জে ৬ দিন সার্ভিস দিচ্ছে। ধন্যবাদ কীনোমার্ট।",
-      "is_verified_buyer": true,
-      "created_at": "2026-07-26T08:05:15.329Z"
     }
   ],
   "coupons": [
@@ -574,5 +543,74 @@
       "is_active": true,
       "created_at": "2026-07-27T08:05:15.329Z"
     }
-  ]
+  ],
+  "reviews": [
+    {
+      "id": "rev-1",
+      "product_id": "prod-1",
+      "customer_name": "তানভীর আহমেদ",
+      "rating": 5,
+      "comment": "এক কথায় অসাধারণ এয়ারবাডস! ANC ফাংশনালিটি সত্যিই চমৎকার কাজ করে। আর সাউন্ড কোয়ালিটি বিট অনুযায়ী সেরা। ২ দিনে ডেলিভারি পেয়েছি।",
+      "is_verified_buyer": true,
+      "created_at": "2026-07-27T08:05:15.329Z"
+    },
+    {
+      "id": "rev-2",
+      "product_id": "prod-1",
+      "customer_name": "মেহেদী হাসান",
+      "rating": 5,
+      "comment": "ব্যাটারি ব্যাকআপ অবিশ্বাস্য। এক চার্জে সারা দিন চলেছে। কীনোমার্টের সার্ভিস অনেক ভালো, প্রডাক্ট প্যাকেট চেক করে নেয়ার সুযোগ ছিল।",
+      "is_verified_buyer": true,
+      "created_at": "2026-07-24T08:05:15.329Z"
+    },
+    {
+      "id": "rev-3",
+      "product_id": "prod-1",
+      "customer_name": "ফারজানা আক্তার",
+      "rating": 4,
+      "comment": "প্যাকেজিং খুব প্রিমিয়াম ছিল। মাইক্রোফোনের ভয়েস ক্ল্যারিটি খুব ক্লিয়ার। সাউন্ড বেইজ আরেকটু বেশি হলে ১০/১০ দিতাম, তবে এই প্রাইসে সেরা।",
+      "is_verified_buyer": true,
+      "created_at": "2026-07-21T08:05:15.329Z"
+    },
+    {
+      "id": "rev-4",
+      "product_id": "prod-2",
+      "customer_name": "রাশেদুল ইসলাম",
+      "rating": 5,
+      "comment": "অ্যামোলেড ডিসপ্লে এবং ব্লুটুথ কলিং সিস্টেমটা খুব স্মুথ। ফুল চার্জে ৬ দিন সার্ভিস দিচ্ছে। ধন্যবাদ কীনোমার্ট।",
+      "is_verified_buyer": true,
+      "created_at": "2026-07-26T08:05:15.329Z"
+    }
+  ],
+  "contact_messages": [],
+  "settings": {
+    "logo_title": "KinoMart",
+    "tagline": "সেরা গ্যাজেট ও প্রিমিয়াম ইলেকট্রনিক্স",
+    "logo_url": null,
+    "favicon_url": "",
+    "phone": "01700000000",
+    "whatsapp": "01700000000",
+    "address": "ঢাকা, বাংলাদেশ",
+    "hero_title": "প্রিমিয়াম গ্যাজেটের নির্ভরযোগ্য ঠিকানা",
+    "hero_subtitle": "সেরা অফারে অরিজিনাল গ্যাজেট কিনুন কীনোমার্ট থেকে",
+    "hero_image": null,
+    "banner_images": [],
+    "special_offer_text": "🔥 বিশেষ অফার: যেকোনো দুটি পণ্য অর্ডারে ফ্রি সারা বাংলাদেশ হোম ডেলিভারি!",
+    "special_offer_active": true,
+    "footer_about": "কীনোমার্ট বাংলাদেশের একটি বিশ্বস্ত প্রিমিয়াম গ্যাজেট অনলাইন শপ। আমরা সরবরাহ করি ১০০% অরিজিনাল ও মানসম্মত ইলেকট্রনিক্স গ্যাজেট।",
+    "pixel_id": "123456789012345",
+    "capi_token": "EAA123456789ABCDEF...",
+    "bkash_number": "01700123456",
+    "nagad_number": "01700123456",
+    "admin_id": "kinomart",
+    "admin_password": "@kinomart12@",
+    "id": "store_settings",
+    "store_name": "KinoMart",
+    "inside_dhaka_charge": 70,
+    "outside_dhaka_charge": 130,
+    "free_shipping_min": 3000,
+    "header_notice": "⚡ কীনোমার্ট এ পাচ্ছেন দেশজুড়ে দ্রুত ক্যাশ অন ডেলিভারি এবং ১০০% অরিজিনাল গ্যাজেটের নিশ্চয়তা!",
+    "updated_at": "2026-07-29T08:25:19.660164+00:00",
+    "site_title": "KinoMart - প্রিমিয়াম ইলেকট্রনিক্স গ্যাজেট শপ"
+  }
 }
