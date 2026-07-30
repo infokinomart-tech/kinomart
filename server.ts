@@ -672,7 +672,7 @@ async function saveDatabase(data: any) {
         const cleanCats = data.categories.map((c: any) => {
           let baseSlug = (c.slug && c.slug.trim() && c.slug !== '-')
             ? c.slug.trim()
-            : (c.name ? c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'cat-' + c.id);
+            : (c.name ? c.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{M}\p{N}\-_]+/gu, '') : 'cat-' + c.id);
           if (!baseSlug || baseSlug === '-') baseSlug = 'cat-' + c.id;
           let finalSlug = baseSlug;
           let count = 1;
@@ -703,7 +703,7 @@ async function saveDatabase(data: any) {
         const cleanProds = data.products.map((p: any) => {
           let baseSlug = (p.slug && p.slug.trim() && p.slug !== '-')
             ? p.slug.trim()
-            : (p.name ? p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'prod-' + p.id);
+            : (p.name ? p.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{M}\p{N}\-_]+/gu, '') : 'prod-' + p.id);
           if (!baseSlug || baseSlug === '-') baseSlug = 'prod-' + p.id;
           let finalSlug = baseSlug;
           let count = 1;
@@ -835,18 +835,23 @@ app.get('/api/settings', async (req, res) => {
 });
 
 app.post('/api/settings', async (req, res) => {
-  const db = await loadDatabase();
-  const existingAdminId = db.settings?.admin_id || 'kinomart';
-  const existingAdminPassword = db.settings?.admin_password || '@kinomart12@';
+  try {
+    const db = await loadDatabase();
+    const existingAdminId = db.settings?.admin_id || 'kinomart';
+    const existingAdminPassword = db.settings?.admin_password || '@kinomart12@';
 
-  db.settings = {
-    ...db.settings,
-    ...req.body,
-    admin_id: req.body.admin_id || existingAdminId,
-    admin_password: req.body.admin_password || existingAdminPassword
-  };
-  await saveDatabase(db);
-  res.json({ success: true, settings: db.settings });
+    db.settings = {
+      ...db.settings,
+      ...req.body,
+      admin_id: req.body?.admin_id || existingAdminId,
+      admin_password: req.body?.admin_password || existingAdminPassword
+    };
+    await saveDatabase(db);
+    res.json({ success: true, settings: db.settings });
+  } catch (err: any) {
+    console.error('Error in POST /api/settings:', err);
+    res.status(500).json({ error: err?.message || 'সেটিংস সেভ করতে সমস্যা হয়েছে' });
+  }
 });
 
 // Admin Auth
@@ -1033,43 +1038,66 @@ app.post('/api/coupons/validate', async (req, res) => {
 });
 
 app.post('/api/categories', async (req, res) => {
-  const db = await loadDatabase();
-  const newCat = {
-    id: 'cat-' + Date.now(),
-    name: req.body.name,
-    slug: req.body.slug || req.body.name.toLowerCase().replace(/\s+/g, '-'),
-    icon_name: req.body.icon_name || 'Grid',
-    icon_url: req.body.icon_url || '',
-    display_order: req.body.display_order || (db.categories || []).length + 1,
-    is_visible: req.body.is_visible ?? true
-  };
-  db.categories = db.categories || [];
-  db.categories.push(newCat);
-  await saveDatabase(db);
-  res.json({ success: true, category: newCat });
+  try {
+    const db = await loadDatabase();
+    const name = req.body?.name ? String(req.body.name).trim() : '';
+    if (!name) {
+      return res.status(400).json({ error: 'ক্যাটাগরির নাম প্রদান করা আবশ্যক' });
+    }
+    const catSlug = (req.body?.slug && String(req.body.slug).trim())
+      ? String(req.body.slug).trim()
+      : name.toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{M}\p{N}\-_]+/gu, '') || ('cat-' + Date.now());
+
+    const newCat = {
+      id: 'cat-' + Date.now(),
+      name,
+      slug: catSlug,
+      icon_name: req.body?.icon_name || 'Grid',
+      icon_url: req.body?.icon_url || '',
+      display_order: Number(req.body?.display_order) || (db.categories || []).length + 1,
+      is_visible: req.body?.is_visible ?? true
+    };
+    db.categories = db.categories || [];
+    db.categories.push(newCat);
+    await saveDatabase(db);
+    res.json({ success: true, category: newCat });
+  } catch (err: any) {
+    console.error('Error in POST /api/categories:', err);
+    res.status(500).json({ error: err?.message || 'ক্যাটাগরি তৈরি করতে সমস্যা হয়েছে' });
+  }
 });
 
 app.put('/api/categories/:id', async (req, res) => {
-  const db = await loadDatabase();
-  const idx = db.categories.findIndex((c: any) => c.id === req.params.id);
-  if (idx !== -1) {
-    db.categories[idx] = { ...db.categories[idx], ...req.body };
-    await saveDatabase(db);
-    res.json({ success: true, category: db.categories[idx] });
-  } else {
-    res.status(404).json({ error: 'Category not found' });
+  try {
+    const db = await loadDatabase();
+    const idx = (db.categories || []).findIndex((c: any) => c.id === req.params.id);
+    if (idx !== -1) {
+      db.categories[idx] = { ...db.categories[idx], ...req.body };
+      await saveDatabase(db);
+      res.json({ success: true, category: db.categories[idx] });
+    } else {
+      res.status(404).json({ error: 'ক্যাটাগরি পাওয়া যায়নি' });
+    }
+  } catch (err: any) {
+    console.error('Error in PUT /api/categories/:id:', err);
+    res.status(500).json({ error: err?.message || 'ক্যাটাগরি আপডেট করতে সমস্যা হয়েছে' });
   }
 });
 
 app.delete('/api/categories/:id', async (req, res) => {
-  const db = await loadDatabase();
-  const id = req.params.id;
-  db.categories = (db.categories || []).filter((c: any) => c.id !== id);
-  if (supabase) {
-    try { await supabase.from('categories').delete().eq('id', id); } catch (e) {}
+  try {
+    const db = await loadDatabase();
+    const id = req.params.id;
+    db.categories = (db.categories || []).filter((c: any) => c.id !== id);
+    if (supabase) {
+      try { await supabase.from('categories').delete().eq('id', id); } catch (e) {}
+    }
+    await saveDatabase(db);
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('Error in DELETE /api/categories/:id:', err);
+    res.status(500).json({ error: err?.message || 'ক্যাটাগরি ডিলিট করতে সমস্যা হয়েছে' });
   }
-  await saveDatabase(db);
-  res.json({ success: true });
 });
 
 // Products
@@ -1123,64 +1151,84 @@ app.get('/api/products/:identifier', async (req, res) => {
 });
 
 app.post('/api/products', async (req, res) => {
-  const db = await loadDatabase();
-  const newProduct = {
-    id: 'prod-' + Date.now(),
-    name: req.body.name,
-    slug: req.body.slug || req.body.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    description: req.body.description || '',
-    short_description: req.body.short_description || '',
-    price: Number(req.body.price),
-    discount_price: req.body.discount_price ? Number(req.body.discount_price) : undefined,
-    category_id: req.body.category_id,
-    category_name: req.body.category_name,
-    images: req.body.images || ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'],
-    video_url: req.body.video_url || '',
-    variants: req.body.variants || [],
-    specifications: req.body.specifications || [],
-    stock: Number(req.body.stock || 50),
-    low_stock_threshold: req.body.low_stock_threshold !== undefined ? Number(req.body.low_stock_threshold) : 10,
-    status: req.body.status || 'active',
-    is_featured: req.body.is_featured || false,
-    is_best_seller: req.body.is_best_seller || false,
-    timer_enabled: req.body.timer_enabled || false,
-    timer_title: req.body.timer_title || 'অফারটি শেষ হতে বাকি:',
-    timer_end_time: req.body.timer_end_time || '',
-    timer_hours: req.body.timer_hours,
-    rating: 5.0,
-    reviews_count: 1,
-    seo_title: req.body.seo_title || req.body.name,
-    seo_description: req.body.seo_description || req.body.description,
-    created_at: new Date().toISOString()
-  };
+  try {
+    const db = await loadDatabase();
+    const name = req.body?.name ? String(req.body.name).trim() : 'আনটাইটেল্ড প্রোডাক্ট';
+    const prodSlug = (req.body?.slug && String(req.body.slug).trim())
+      ? String(req.body.slug).trim()
+      : name.toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{M}\p{N}\-_]+/gu, '') || ('prod-' + Date.now());
 
-  db.products = db.products || [];
-  db.products.unshift(newProduct);
-  await saveDatabase(db);
-  res.json({ success: true, product: newProduct });
+    const newProduct = {
+      id: 'prod-' + Date.now(),
+      name,
+      slug: prodSlug,
+      description: req.body?.description || '',
+      short_description: req.body?.short_description || '',
+      price: Number(req.body?.price || 0),
+      discount_price: req.body?.discount_price ? Number(req.body.discount_price) : undefined,
+      category_id: req.body?.category_id,
+      category_name: req.body?.category_name,
+      images: req.body?.images || ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'],
+      video_url: req.body?.video_url || '',
+      variants: req.body?.variants || [],
+      specifications: req.body?.specifications || [],
+      stock: Number(req.body?.stock || 50),
+      low_stock_threshold: req.body?.low_stock_threshold !== undefined ? Number(req.body.low_stock_threshold) : 10,
+      status: req.body?.status || 'active',
+      is_featured: req.body?.is_featured || false,
+      is_best_seller: req.body?.is_best_seller || false,
+      timer_enabled: req.body?.timer_enabled || false,
+      timer_title: req.body?.timer_title || 'অফারটি শেষ হতে বাকি:',
+      timer_end_time: req.body?.timer_end_time || '',
+      timer_hours: req.body?.timer_hours,
+      rating: 5.0,
+      reviews_count: 1,
+      seo_title: req.body?.seo_title || name,
+      seo_description: req.body?.seo_description || req.body?.description,
+      created_at: new Date().toISOString()
+    };
+
+    db.products = db.products || [];
+    db.products.unshift(newProduct);
+    await saveDatabase(db);
+    res.json({ success: true, product: newProduct });
+  } catch (err: any) {
+    console.error('Error in POST /api/products:', err);
+    res.status(500).json({ error: err?.message || 'প্রোডাক্ট তৈরি করতে সমস্যা হয়েছে' });
+  }
 });
 
 app.put('/api/products/:id', async (req, res) => {
-  const db = await loadDatabase();
-  const idx = (db.products || []).findIndex((p: any) => p.id === req.params.id);
-  if (idx !== -1) {
-    db.products[idx] = { ...db.products[idx], ...req.body };
-    await saveDatabase(db);
-    res.json({ success: true, product: db.products[idx] });
-  } else {
-    res.status(404).json({ error: 'Product not found' });
+  try {
+    const db = await loadDatabase();
+    const idx = (db.products || []).findIndex((p: any) => p.id === req.params.id);
+    if (idx !== -1) {
+      db.products[idx] = { ...db.products[idx], ...req.body };
+      await saveDatabase(db);
+      res.json({ success: true, product: db.products[idx] });
+    } else {
+      res.status(404).json({ error: 'প্রোডাক্ট পাওয়া যায়নি' });
+    }
+  } catch (err: any) {
+    console.error('Error in PUT /api/products/:id:', err);
+    res.status(500).json({ error: err?.message || 'প্রোডাক্ট আপডেট করতে সমস্যা হয়েছে' });
   }
 });
 
 app.delete('/api/products/:id', async (req, res) => {
-  const db = await loadDatabase();
-  const id = req.params.id;
-  db.products = (db.products || []).filter((p: any) => p.id !== id);
-  if (supabase) {
-    try { await supabase.from('products').delete().eq('id', id); } catch (e) {}
+  try {
+    const db = await loadDatabase();
+    const id = req.params.id;
+    db.products = (db.products || []).filter((p: any) => p.id !== id);
+    if (supabase) {
+      try { await supabase.from('products').delete().eq('id', id); } catch (e) {}
+    }
+    await saveDatabase(db);
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('Error in DELETE /api/products/:id:', err);
+    res.status(500).json({ error: err?.message || 'প্রোডাক্ট ডিলিট করতে সমস্যা হয়েছে' });
   }
-  await saveDatabase(db);
-  res.json({ success: true });
 });
 
 // Product Reviews

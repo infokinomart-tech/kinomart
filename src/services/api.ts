@@ -4,6 +4,44 @@ const productsCacheMap = new Map<string, Product>();
 let allProductsCache: Product[] | null = null;
 let allProductsCacheTime = 0;
 
+async function safeFetchJson(url: string, options?: RequestInit, defaultErrMsg = 'সার্ভার সমস্যা হয়েছে'): Promise<any> {
+  let res: Response;
+  try {
+    res = await fetch(url, options);
+  } catch (err: any) {
+    throw new Error('নেটওয়ার্ক বা কানেকশন ত্রুটি হয়েছে। অনুগ্রহ করে পেজ রিফ্রেশ করে আবার চেষ্টা করুন।');
+  }
+
+  const contentType = res.headers.get('content-type') || '';
+  let data: any = null;
+
+  if (contentType.includes('application/json')) {
+    try {
+      data = await res.json();
+    } catch (e) {
+      // JSON parse error
+    }
+  }
+
+  if (!res.ok) {
+    const errorText = data?.error || data?.message || (typeof data === 'string' ? data : null);
+    if (errorText) throw new Error(errorText);
+    const rawText = await res.text().catch(() => '');
+    if (rawText && !rawText.startsWith('<')) {
+      throw new Error(rawText.substring(0, 100));
+    }
+    throw new Error(defaultErrMsg + ` (${res.status})`);
+  }
+
+  if (data !== null && data !== undefined) return data;
+
+  try {
+    return await res.json();
+  } catch (e) {
+    throw new Error(defaultErrMsg);
+  }
+}
+
 export const api = {
   getCachedProduct(identifier: string): Product | undefined {
     return productsCacheMap.get(identifier);
@@ -26,35 +64,29 @@ export const api = {
 
   // Coupons
   async getCoupons(): Promise<Coupon[]> {
-    const res = await fetch('/api/coupons');
-    if (!res.ok) throw new Error('Failed to fetch coupons');
-    return res.json();
+    return safeFetchJson('/api/coupons', undefined, 'কুপন লোড করতে ব্যর্থ হয়েছে');
   },
 
   async createCoupon(coupon: Partial<Coupon>): Promise<Coupon> {
-    const res = await fetch('/api/coupons', {
+    const data = await safeFetchJson('/api/coupons', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(coupon)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'কুপন তৈরি করতে ব্যর্থ হয়েছে');
-    return data.coupon;
+    }, 'কুপন তৈরি করতে ব্যর্থ হয়েছে');
+    return data.coupon || data;
   },
 
   async updateCoupon(id: string, updates: Partial<Coupon>): Promise<Coupon> {
-    const res = await fetch(`/api/coupons/${id}`, {
+    const data = await safeFetchJson(`/api/coupons/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'কুপন আপডেট করতে ব্যর্থ হয়েছে');
-    return data.coupon;
+    }, 'কুপন আপডেট করতে ব্যর্থ হয়েছে');
+    return data.coupon || data;
   },
 
   async deleteCoupon(id: string): Promise<void> {
-    await fetch(`/api/coupons/${id}`, { method: 'DELETE' });
+    await safeFetchJson(`/api/coupons/${id}`, { method: 'DELETE' }, 'কুপন ডিলিট করতে ব্যর্থ হয়েছে');
   },
 
   async validateCoupon(code: string, cart_total: number): Promise<{
@@ -65,86 +97,74 @@ export const api = {
     discount_amount?: number;
     message: string;
   }> {
-    const res = await fetch('/api/coupons/validate', {
+    return safeFetchJson('/api/coupons/validate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, cart_total })
-    });
-    return res.json();
+    }, 'কুপন যাচাই করতে ব্যর্থ হয়েছে');
   },
 
   // Settings
   async getSettings(): Promise<SiteSettings> {
-    const res = await fetch('/api/settings');
-    if (!res.ok) throw new Error('Failed to fetch settings');
-    return res.json();
+    return safeFetchJson('/api/settings', undefined, 'সেটিংস লোড করতে ব্যর্থ হয়েছে');
   },
 
   async updateSettings(settings: Partial<SiteSettings>): Promise<SiteSettings> {
-    const res = await fetch('/api/settings', {
+    const data = await safeFetchJson('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings)
-    });
-    if (!res.ok) throw new Error('Failed to update settings');
-    const data = await res.json();
+    }, 'সেটিংস সেভ করতে ব্যর্থ হয়েছে');
     return data.settings || data;
   },
 
   // Admin Auth
   async adminLogin(admin_id: string, password: string): Promise<{ success: boolean; token?: string; error?: string }> {
     try {
-      const res = await fetch('/api/admin/login', {
+      return await safeFetchJson('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ admin_id, password })
-      });
-      const data = await res.json();
-      return data;
+      }, 'এডমিন লগইন করতে ব্যর্থ হয়েছে');
     } catch (e: any) {
       console.error('Admin login error:', e);
-      return { success: false, error: 'সার্ভারের সাথে যোগাযোগ করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।' };
+      return { success: false, error: e?.message || 'সার্ভারের সাথে যোগাযোগ করতে সমস্যা হয়েছে।' };
     }
   },
 
   async adminChangePassword(old_password: string, new_password: string, new_admin_id?: string): Promise<{ success: boolean; admin_id?: string; error?: string }> {
-    const res = await fetch('/api/admin/change-password', {
+    return safeFetchJson('/api/admin/change-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ old_password, new_password, new_admin_id })
-    });
-    return res.json();
+    }, 'পাসওয়ার্ড পরিবর্তন করতে ব্যর্থ হয়েছে');
   },
 
   // Categories
   async getCategories(): Promise<Category[]> {
-    const res = await fetch('/api/categories');
-    if (!res.ok) throw new Error('Failed to fetch categories');
-    return res.json();
+    return safeFetchJson('/api/categories', undefined, 'ক্যাটাগরি লোড করতে ব্যর্থ হয়েছে');
   },
 
   async createCategory(cat: Partial<Category>): Promise<Category> {
-    const res = await fetch('/api/categories', {
+    const data = await safeFetchJson('/api/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cat)
-    });
-    const data = await res.json();
-    return data.category;
+    }, 'ক্যাটাগরি তৈরি করতে ব্যর্থ হয়েছে');
+    return data.category || data;
   },
 
   async updateCategory(id: string, cat: Partial<Category>): Promise<Category> {
-    const res = await fetch(`/api/categories/${id}`, {
+    const data = await safeFetchJson(`/api/categories/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(cat)
-    });
-    const data = await res.json();
-    return data.category;
+    }, 'ক্যাটাগরি আপডেট করতে ব্যর্থ হয়েছে');
+    return data.category || data;
   },
 
   async deleteCategory(id: string): Promise<void> {
-    await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+    await safeFetchJson(`/api/categories/${id}`, { method: 'DELETE' }, 'ক্যাটাগরি ডিলিট করতে ব্যর্থ হয়েছে');
   },
 
   // Products
@@ -184,48 +204,45 @@ export const api = {
   },
 
   async createProduct(product: Partial<Product>): Promise<Product> {
-    const res = await fetch('/api/products', {
+    const data = await safeFetchJson('/api/products', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product)
-    });
-    const data = await res.json();
+    }, 'প্রোডাক্ট সেভ করতে ব্যর্থ হয়েছে');
     this.clearProductCache();
-    return data.product;
+    return data.product || data;
   },
 
   async updateProduct(id: string, product: Partial<Product>): Promise<Product> {
-    const res = await fetch(`/api/products/${id}`, {
+    const data = await safeFetchJson(`/api/products/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product)
-    });
-    const data = await res.json();
+    }, 'প্রোডাক্ট আপডেট করতে ব্যর্থ হয়েছে');
     this.clearProductCache();
-    return data.product;
+    return data.product || data;
   },
 
   async deleteProduct(id: string): Promise<void> {
-    await fetch(`/api/products/${id}`, { method: 'DELETE' });
+    await safeFetchJson(`/api/products/${id}`, { method: 'DELETE' }, 'প্রোডাক্ট ডিলিট করতে ব্যর্থ হয়েছে');
     this.clearProductCache();
   },
 
   // Reviews
   async getProductReviews(identifier: string): Promise<ProductReview[]> {
-    const res = await fetch(`/api/products/${identifier}/reviews`);
-    if (!res.ok) return [];
-    return res.json();
+    try {
+      return await safeFetchJson(`/api/products/${identifier}/reviews`);
+    } catch (e) {
+      return [];
+    }
   },
 
   async addProductReview(identifier: string, review: { customer_name: string; rating: number; comment: string; phone?: string }): Promise<{ success: boolean; review: ProductReview; new_rating: number; reviews_count: number }> {
-    const res = await fetch(`/api/products/${identifier}/reviews`, {
+    return safeFetchJson(`/api/products/${identifier}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(review)
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'রিভিউ জমা দেওয়া সম্ভব হয়নি');
-    return data;
+    }, 'রিভিউ জমা দেওয়া সম্ভব হয়নি');
   },
 
   // Orders
@@ -237,36 +254,28 @@ export const api = {
     if (params?.from) url.searchParams.set('from', params.from);
     if (params?.to) url.searchParams.set('to', params.to);
 
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error('Failed to fetch orders');
-    return res.json();
+    return safeFetchJson(url.toString(), undefined, 'অর্ডার লোড করতে ব্যর্থ হয়েছে');
   },
 
   async createOrder(orderData: any): Promise<{ success: boolean; order: Order; customer: any; token: string }> {
-    const res = await fetch('/api/orders', {
+    return safeFetchJson('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(orderData)
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error || 'অর্ডার করতে সমস্যা হয়েছে');
-    }
-    return res.json();
+    }, 'অর্ডার করতে সমস্যা হয়েছে');
   },
 
   async updateOrder(id: string, updates: Partial<Order>): Promise<Order> {
-    const res = await fetch(`/api/orders/${id}`, {
+    const data = await safeFetchJson(`/api/orders/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates)
-    });
-    const data = await res.json();
-    return data.order;
+    }, 'অর্ডার আপডেট করতে ব্যর্থ হয়েছে');
+    return data.order || data;
   },
 
   async deleteOrder(id: string): Promise<void> {
-    await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+    await safeFetchJson(`/api/orders/${id}`, { method: 'DELETE' }, 'অর্ডার ডিলিট করতে ব্যর্থ হয়েছে');
   },
 
   async getCustomerOrders(phone: string): Promise<Order[]> {
