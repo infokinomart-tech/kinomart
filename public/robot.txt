@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /checkout/
-Disallow: /cart/
-Allow: /
-
-Sitemap: https://www.kinomart.com/sitemap.xml
