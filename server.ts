@@ -1669,6 +1669,36 @@ app.get('/api/contact', async (req, res) => {
   res.json(db.contact_messages || []);
 });
 
+// Explicit Sync to Supabase Endpoint
+app.post('/api/sync-to-supabase', async (req, res) => {
+  try {
+    const db = await loadDatabase();
+    await saveDatabase(db);
+    if (!supabase) {
+      return res.status(400).json({
+        success: false,
+        error: 'Supabase URL এবং Anon Key পাওয়া যায়নি। Vercel / Server Environment Variables চেক করুন।'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'সকল ডাটা (প্রোডাক্ট, ক্যাটাগরি, অর্ডার ও সেটিংস) সফলভাবে Supabase ডাটাবেজে সেভ ও পুশ করা হয়েছে!',
+      counts: {
+        products: db.products?.length || 0,
+        categories: db.categories?.length || 0,
+        orders: db.orders?.length || 0,
+        settings: Boolean(db.settings)
+      }
+    });
+  } catch (err: any) {
+    console.error('Error in /api/sync-to-supabase:', err);
+    res.status(500).json({
+      success: false,
+      error: err?.message || 'Supabase-এ ডাটা সেভ করতে সমস্যা হয়েছে'
+    });
+  }
+});
+
 // Server boot with Vite middleware
 async function startServer() {
   if (process.env.NODE_ENV !== 'production' && process.env.VERCEL !== '1') {

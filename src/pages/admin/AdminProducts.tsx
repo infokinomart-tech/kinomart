@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, Search, Image as ImageIcon, Check, X, Shield, Eye, Upload, Clock } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Image as ImageIcon, Check, X, Shield, Eye, Upload, Clock, Database } from 'lucide-react';
 import { Product, Category } from '../../types';
 import { api } from '../../services/api';
 
@@ -35,6 +35,23 @@ export const AdminProducts: React.FC = () => {
   const [variantOptions, setVariantOptions] = useState<string>('MINT, PEACE, WATERMELON, GRAPE');
   const [specifications, setSpecifications] = useState<{ key: string; value: string }[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSyncingSupa, setIsSyncingSupa] = useState(false);
+
+  const handleManualSyncToSupabase = async () => {
+    setIsSyncingSupa(true);
+    try {
+      const res = await api.syncToSupabase();
+      if (res.success) {
+        alert(res.message || 'সকল প্রোডাক্ট ও ডাটা সফলভাবে Supabase-এ সেভ হয়েছে!');
+      } else {
+        alert('Supabase সেভ ব্যর্থ: ' + (res.error || 'অজানা সমস্যা'));
+      }
+    } catch (err: any) {
+      alert('Supabase সেভ করতে সমস্যা হয়েছে: ' + (err?.message || 'নেটওয়ার্ক সমস্যা'));
+    } finally {
+      setIsSyncingSupa(false);
+    }
+  };
 
   const handleAddSpecRow = () => {
     setSpecifications(prev => [...prev, { key: '', value: '' }]);
@@ -251,7 +268,17 @@ export const AdminProducts: React.FC = () => {
           <p className="text-xs text-gray-400">নতুন গ্যাজেট যোগ করুন বা বিদ্যমান প্রোডাক্ট সম্পাদনা করুন</p>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 flex-wrap gap-y-2">
+          <button
+            type="button"
+            onClick={handleManualSyncToSupabase}
+            disabled={isSyncingSupa}
+            className="px-3.5 py-2.5 bg-cyan-700 hover:bg-cyan-600 text-white font-bold text-xs rounded-xl flex items-center space-x-1.5 transition-all shadow-md active:scale-95 disabled:opacity-50"
+            title="Supabase ডাটাবেজে সকল প্রোডাক্ট ও ডাটা সেভ করুন"
+          >
+            <Database className={`w-3.5 h-3.5 text-cyan-200 ${isSyncingSupa ? 'animate-spin' : ''}`} />
+            <span>{isSyncingSupa ? 'সেভ হচ্ছে...' : 'Supabase এ সেভ করুন'}</span>
+          </button>
           <button
             onClick={handleResetProducts}
             className="px-3.5 py-2.5 bg-[#27324A] hover:bg-[#32405D] text-gray-300 hover:text-white font-semibold text-xs rounded-xl transition-colors"

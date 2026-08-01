@@ -309,5 +309,12 @@ export const api = {
     const res = await fetch('/api/contact');
     if (!res.ok) return [];
     return res.json();
+  },
+
+  async syncToSupabase(): Promise<{ success: boolean; message: string; counts?: any; error?: string }> {
+    return safeFetchJson('/api/sync-to-supabase', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    }, 'Supabase-এ ডাটা সেভ করতে ব্যর্থ হয়েছে');
   }
 };

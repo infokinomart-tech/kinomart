@@ -1,16 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, Navigate, Outlet } from 'react-router-dom';
-import { ShoppingCart, Package, FolderTree, Tag, Users, Settings, LogOut, RefreshCw, ExternalLink } from 'lucide-react';
+import { ShoppingCart, Package, FolderTree, Tag, Users, Settings, LogOut, RefreshCw, ExternalLink, Database, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { KinoMartLogo } from '../../components/common/KinoMartLogo';
+import { api } from '../../services/api';
 
 export const AdminLayout: React.FC = () => {
   const { isAdminLoggedIn, logoutAdmin, settings } = useAuth();
   const location = useLocation();
 
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [syncNotice, setSyncNotice] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
+
   if (!isAdminLoggedIn) {
     return <Navigate to="/admin/login" replace />;
   }
+
+  const handleSyncToSupabase = async () => {
+    setIsSyncing(true);
+    setSyncNotice(null);
+    try {
+      const res = await api.syncToSupabase();
+      if (res.success) {
+        setSyncNotice({
+          type: 'success',
+          msg: res.message || 'সকল ডাটা সফলভাবে Supabase ডাটাবেজে সেভ ও পুশ হয়েছে!'
+        });
+      } else {
+        setSyncNotice({
+          type: 'error',
+          msg: res.error || 'Supabase এ ডাটা সেভ করতে সমস্যা হয়েছে।'
+        });
+      }
+    } catch (err: any) {
+      setSyncNotice({
+        type: 'error',
+        msg: err?.message || 'Supabase কানেকশন বা সার্ভার ত্রুটি।'
+      });
+    } finally {
+      setIsSyncing(false);
+      setTimeout(() => setSyncNotice(null), 6000);
+    }
+  };
 
   const tabs = [
     { name: 'অর্ডারস (Orders)', path: '/admin/orders', icon: ShoppingCart },
@@ -67,7 +98,19 @@ export const AdminLayout: React.FC = () => {
             </nav>
 
             {/* Right Side Actions */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              {/* Supabase Save Button */}
+              <button
+                type="button"
+                onClick={handleSyncToSupabase}
+                disabled={isSyncing}
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-50"
+                title="Supabase ডাটাবেজে সকল ডাটা সেভ করুন"
+              >
+                <Database className={`w-3.5 h-3.5 text-cyan-200 ${isSyncing ? 'animate-spin' : ''}`} />
+                <span>{isSyncing ? 'সেভ হচ্ছে...' : 'Supabase সেভ'}</span>
+              </button>
+
               <button
                 onClick={() => window.location.reload()}
                 className="p-2 rounded-xl text-gray-400 hover:text-white hover:bg-[#27324A] transition-colors"
@@ -116,6 +159,22 @@ export const AdminLayout: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Supabase Notification Banner */}
+      {syncNotice && (
+        <div className={`border-b text-xs font-medium py-2.5 px-4 transition-all flex items-center justify-center space-x-2 ${
+          syncNotice.type === 'success' 
+            ? 'bg-emerald-950/90 border-emerald-800 text-emerald-200' 
+            : 'bg-rose-950/90 border-rose-800 text-rose-200'
+        }`}>
+          {syncNotice.type === 'success' ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          ) : (
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+          )}
+          <span>{syncNotice.msg}</span>
+        </div>
+      )}
 
       {/* Main Outlet Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
