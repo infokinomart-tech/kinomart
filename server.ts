@@ -597,7 +597,7 @@ function loadDatabaseFromFile() {
     if (!db.coupons) db.coupons = initialCoupons;
     if (!db.contact_messages) db.contact_messages = [];
     return db;
-  } catch (err) {
+} catch (err) {
     return {
       categories: initialCategories,
       products: initialProducts,
@@ -609,6 +609,103 @@ function loadDatabaseFromFile() {
       contact_messages: []
     };
   }
+}
+
+function sanitizeProduct(p: any): any {
+  if (!p || typeof p !== 'object') return null;
+  const idStr = String(p.id || 'prod-' + Date.now());
+  const nameStr = String(p.name || 'আনটাইটেল্ড প্রোডাক্ট');
+
+  // Price
+  const rawPrice = p.price !== undefined && p.price !== null ? Number(p.price) : 0;
+  const price = !isNaN(rawPrice) && rawPrice >= 0 ? rawPrice : 0;
+
+  // Discount Price
+  let discountPrice: number | null = null;
+  if (p.discount_price !== undefined && p.discount_price !== null && p.discount_price !== '') {
+    const rawDisc = Number(p.discount_price);
+    if (!isNaN(rawDisc) && rawDisc > 0 && rawDisc < price) {
+      discountPrice = rawDisc;
+    }
+  }
+
+  // Images
+  let imagesArr: string[] = [];
+  if (Array.isArray(p.images)) {
+    imagesArr = p.images.map((img: any) => String(img || '').trim()).filter(Boolean);
+  } else if (typeof p.images === 'string' && p.images.trim()) {
+    try {
+      const parsed = JSON.parse(p.images);
+      if (Array.isArray(parsed)) {
+        imagesArr = parsed.map((img: any) => String(img || '').trim()).filter(Boolean);
+      } else if (typeof parsed === 'string' && parsed.trim()) {
+        imagesArr = [parsed.trim()];
+      }
+    } catch {
+      if (p.images.startsWith('http')) {
+        imagesArr = [p.images.trim()];
+      }
+    }
+  }
+  if (imagesArr.length === 0) {
+    imagesArr = ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80'];
+  }
+
+  // Status (Default to 'active' if missing, null, or empty string)
+  const statusStr = (p.status && String(p.status).trim()) ? String(p.status).trim().toLowerCase() : 'active';
+
+  // Rating & Reviews Count
+  const rawRating = Number(p.rating);
+  const rating = !isNaN(rawRating) && rawRating > 0 ? rawRating : 5.0;
+
+  const rawReviews = Number(p.reviews_count);
+  const reviewsCount = !isNaN(rawReviews) && rawReviews >= 0 ? rawReviews : 1;
+
+  // Stock & Low Stock Threshold
+  const rawStock = Number(p.stock);
+  const stock = !isNaN(rawStock) ? rawStock : 50;
+
+  const rawLowStock = Number(p.low_stock_threshold);
+  const lowStockThreshold = !isNaN(rawLowStock) ? rawLowStock : 10;
+
+  // Slug
+  let slugStr = (p.slug && String(p.slug).trim() && String(p.slug).trim() !== '-')
+    ? String(p.slug).trim()
+    : nameStr.toLowerCase().replace(/\s+/g, '-').replace(/[^\p{L}\p{M}\p{N}\-_]+/gu, '');
+  if (!slugStr || slugStr === '-') slugStr = 'prod-' + idStr;
+
+  return {
+    ...p,
+    id: idStr,
+    name: nameStr,
+    slug: slugStr,
+    description: String(p.description || ''),
+    short_description: String(p.short_description || ''),
+    price,
+    discount_price: discountPrice,
+    category_id: p.category_id ? String(p.category_id) : null,
+    category_name: p.category_name ? String(p.category_name) : null,
+    subcategory_id: p.subcategory_id ? String(p.subcategory_id) : null,
+    subcategory_name: p.subcategory_name ? String(p.subcategory_name) : null,
+    images: imagesArr,
+    video_url: String(p.video_url || ''),
+    variants: Array.isArray(p.variants) ? p.variants : [],
+    specifications: Array.isArray(p.specifications) ? p.specifications : [],
+    stock,
+    low_stock_threshold: lowStockThreshold,
+    status: statusStr,
+    is_featured: Boolean(p.is_featured),
+    is_best_seller: Boolean(p.is_best_seller),
+    timer_enabled: Boolean(p.timer_enabled),
+    timer_title: String(p.timer_title || ''),
+    timer_end_time: p.timer_end_time ? String(p.timer_end_time) : null,
+    timer_hours: (p.timer_hours !== undefined && p.timer_hours !== null && p.timer_hours !== '') ? Number(p.timer_hours) : null,
+    rating,
+    reviews_count: reviewsCount,
+    seo_title: String(p.seo_title || nameStr),
+    seo_description: String(p.seo_description || p.description || ''),
+    created_at: p.created_at || new Date().toISOString()
+  };
 }
 
 async function loadDatabase(forceRefresh = false) {
@@ -694,7 +791,7 @@ async function loadDatabase(forceRefresh = false) {
 
         const merged = {
           categories: mergeLists(catRes.data, supaDb.categories, localDb.categories),
-          products: mergeLists(prodRes.data, supaDb.products, localDb.products),
+          products: mergeLists(prodRes.data, supaDb.products, localDb.products).map(sanitizeProduct).filter(Boolean),
           orders: mergeLists(ordRes.data, supaDb.orders, localDb.orders || []),
           customers: mergeLists(custRes.data, supaDb.customers, localDb.customers || []),
           coupons: mergeLists(coupRes.data, supaDb.coupons, localDb.coupons || []),
@@ -707,7 +804,9 @@ async function loadDatabase(forceRefresh = false) {
           merged.categories = [...initialCategories];
         }
         if (!hasSupaData && (!merged.products || merged.products.length === 0)) {
-          merged.products = [...initialProducts];
+          merged.products = initialProducts.map(sanitizeProduct).filter(Boolean);
+        } else {
+          merged.products = merged.products.map(sanitizeProduct).filter(Boolean);
         }
 
         cachedDbMemory = merged;
@@ -773,17 +872,18 @@ async function saveDatabase(data: any) {
       // 2. Save cleaned items to relational tables in parallel
       const relationalPromises: Promise<any>[] = [];
 
-      const safeUpsert = (table: string, records: any[], onConflict = 'id') => {
-        if (!records || records.length === 0) return Promise.resolve();
-        return supabase.from(table).upsert(records, { onConflict }).then(({ error }) => {
+      const safeUpsert = async (table: string, records: any[], onConflict = 'id') => {
+        if (!records || records.length === 0) return;
+        try {
+          const { error } = await supabase.from(table).upsert(records, { onConflict });
           if (error && !error.message.includes('Could not find') && !error.message.includes('fetch failed')) {
             console.error(`[Supabase ${table} upsert error]:`, error.message);
           }
-        }).catch((e) => {
+        } catch (e: any) {
           if (!e?.message?.includes('fetch failed')) {
             console.error(`[Supabase ${table} catch]:`, e?.message || e);
           }
-        });
+        }
       };
 
       if (data.categories && data.categories.length > 0) {
