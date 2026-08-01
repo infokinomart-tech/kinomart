@@ -598,9 +598,10 @@ async function loadDatabase(forceRefresh = false) {
 
   if (supabase) {
     try {
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Supabase timeout')), 4000)
-      );
+      let timeoutId: any;
+      const timeoutPromise = new Promise((resolve) => {
+        timeoutId = setTimeout(() => resolve(null), 4000);
+      });
 
       const fetchPromise = (async () => {
         // Fetch store_data AND relational tables in parallel
@@ -700,6 +701,7 @@ async function loadDatabase(forceRefresh = false) {
       })();
 
       const result = await Promise.race([fetchPromise, timeoutPromise]) as any;
+      if (timeoutId) clearTimeout(timeoutId);
       if (result) return result;
     } catch (err) {
       console.error('[Supabase Read Error or Timeout]', err);
