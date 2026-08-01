@@ -35,9 +35,31 @@ function verifyPassword(inputPass: string, storedPass: string): boolean {
 }
 
 // Supabase setup (if environment variables are provided)
-const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
-export const supabase = (supabaseUrl && supabaseKey) ? createClient(supabaseUrl, supabaseKey) : null;
+function parseSupabaseConfig() {
+  const DEFAULT_URL = 'https://epsaniuzooobukyahdeq.supabase.co';
+  const DEFAULT_KEY = 'sb_publishable_3dY-J_VCplcZO4Zv0_kWYg_x6d26BVd';
+
+  let url = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || DEFAULT_URL).trim().replace(/^["']|["']$/g, '');
+  let key = (process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || DEFAULT_KEY).trim().replace(/^["']|["']$/g, '');
+
+  if (!url || !key) return { url: '', key: '', valid: false };
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url;
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname || parsed.hostname.includes('your-') || parsed.hostname.includes('example')) {
+      return { url: '', key: '', valid: false };
+    }
+    return { url, key, valid: true };
+  } catch {
+    return { url: '', key: '', valid: false };
+  }
+}
+
+const supaCfg = parseSupabaseConfig();
+export const supabase = supaCfg.valid ? createClient(supaCfg.url, supaCfg.key) : null;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -694,7 +716,7 @@ async function loadDatabase(forceRefresh = false) {
         // If Supabase was completely empty, seed it now so tables populate immediately
         const isSupaEmpty = !storeRes.data && (!catRes.data || catRes.data.length === 0) && (!prodRes.data || prodRes.data.length === 0);
         if (isSupaEmpty) {
-          saveDatabase(merged).catch(err => console.error('[Supabase Initial Seed Error]', err));
+          saveDatabase(merged).catch(() => {});
         }
 
         return cachedDbMemory;
@@ -703,8 +725,8 @@ async function loadDatabase(forceRefresh = false) {
       const result = await Promise.race([fetchPromise, timeoutPromise]) as any;
       if (timeoutId) clearTimeout(timeoutId);
       if (result) return result;
-    } catch (err) {
-      console.error('[Supabase Read Error or Timeout]', err);
+    } catch {
+      // Fallback silently to local cached DB if Supabase is unreachable
     }
   }
 
@@ -739,15 +761,30 @@ async function saveDatabase(data: any) {
         const { error: storeErr } = await supabase
           .from('store_data')
           .upsert({ id: 'main', data, updated_at: new Date().toISOString() }, { onConflict: 'id' });
-        if (storeErr) {
+        if (storeErr && !storeErr.message?.includes('fetch failed')) {
           console.error('[Supabase store_data upsert error]:', storeErr.message);
         }
       } catch (e: any) {
-        console.error('[Supabase store_data catch]:', e?.message || e);
+        if (!e?.message?.includes('fetch failed')) {
+          console.error('[Supabase store_data catch]:', e?.message || e);
+        }
       }
 
       // 2. Save cleaned items to relational tables in parallel
       const relationalPromises: Promise<any>[] = [];
+
+      const safeUpsert = (table: string, records: any[], onConflict = 'id') => {
+        if (!records || records.length === 0) return Promise.resolve();
+        return supabase.from(table).upsert(records, { onConflict }).then(({ error }) => {
+          if (error && !error.message.includes('Could not find') && !error.message.includes('fetch failed')) {
+            console.error(`[Supabase ${table} upsert error]:`, error.message);
+          }
+        }).catch((e) => {
+          if (!e?.message?.includes('fetch failed')) {
+            console.error(`[Supabase ${table} catch]:`, e?.message || e);
+          }
+        });
+      };
 
       if (data.categories && data.categories.length > 0) {
         const usedCatSlugs = new Set<string>();
@@ -771,14 +808,11 @@ async function saveDatabase(data: any) {
             icon_name: String(c.icon_name || 'Grid'),
             icon_url: String(c.icon_url || ''),
             display_order: Number(c.display_order || 1),
-            is_visible: Boolean(c.is_visible ?? true)
+            is_visible: Boolean(c.is_visible ?? true),
+            subcategories: Array.isArray(c.subcategories) ? c.subcategories : []
           };
         });
-        relationalPromises.push(
-          supabase.from('categories').upsert(cleanCats, { onConflict: 'id' }).then(({ error }) => {
-            if (error) console.error('[Supabase categories upsert error]:', error.message);
-          }).catch(e => console.error('[Supabase categories catch]:', e?.message || e))
-        );
+        relationalPromises.push(safeUpsert('categories', cleanCats));
       }
 
       if (data.products && data.products.length > 0) {
@@ -803,61 +837,68 @@ async function saveDatabase(data: any) {
             description: String(p.description || ''),
             short_description: String(p.short_description || ''),
             price: Number(p.price || 0),
-            discount_price: p.discount_price !== undefined && p.discount_price !== null ? Number(p.discount_price) : null,
+            discount_price: (p.discount_price !== undefined && p.discount_price !== null && p.discount_price !== '') ? Number(p.discount_price) : null,
             category_id: p.category_id ? String(p.category_id) : null,
             category_name: p.category_name ? String(p.category_name) : null,
+            subcategory_id: p.subcategory_id ? String(p.subcategory_id) : null,
+            subcategory_name: p.subcategory_name ? String(p.subcategory_name) : null,
             images: Array.isArray(p.images) ? p.images : [],
             video_url: String(p.video_url || ''),
             variants: Array.isArray(p.variants) ? p.variants : [],
             specifications: Array.isArray(p.specifications) ? p.specifications : [],
             stock: Number(p.stock || 0),
-            low_stock_threshold: p.low_stock_threshold !== undefined ? Number(p.low_stock_threshold) : 10,
+            low_stock_threshold: (p.low_stock_threshold !== undefined && p.low_stock_threshold !== null) ? Number(p.low_stock_threshold) : 10,
             status: String(p.status || 'active'),
             is_featured: Boolean(p.is_featured),
             is_best_seller: Boolean(p.is_best_seller),
+            timer_enabled: Boolean(p.timer_enabled),
+            timer_title: String(p.timer_title || ''),
+            timer_end_time: p.timer_end_time ? String(p.timer_end_time) : null,
+            timer_hours: (p.timer_hours !== undefined && p.timer_hours !== null && p.timer_hours !== '') ? Number(p.timer_hours) : null,
             rating: Number(p.rating || 5.0),
             reviews_count: Number(p.reviews_count || 1),
             seo_title: String(p.seo_title || p.name || ''),
             seo_description: String(p.seo_description || p.description || ''),
-            timer_enabled: Boolean(p.timer_enabled),
-            timer_title: String(p.timer_title || ''),
             created_at: p.created_at || new Date().toISOString()
           };
         });
-        relationalPromises.push(
-          supabase.from('products').upsert(cleanProds, { onConflict: 'id' }).then(({ error }) => {
-            if (error) console.error('[Supabase products upsert error]:', error.message);
-          }).catch(e => console.error('[Supabase products catch]:', e?.message || e))
-        );
+        relationalPromises.push(safeUpsert('products', cleanProds));
       }
 
       if (data.orders && data.orders.length > 0) {
         const cleanOrders = data.orders.map((o: any) => ({
           id: String(o.id),
           invoice_id: String(o.invoice_id || o.order_number || o.id),
+          order_number: String(o.order_number || o.invoice_id || o.id),
+          customer_id: o.customer_id ? String(o.customer_id) : null,
           customer_name: String(o.customer_name || 'গ্রাহক'),
           phone: String(o.phone || ''),
           address: String(o.address || ''),
           city: String(o.city || 'Dhaka'),
+          area: String(o.area || 'inside_dhaka'),
           courier: String(o.courier || 'Steadfast'),
           items: Array.isArray(o.items) ? o.items : [],
           subtotal: Number(o.subtotal || o.total_revenue || 0),
           delivery_fee: Number(o.delivery_fee || o.shipping_cost || 60),
+          shipping_cost: Number(o.shipping_cost || o.delivery_fee || 60),
           discount: Number(o.discount || o.discount_amount || 0),
+          discount_amount: Number(o.discount_amount || o.discount || 0),
           total: Number(o.total || o.total_revenue || 0),
+          total_revenue: Number(o.total_revenue || o.total || 0),
           status: String(o.status || o.order_status || 'pending'),
+          order_status: String(o.order_status || o.status || 'pending'),
           payment_method: String(o.payment_method || 'cod'),
           payment_status: String(o.payment_status || 'unpaid'),
           bkash_number: o.bkash_number ? String(o.bkash_number) : null,
+          transaction_id: o.transaction_id || o.trx_id ? String(o.transaction_id || o.trx_id) : null,
           trx_id: o.trx_id || o.transaction_id ? String(o.trx_id || o.transaction_id) : null,
+          coupon_code: o.coupon_code ? String(o.coupon_code) : null,
+          call_status: String(o.call_status || 'not_called'),
+          note: String(o.note || o.order_notes || ''),
           order_notes: String(o.order_notes || o.note || ''),
           created_at: o.created_at || new Date().toISOString()
         }));
-        relationalPromises.push(
-          supabase.from('orders').upsert(cleanOrders, { onConflict: 'id' }).then(({ error }) => {
-            if (error) console.error('[Supabase orders upsert error]:', error.message);
-          }).catch(e => console.error('[Supabase orders catch]:', e?.message || e))
-        );
+        relationalPromises.push(safeUpsert('orders', cleanOrders));
       }
       if (data.customers && data.customers.length > 0) {
         const cleanCusts = data.customers.map((c: any) => ({
@@ -870,31 +911,25 @@ async function saveDatabase(data: any) {
           total_spent: Number(c.total_spent || 0),
           created_at: c.created_at || new Date().toISOString()
         }));
-        relationalPromises.push(
-          supabase.from('customers').upsert(cleanCusts, { onConflict: 'id' }).then(({ error }) => {
-            if (error) console.error('[Supabase customers upsert error]:', error.message);
-          }).catch(e => console.error('[Supabase customers catch]:', e?.message || e))
-        );
+        relationalPromises.push(safeUpsert('customers', cleanCusts));
       }
       if (data.coupons && data.coupons.length > 0) {
         const cleanCoups = data.coupons.map((c: any) => ({
           id: String(c.id),
           code: String(c.code || '').toUpperCase(),
-          type: String(c.type || 'fixed'),
+          type: String(c.type || c.discount_type || 'fixed'),
+          discount_type: String(c.discount_type || c.type || 'fixed'),
           amount: Number(c.amount || c.discount_value || 0),
+          discount_value: Number(c.discount_value || c.amount || 0),
           min_order_amount: Number(c.min_order_amount || 0),
-          max_discount_amount: c.max_discount_amount ? Number(c.max_discount_amount) : null,
-          usage_limit: c.usage_limit ? Number(c.usage_limit) : null,
+          max_discount_amount: (c.max_discount_amount !== undefined && c.max_discount_amount !== null && c.max_discount_amount !== '') ? Number(c.max_discount_amount) : null,
+          usage_limit: (c.usage_limit !== undefined && c.usage_limit !== null && c.usage_limit !== '') ? Number(c.usage_limit) : null,
           used_count: Number(c.used_count || 0),
-          expires_at: c.expires_at || null,
+          expires_at: c.expires_at ? String(c.expires_at) : null,
           is_active: Boolean(c.is_active ?? true),
           created_at: c.created_at || new Date().toISOString()
         }));
-        relationalPromises.push(
-          supabase.from('coupons').upsert(cleanCoups, { onConflict: 'id' }).then(({ error }) => {
-            if (error) console.error('[Supabase coupons upsert error]:', error.message);
-          }).catch(e => console.error('[Supabase coupons catch]:', e?.message || e))
-        );
+        relationalPromises.push(safeUpsert('coupons', cleanCoups));
       }
       if (data.reviews && data.reviews.length > 0) {
         const cleanRevs = data.reviews.map((r: any) => ({
@@ -907,18 +942,16 @@ async function saveDatabase(data: any) {
           is_verified_buyer: Boolean(r.is_verified_buyer ?? true),
           created_at: r.created_at || new Date().toISOString()
         }));
-        relationalPromises.push(
-          supabase.from('reviews').upsert(cleanRevs, { onConflict: 'id' }).then(({ error }) => {
-            if (error && !error.message.includes('Could not find')) console.error('[Supabase reviews upsert error]:', error.message);
-          }).catch(e => {})
-        );
+        relationalPromises.push(safeUpsert('reviews', cleanRevs));
       }
       if (data.settings) {
         const cleanSettings = {
           id: 'store_settings',
           store_name: String(data.settings.logo_title || data.settings.store_name || 'KinoMart'),
           logo_title: String(data.settings.logo_title || 'KinoMart'),
+          tagline: String(data.settings.tagline || ''),
           logo_url: data.settings.logo_url || null,
+          favicon_url: data.settings.favicon_url || null,
           phone: String(data.settings.phone || ''),
           whatsapp: String(data.settings.whatsapp || ''),
           address: String(data.settings.address || ''),
@@ -928,6 +961,8 @@ async function saveDatabase(data: any) {
           hero_subtitle: String(data.settings.hero_subtitle || ''),
           hero_image: data.settings.hero_image || null,
           banner_images: Array.isArray(data.settings.banner_images) ? data.settings.banner_images : [],
+          special_offer_text: String(data.settings.special_offer_text || ''),
+          special_offer_active: Boolean(data.settings.special_offer_active ?? true),
           inside_dhaka_charge: Number(data.settings.inside_dhaka_charge || 70),
           outside_dhaka_charge: Number(data.settings.outside_dhaka_charge || 130),
           free_shipping_min: Number(data.settings.free_shipping_min || 3000),
@@ -939,11 +974,7 @@ async function saveDatabase(data: any) {
           admin_password: String(data.settings.admin_password || '@kinomart12@'),
           updated_at: new Date().toISOString()
         };
-        relationalPromises.push(
-          supabase.from('settings').upsert([cleanSettings], { onConflict: 'id' }).then(({ error }) => {
-            if (error) console.error('[Supabase settings upsert error]:', error.message);
-          }).catch(e => console.error('[Supabase settings catch]:', e?.message || e))
-        );
+        relationalPromises.push(safeUpsert('settings', [cleanSettings]));
       }
 
       await Promise.allSettled(relationalPromises);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, Search, Image as ImageIcon, Check, X, Shield, Eye, Upload, Clock, Database } from 'lucide-react';
 import { Product, Category } from '../../types';
 import { api } from '../../services/api';
+import { compressImage } from '../../lib/imageCompressor';
 
 export const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -69,18 +70,16 @@ export const AdminProducts: React.FC = () => {
     });
   };
 
-  const handleImageFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    Array.from(files).forEach((file: File) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setImageUrls(prev => (prev ? `${prev.trim()}\n${result}` : result));
-      };
-      reader.readAsDataURL(file);
-    });
+    for (const file of Array.from(files)) {
+      const compressed = await compressImage(file, 1000, 1000, 0.82);
+      if (compressed) {
+        setImageUrls(prev => (prev ? `${prev.trim()}\n${compressed}` : compressed));
+      }
+    }
   };
 
   const loadData = async () => {
