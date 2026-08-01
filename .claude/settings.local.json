@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(Get-ChildItem -Path \"E:\\\\kinomart\\\\src\\\\components\" -Directory)",
-      "Bash(Select-Object Name)"
-    ]
-  }
-}
